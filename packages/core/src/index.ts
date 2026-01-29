@@ -26,5 +26,8 @@ export * from './Layer';
 // Skeleton loading placeholder
 export * from './Skeleton';
 
+// Hooks
+export * from './hooks';
+
 // Theme
 export * from './theme';
