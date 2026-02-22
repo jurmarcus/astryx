@@ -17,6 +17,7 @@ import {
   forwardRef,
   useCallback,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -143,22 +144,55 @@ const styles = stylex.create({
     minHeight: '100dvh',
   },
   skipLink: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    padding: '8px 16px',
+    // Visually hidden by default, visible on focus (keyboard navigation)
+    position: {
+      default: 'absolute',
+      ':focus': 'fixed',
+    },
+    width: {
+      default: '1px',
+      ':focus': 'auto',
+    },
+    height: {
+      default: '1px',
+      ':focus': 'auto',
+    },
+    padding: {
+      default: 0,
+      ':focus': '8px 16px',
+    },
+    margin: {
+      default: '-1px',
+      ':focus': 0,
+    },
+    overflow: {
+      default: 'hidden',
+      ':focus': 'visible',
+    },
+    clipPath: {
+      default: 'inset(50%)',
+      ':focus': 'none',
+    },
+    whiteSpace: {
+      default: 'nowrap',
+      ':focus': 'normal',
+    },
+    borderWidth: 0,
+    // Focus styles
+    top: {
+      default: 0,
+      ':focus': '8px',
+    },
+    insetInlineStart: {
+      default: 0,
+      ':focus': '8px',
+    },
     backgroundColor: colorVars['--color-surface'],
     color: colorVars['--color-accent-text'],
     zIndex: 9999,
     textDecoration: 'none',
     fontWeight: fontWeightVars['--font-weight-semibold'],
     fontSize: textSizeVars['--text-base'],
-    // Visually hidden by default
-    transform: 'translateY(-100%)',
-    // Show on focus
-    ':focus': {
-      transform: 'translateY(0)',
-    },
   },
   banner: {
     flexShrink: 0,
@@ -188,6 +222,19 @@ const styles = stylex.create({
   },
   hidden: {
     display: 'none',
+  },
+  // Sticky header for auto height mode
+  headerSticky: {
+    position: 'sticky',
+    top: 0,
+    zIndex: 10,
+  },
+  // Sticky sideNav for auto height mode
+  sideNavSticky: {
+    position: 'sticky',
+    top: 'var(--appshell-header-height, 0px)',
+    height: 'calc(100vh - var(--appshell-header-height, 0px))',
+    overflow: 'auto',
   },
 });
 
@@ -274,9 +321,48 @@ export const XDSAppShell = forwardRef<HTMLDivElement, XDSAppShellProps>(
     const [isBelowBreakpoint, setIsBelowBreakpoint] = useState(false);
 
     const isFill = height === 'fill';
+    const isAuto = height === 'auto';
     const hasSideNav = sideNav != null;
     const hasTopNav = topNav != null;
     const hasBanner = banner != null;
+
+    // =========================================================================
+    // Header height measurement for sticky sideNav offset (auto mode)
+    // =========================================================================
+    const headerRef = useRef<HTMLDivElement>(null);
+    const shellRef = useRef<HTMLDivElement>(null);
+
+    // Merge forwarded ref with internal shell ref
+    const setShellRef = useCallback(
+      (node: HTMLDivElement | null) => {
+        (shellRef as React.MutableRefObject<HTMLDivElement | null>).current =
+          node;
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        }
+      },
+      [ref],
+    );
+
+    useEffect(() => {
+      if (!isAuto || !headerRef.current || !shellRef.current) return;
+
+      const headerEl = headerRef.current;
+      const shellEl = shellRef.current;
+
+      const updateHeight = () => {
+        const height = headerEl.getBoundingClientRect().height;
+        shellEl.style.setProperty('--appshell-header-height', `${height}px`);
+      };
+
+      updateHeight();
+
+      const observer = new ResizeObserver(updateHeight);
+      observer.observe(headerEl);
+      return () => observer.disconnect();
+    }, [isAuto]);
 
     // =========================================================================
     // Responsive breakpoint handling
@@ -347,8 +433,12 @@ export const XDSAppShell = forwardRef<HTMLDivElement, XDSAppShellProps>(
 
     // =========================================================================
     // Build header content (topNav + banner)
+    //
+    // In auto mode, the header wrapper gets sticky positioning so the topNav
+    // stays pinned while the page scrolls. The ref is used to measure header
+    // height for the sideNav's sticky offset.
     // =========================================================================
-    const headerContent =
+    const headerInner =
       hasTopNav || hasBanner ? (
         <XDSLayoutHeader isFullBleed hasDivider={hasTopNav}>
           {hasBanner && <div {...stylex.props(styles.banner)}>{banner}</div>}
@@ -356,10 +446,22 @@ export const XDSAppShell = forwardRef<HTMLDivElement, XDSAppShellProps>(
         </XDSLayoutHeader>
       ) : undefined;
 
+    const headerContent =
+      headerInner != null ? (
+        <div ref={headerRef} {...stylex.props(isAuto && styles.headerSticky)}>
+          {headerInner}
+        </div>
+      ) : undefined;
+
     // =========================================================================
     // Build sideNav content
+    //
+    // In auto mode, the sideNav panel is not internally scrollable (the page
+    // scrolls as a whole), but it gets sticky positioning so it stays pinned
+    // below the header while the main content scrolls. A wrapper div applies
+    // the sticky behavior since XDSLayoutPanel doesn't accept style/className.
     // =========================================================================
-    const sideNavContent = showSideNavInline ? (
+    const sideNavPanel = showSideNavInline ? (
       <XDSLayoutPanel
         isFullBleed
         hasDivider
@@ -370,6 +472,13 @@ export const XDSAppShell = forwardRef<HTMLDivElement, XDSAppShellProps>(
         {sideNav}
       </XDSLayoutPanel>
     ) : undefined;
+
+    const sideNavContent =
+      sideNavPanel != null && isAuto ? (
+        <div {...stylex.props(styles.sideNavSticky)}>{sideNavPanel}</div>
+      ) : (
+        sideNavPanel
+      );
 
     // =========================================================================
     // Build main content
@@ -392,7 +501,7 @@ export const XDSAppShell = forwardRef<HTMLDivElement, XDSAppShellProps>(
     // =========================================================================
     return (
       <div
-        ref={ref}
+        ref={setShellRef}
         data-testid={dataTestId}
         {...stylex.props(
           styles.root,
