@@ -14,13 +14,11 @@ import {
 
 interface DimensionTableProps {
   byPrompt: Record<string, UniversalScore>;
-  categories?: Record<string, string>;
 }
 
 interface RowData extends Record<string, unknown> {
   id: string;
   promptId: string;
-  category: string;
   correctness: number;
   accessibility: number;
   codeQuality: number;
@@ -42,11 +40,10 @@ function ScoreCell({score}: {score: number}) {
   );
 }
 
-export function DimensionTable({byPrompt, categories}: DimensionTableProps) {
+export function DimensionTable({byPrompt}: DimensionTableProps) {
   const data: RowData[] = Object.entries(byPrompt).map(([promptId, score]) => ({
     id: promptId,
     promptId,
-    category: categories?.[promptId] ?? '—',
     correctness: score.correctness.score,
     accessibility: score.accessibility.score,
     codeQuality: score.codeQuality.score,
@@ -56,8 +53,11 @@ export function DimensionTable({byPrompt, categories}: DimensionTableProps) {
   }));
 
   const columns: XDSTableColumn<RowData>[] = [
-    {key: 'promptId', header: 'Prompt'},
-    {key: 'category', header: 'Category'},
+    {
+      key: 'promptId',
+      header: 'Prompt',
+      renderCell: row => <XDSText type="body">{row.promptId}</XDSText>,
+    },
     ...ALL_DIMENSIONS.map(
       (dim): XDSTableColumn<RowData> => ({
         key: dim,
