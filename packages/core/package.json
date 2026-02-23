@@ -166,6 +166,12 @@
       "import": "./dist/Link/index.mjs",
       "require": "./dist/Link/index.js"
     },
+    "./List": {
+      "source": "./src/List/index.ts",
+      "types": "./dist/List/index.d.ts",
+      "import": "./dist/List/index.mjs",
+      "require": "./dist/List/index.js"
+    },
     "./NumberInput": {
       "source": "./src/NumberInput/index.ts",
       "types": "./dist/NumberInput/index.d.ts",
