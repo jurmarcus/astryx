@@ -107,6 +107,52 @@ For landing pages or simple apps that don't need secondary navigation.
 </XDSAppShell>
 ```
 
+### Responsive: SideNav + MobileNav
+
+For apps that need both desktop and mobile layouts, use the `mobileNav` slot.
+On desktop the SideNav renders inline; on mobile AppShell hides the SideNav
+(via `sideNavBreakpoint`) and the consumer shows an XDSMobileNav drawer instead.
+
+Pass a fully composed `<XDSMobileNav>` — AppShell just renders it, same as
+every other slot. All drawer props (`isOpen`, `onClose`, `title`) stay on
+XDSMobileNav where they belong.
+
+```tsx
+const [mobileOpen, setMobileOpen] = useState(false);
+const isMobile = useMediaQuery('(max-width: 768px)');
+
+<XDSAppShell
+  topNav={
+    <XDSTopNav
+      label="Navigation"
+      title={<XDSTopNavTitle title="My App" />}
+      startContent={
+        isMobile ? (
+          <XDSButton
+            label="Menu"
+            icon={<XDSIcon icon="menu" color="inherit" />}
+            variant="ghost"
+            onClick={() => setMobileOpen(true)}
+          />
+        ) : (
+          <XDSTopNavItem label="Home" href="/" isSelected />
+        )
+      }
+    />
+  }
+  sideNav={<XDSSideNav>{navSections}</XDSSideNav>}
+  mobileNav={
+    <XDSMobileNav
+      isOpen={mobileOpen}
+      onClose={() => setMobileOpen(false)}
+      title="My App">
+      {navSections}
+    </XDSMobileNav>
+  }>
+  <Content />
+</XDSAppShell>;
+```
+
 ### Pattern Summary
 
 | Layout           | TopNav | SideNav Header | When to use                     |
@@ -150,6 +196,7 @@ For landing pages or simple apps that don't need secondary navigation.
 | `height`                    | `'fill' \| 'auto'`               | `'fill'` | Height behavior                             |
 | `isSideNavCollapsed`        | `boolean`                        | —        | Whether sideNav is collapsed (controlled)   |
 | `initialIsSideNavCollapsed` | `boolean`                        | `false`  | Initial collapsed state (uncontrolled)      |
+| `mobileNav`                 | `ReactNode`                      | —        | Mobile navigation (typically XDSMobileNav)  |
 | `onSideNavCollapsedChange`  | `(isCollapsed: boolean) => void` | —        | Collapse change callback                    |
 | `sideNavBreakpoint`         | `'sm' \| 'md' \| 'lg' \| 'none'` | `'md'`   | Breakpoint for auto-collapse                |
 | `sideNavWidth`              | `number`                         | `260`    | SideNav width in pixels                     |

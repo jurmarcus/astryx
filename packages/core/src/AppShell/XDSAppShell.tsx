@@ -28,6 +28,7 @@ import {XDSLayout} from '../Layout/XDSLayout';
 import {XDSLayoutHeader} from '../Layout/XDSLayoutHeader';
 import {XDSLayoutPanel} from '../Layout/XDSLayoutPanel';
 import {XDSLayoutContent} from '../Layout/XDSLayoutContent';
+import {XDSMobileNav} from '../MobileNav/XDSMobileNav';
 
 // =============================================================================
 // Constants
@@ -100,6 +101,18 @@ export interface XDSAppShellProps {
    * Whether the side nav is collapsed (controlled).
    */
   isSideNavCollapsed?: boolean;
+
+  /**
+   * Mobile navigation — typically an XDSMobileNav.
+   *
+   * When provided, replaces the default mobile drawer that AppShell renders
+   * for sideNav below the breakpoint. The consumer owns the XDSMobileNav
+   * element and its open/close state, just like topNav and sideNav.
+   *
+   * When not provided, AppShell automatically wraps sideNav in an
+   * XDSMobileNav for the mobile breakpoint.
+   */
+  mobileNav?: ReactNode;
 
   /**
    * Callback when side nav collapsed state changes.
@@ -211,29 +224,6 @@ const styles = stylex.create({
   banner: {
     flexShrink: 0,
   },
-  // Mobile overlay sideNav
-  overlay: {
-    position: 'fixed',
-    inset: 0,
-    zIndex: 100,
-    display: 'flex',
-  },
-  backdrop: {
-    position: 'fixed',
-    inset: 0,
-    backgroundColor: colorVars['--color-overlay'],
-    zIndex: 100,
-  },
-  overlaySideNav: {
-    position: 'relative',
-    zIndex: 101,
-    backgroundColor: colorVars['--color-surface'],
-    overflow: 'auto',
-    height: '100%',
-    borderInlineEndWidth: 1,
-    borderInlineEndStyle: 'solid',
-    borderInlineEndColor: colorVars['--color-divider'],
-  },
   hidden: {
     display: 'none',
   },
@@ -252,12 +242,6 @@ const styles = stylex.create({
   },
 });
 
-const dynamicStyles = stylex.create({
-  sideNavWidth: (width: number) => ({
-    width,
-  }),
-});
-
 // =============================================================================
 // Component
 // =============================================================================
@@ -274,16 +258,14 @@ const dynamicStyles = stylex.create({
  * ```
  * <XDSAppShell
  *   topNav={<XDSTopNav label="Navigation" title={<XDSTopNavTitle title="My App" />} />}
- *   sideNav={
- *     <XDSSideNav>
- *       <XDSSideNavSection title="Main" isHeaderHidden>
- *         <XDSSideNavItem label="Dashboard" isSelected href="/dashboard" />
- *         <XDSSideNavItem label="Analytics" href="/analytics" />
- *       </XDSSideNavSection>
- *     </XDSSideNav>
+ *   sideNav={<XDSSideNav>{navSections}</XDSSideNav>}
+ *   mobileNav={
+ *     <XDSMobileNav isOpen={mobileOpen} onClose={() => setMobileOpen(false)} title="My App">
+ *       {navSections}
+ *     </XDSMobileNav>
  *   }
  * >
- *   <DashboardContent />
+ *   <Content />
  * </XDSAppShell>
  * ```
  */
@@ -297,6 +279,7 @@ export const XDSAppShell = forwardRef<HTMLDivElement, XDSAppShellProps>(
       height = 'fill',
       initialIsSideNavCollapsed = false,
       isSideNavCollapsed: controlledCollapsed,
+      mobileNav,
       onSideNavCollapsedChange,
       sideNav,
       sideNavBreakpoint = 'md',
@@ -323,6 +306,7 @@ export const XDSAppShell = forwardRef<HTMLDivElement, XDSAppShellProps>(
     const isFill = height === 'fill';
     const isAuto = height === 'auto';
     const hasSideNav = sideNav != null;
+    const hasMobileNav = mobileNav != null;
     const hasTopNav = topNav != null;
     const hasBanner = banner != null;
 
@@ -409,27 +393,14 @@ export const XDSAppShell = forwardRef<HTMLDivElement, XDSAppShellProps>(
     }, [isCollapsed, isControlled, onSideNavCollapsedChange]);
 
     // =========================================================================
-    // Close mobile sideNav on Escape
-    // =========================================================================
-    useEffect(() => {
-      if (!isBelowBreakpoint || isCollapsed) return;
-
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          handleToggleCollapse();
-        }
-      };
-
-      document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [isBelowBreakpoint, isCollapsed, handleToggleCollapse]);
-
-    // =========================================================================
     // Determine if sideNav should show as overlay (mobile) or inline
     // =========================================================================
     const showSideNavInline = hasSideNav && !isCollapsed && !isBelowBreakpoint;
-    const showSideNavOverlay = hasSideNav && !isCollapsed && isBelowBreakpoint;
+    // Default mobile nav: when no explicit mobileNav is provided, AppShell
+    // internally renders an XDSMobileNav wrapping the sideNav content.
+    // This shares the same <dialog>-based behavior as explicit mobileNav.
+    const useDefaultMobileNav =
+      hasSideNav && !hasMobileNav && isBelowBreakpoint;
 
     // =========================================================================
     // Build header content (topNav + banner)
@@ -525,24 +496,16 @@ export const XDSAppShell = forwardRef<HTMLDivElement, XDSAppShellProps>(
           content={mainContent}
         />
 
-        {/* Mobile overlay sideNav */}
-        {showSideNavOverlay && (
-          <>
-            <div
-              {...stylex.props(styles.backdrop)}
-              onClick={handleToggleCollapse}
-              data-testid="sidenav-backdrop"
-              aria-hidden="true"
-            />
-            <nav
-              aria-label="Application navigation"
-              {...stylex.props(
-                styles.overlaySideNav,
-                dynamicStyles.sideNavWidth(sideNavWidth),
-              )}>
-              {sideNav}
-            </nav>
-          </>
+        {/* Mobile nav — either explicit mobileNav or default wrapping sideNav */}
+        {mobileNav}
+        {useDefaultMobileNav && (
+          <XDSMobileNav
+            isOpen={!isCollapsed}
+            onClose={handleToggleCollapse}
+            width={sideNavWidth}
+            data-testid="sidenav-mobile">
+            {sideNav}
+          </XDSMobileNav>
         )}
       </div>
     );
