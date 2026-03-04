@@ -47,6 +47,7 @@ export * from './Typeahead';
 export * from './Tokenizer';
 export * from './Dialog';
 export * from './DropdownMenu';
+export * from './MoreMenu';
 export * from './TopNav';
 export * from './SideNav';
 export * from './MobileNav';
