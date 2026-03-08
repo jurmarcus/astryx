@@ -5,10 +5,14 @@
   "description": "Default theme for XDS components (Heroicons)",
   "license": "MIT",
   "sideEffects": false,
-  "main": "./src/defaultTheme.ts",
-  "types": "./src/defaultTheme.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/defaultTheme.ts",
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
     "./theme.css": "./dist/theme.css"
   },
   "files": [
@@ -27,5 +31,6 @@
   },
   "devDependencies": {
     "@xds/cli": "*"
-  }
+  },
+  "module": "./dist/index.mjs"
 }
