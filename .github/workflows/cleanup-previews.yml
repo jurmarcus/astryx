@@ -26,6 +26,7 @@ jobs:
           fetch-depth: 0
 
       - name: Cleanup stale preview directories
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: ${{ inputs.dry_run || 'false' }}
@@ -40,8 +41,8 @@ jobs:
           echo ""
 
           # Get all 7-char hex directories (preview deployments)
-          PREVIEW_DIRS=$(ls -d [0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f] 2>/dev/null || true)
-          TOTAL=$(echo "$PREVIEW_DIRS" | grep -c . || echo 0)
+          mapfile -t DIRS < <(ls -d [0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f] 2>/dev/null)
+          TOTAL=${#DIRS[@]}
           echo "Found ${TOTAL} preview directories"
 
           if [ "$TOTAL" -eq 0 ]; then
@@ -53,27 +54,35 @@ jobs:
           OPEN_PR_HASHES=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --json headRefOid --jq '.[].headRefOid[:7]' || true)
           echo "Open PR hashes: $(echo "$OPEN_PR_HASHES" | grep -c . || echo 0)"
 
-          # Get timestamps for all directories using filesystem mtime
-          # (avoids running git log 600+ times which causes SIGPIPE with pipefail)
+          # Build a map of directory -> commit timestamp using git log
+          # One git log call for the entire repo, extract dir names from paths
+          declare -A DIR_TIMES
+          while IFS='|' read -r ts path; do
+            dir="${path%%/*}"
+            # Only record first (most recent) timestamp per directory
+            if [[ ${#dir} -eq 7 ]] && [[ -z "${DIR_TIMES[$dir]+x}" ]]; then
+              DIR_TIMES[$dir]=$ts
+            fi
+          done < <(git log --format="" --name-only --diff-filter=A --pretty=format:"%ct" -- $(printf '%s/ ' "${DIRS[@]}") 2>/dev/null | awk 'NF==1 && /^[0-9]+$/{ts=$0; next} NF>0{print ts"|"$0}' || true)
+
+          # Find latest deployment
           LATEST_DIR=""
           LATEST_TIME=0
-          declare -A DIR_TIMES
-
-          for dir in $PREVIEW_DIRS; do
-            DIR_TIME=$(stat -c %Y "$dir" 2>/dev/null || echo 0)
-            DIR_TIMES[$dir]=$DIR_TIME
+          for dir in "${DIRS[@]}"; do
+            DIR_TIME="${DIR_TIMES[$dir]:-0}"
             if [ "$DIR_TIME" -gt "$LATEST_TIME" ]; then
               LATEST_TIME=$DIR_TIME
               LATEST_DIR=$dir
             fi
           done
           echo "Latest deployment: ${LATEST_DIR}"
+          echo "Directories with timestamps: ${#DIR_TIMES[@]} of ${TOTAL}"
           echo ""
 
           DELETED=0
           KEPT=0
 
-          for dir in $PREVIEW_DIRS; do
+          for dir in "${DIRS[@]}"; do
             REASON=""
 
             # Keep latest deployment
