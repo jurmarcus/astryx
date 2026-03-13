@@ -446,3 +446,51 @@ export const docsZh = {
   keyboard:
     '在空输入框上按退格键移除最后一个标记；方向键导航下拉列表；Enter 选择高亮项目；Escape 关闭下拉列表',
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'Multi-select typeahead w/ token chips for selected items. Composes XDSBaseTypeahead for search+XDSToken for chips.',
+  features: [
+    'Token chips for each selected item w/ remove buttons',
+    'Filtered search auto-excludes already-selected items',
+    'Max entries limits selections; input hides at limit',
+    'Clear all button for bulk removal of all tokens',
+    'Custom token+item rendering via renderToken+renderItem',
+    'Backspace on empty input removes last token',
+    "Change metadata: onChange receives second arg w/ type ('add'|'remove'|'reorder')",
+  ],
+  accessibility: [
+    'Wrapped in XDSField for label, description, status message association.',
+    'Token container has role="group" w/ aria-label.',
+    'Clear all button has aria-label="Clear all".',
+    'Combobox pattern via XDSBaseTypeahead w/ aria-expanded+aria-autocomplete.',
+  ],
+  keyboard: 'Backspace on empty input removes last token. Arrow keys navigate dropdown. Enter selects highlighted item. Escape closes dropdown.',
+  propDescriptions: {
+    label: 'Accessible label for input.',
+    searchSource: 'Data source w/ search+bootstrap methods for populating dropdown.',
+    value: 'Array of currently selected items.',
+    onChange: "Fired on selection change. Change arg includes affected item+type ('add'|'remove'|'reorder').",
+    placeholder: 'Input placeholder. Only shown when no tokens selected.',
+    maxEntries: 'Max selections allowed. Input hidden at limit.',
+    hasClear: 'Clear-all button for bulk removal.',
+    renderToken: 'Custom token render. Default renders XDSToken w/ label+onRemove.',
+    renderItem: 'Custom dropdown item render. Default renders XDSTypeaheadItem.',
+    isDisabled: 'Disables input+all token interactions.',
+    status: 'Validation status w/ type+message for error/warning/success.',
+    isLabelHidden: 'Visually hides label; keeps a11y.',
+    description: 'Helper text below label.',
+    isRequired: 'Marks field required.',
+    isOptional: 'Shows optional indicator on label.',
+    labelTooltip: 'Tooltip on label.',
+    hasEntriesOnFocus: 'Show bootstrap results on focus before typing.',
+    maxMenuItems: 'Max dropdown items to display.',
+    emptySearchResultsText: 'Text when search returns no results.',
+    hasAutoFocus: 'Auto-focus input on mount.',
+    size: 'Input+token size.',
+    debounceMs: 'Search debounce delay ms. 0 for sync sources.',
+    onChangeQuery: 'Fired on search query text change.',
+    endContent: 'Content at input row end. For buttons, counts, controls.',
+    xstyle: 'StyleX layout styles (margins, positioning). Must be stylex.create() value.',
+  },
+};

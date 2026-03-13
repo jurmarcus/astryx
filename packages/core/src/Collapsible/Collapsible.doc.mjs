@@ -440,3 +440,52 @@ export const docsZh = {
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'collapsible content primitive + group coordination',
+  features: [
+    'XDSCollapsible makes content collapsible; trigger toggles content visibility',
+    'handles state, a11y (aria-expanded, keyboard), chevron indicator',
+    'uncontrolled (defaultIsOpen), controlled (isOpen/onOpenChange), group-coordinated modes',
+    'XDSCollapsibleGroup coordinates multiple instances; single or multiple open at once',
+    'XDSCollapsibleGroup renders no wrapper DOM',
+    'inside group, defers open/close state to group context via value prop',
+  ],
+  keyboard: 'Enter/Space activates trigger to toggle open/close',
+  accessibility: [
+    'trigger renders as <button> w/ aria-expanded reflecting open state',
+    'chevron indicator shows expanded/collapsed visual affordance',
+  ],
+  notes: [
+    'manages own open/close state by default (uncontrolled)',
+    'nested in XDSCollapsibleGroup w/ matching value, defers to group context',
+    'group context exposes isOpen(value) + toggle(value) methods',
+    'group renders no wrapper DOM; layout is consumer responsibility (e.g. XDSVStack)',
+  ],
+  components: [
+    {
+      name: 'XDSCollapsible',
+      description: 'makes content collapsible; trigger toggles visibility, manages own state or defers to parent group',
+      propDescriptions: {
+        trigger: 'content in trigger area (always visible)',
+        children: 'content that collapses+expands',
+        defaultIsOpen: 'default open state (uncontrolled)',
+        isOpen: 'controlled open state',
+        onOpenChange: 'callback on open state change',
+        value: 'ID for group coordination; required inside XDSCollapsibleGroup',
+      },
+    },
+    {
+      name: 'XDSCollapsibleGroup',
+      description: 'coordinates multiple XDSCollapsible instances; single or multiple open. no wrapper DOM.',
+      propDescriptions: {
+        type: 'one or many items open simultaneously',
+        defaultValue: 'default open item(s) (uncontrolled); string for single, array for multiple',
+        value: 'controlled open item(s)',
+        onChange: 'callback on open items change',
+        children: 'XDSCollapsible instances to coordinate',
+      },
+    },
+  ],
+};

@@ -180,3 +180,26 @@ export const docsZh = {
     '还通过 rest props 接受标准 HTML div 属性（id、role、aria-* 等）。',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Spatial layout container for arranging form fields w/ consistent spacing + direction.',
+  features: [
+    "Three layout modes: 'vertical' (default), 'horizontal', 'horizontal-labels'",
+    'Direction context via XDSFormLayoutContext; children read current layout direction',
+    'Responsive: horizontal-labels collapses to vertical on narrow viewports (<=480px)',
+    'Nestable: inner FormLayout overrides context for children',
+    'Purely spatial: no form state management or <form> rendering',
+  ],
+  notes: [
+    'Renders <div> not <form>. Use separate <form> + HTML form attribute for submit buttons.',
+    'XDSFormLayoutContext provides { direction } to children. Import from @xds/core/FormLayout.',
+    'Accepts standard HTML div attributes (id, role, aria-*) via rest props.',
+  ],
+  propDescriptions: {
+    direction: 'Field arrangement. Vertical stacks top-to-bottom, horizontal arranges left-to-right w/ equal flex-grow, horizontal-labels uses CSS Grid w/ labels left of inputs (collapses <=480px).',
+    children: 'Form fields to arrange. Accepts XDS inputs + XDSField-wrapped custom controls.',
+    xstyle: 'StyleX styles for layout customization. Must be stylex.create() value.',
+  },
+};

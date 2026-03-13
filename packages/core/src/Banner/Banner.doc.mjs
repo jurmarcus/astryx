@@ -250,3 +250,39 @@ export const docsZh = {
     '折叠支持已规划：内容区将通过 useXDSCollapsible 支持折叠（issue #187）',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'persistent status notification for info, warning, error, success messages',
+  features: [
+    'two-part layout: colored status header w/ icon+title+description+actions+dismiss; optional card-bg content below',
+    'w/o children, only colored header renders',
+    'self-managed dismiss state, hides w/o external state wiring',
+    'onDismiss fires alongside internal state change for logging/backend sync',
+    'default status icons from @heroicons/react/24/solid: InformationCircleIcon, ExclamationTriangleIcon, XCircleIcon, CheckCircleIcon',
+    'status colors: info=accent-deemphasized, warning=warning-deemphasized, error=negative-deemphasized, success=positive-deemphasized',
+    'card variant (default): border-radius w/ optional card content below header',
+    'section variant: no border-radius, full-width for page-level banners',
+  ],
+  notes: [
+    'collapsible support planned via useXDSCollapsible (issue #187)',
+  ],
+  accessibility: [
+    'role="alert" for error+warning',
+    'role="status" for info+success',
+    'dismiss button has aria-label="Dismiss"',
+    'status icon aria-hidden="true", status conveyed by ARIA role',
+  ],
+  propDescriptions: {
+    status: 'controls icon+color',
+    title: 'title text/ReactNode in header',
+    description: 'text below title in header',
+    icon: 'override default status icon',
+    isDismissable: 'user can dismiss banner',
+    onDismiss: 'dismiss callback; banner self-hides regardless',
+    endContent: 'end-aligned action in header, typically button/link',
+    variant: 'card=border-radius; section=full-width no radius for page-level',
+    children: 'content in card-bg area below colored header',
+    xstyle: 'StyleX layout customization via stylex.create()',
+  },
+};

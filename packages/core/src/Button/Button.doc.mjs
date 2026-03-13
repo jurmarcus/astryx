@@ -290,3 +290,37 @@ export const docsZh = {
     '纯图标按钮适用于工具栏、操作网格和紧凑控件。',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'button w/ multiple variants, sizes, loading state',
+  features: [
+    "variants: primary, secondary, ghost, destructive",
+    'sizes: sm(28px), md(32px), lg(36px)',
+    'loading state: shows spinner+disables interaction',
+    'focus visible: accessible focus outline w/ variant-specific colors',
+    'hover/active: overlay colors via backgroundImage for consistent layering',
+  ],
+  notes: [
+    'XDSButtonVariant derived from keyof typeof variants StyleX object',
+    'hover/active use backgroundImage linear-gradient overlay on base bg',
+    'destructive variant uses colorTokens.negative for focus outline',
+    'endSlot wrapped in <span> w/ color:inherit, matches button text across variants',
+    'icon w/o children=icon-only: square (aspectRatio:1/1), label=aria-label, any ReactNode as icon',
+    'endSlot ignored for icon-only to preserve square ratio',
+    'prefer XDSButton over <div onClick> for a11y: keyboard nav, focus management, screen reader',
+    'icon-only suits toolbars, action grids, compact controls',
+  ],
+  propDescriptions: {
+    label: 'accessible label; aria-label for icon-only buttons',
+    variant: 'visual style variant',
+    size: 'size variant',
+    isLoading: 'shows spinner+disables interaction',
+    icon: 'icon element; w/o children renders square icon-only button',
+    children: 'w/ icon, text rendered next to icon',
+    endSlot: 'trailing icon/badge after label; accepts XDSIcon or XDSBadge; ignored for icon-only; color inherited',
+    tooltip: 'tooltip on hover',
+    onClick: 'standard click handler',
+    onClickAction: 'async click handler; shows loading while promise pending',
+  },
+};

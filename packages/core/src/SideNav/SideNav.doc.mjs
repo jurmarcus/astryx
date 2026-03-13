@@ -728,3 +728,90 @@ export const docsZh = {
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Sidebar navigation component for app pages. Supports sections, nested items, selected state, icons, responsive collapse.',
+  features: [
+    'Five-zone layout: header, topContent, children (scrollable), footer, footerIcons',
+    'Smart header interaction boundary logic; links + menu trigger coexist w/o overlap',
+    'Nested items via children on XDSSideNavItem',
+    'Selected state w/ optional alternate icon for filled/outline variants',
+    'Section grouping w/ optional title, subtitle, end content',
+    'Accessible; nav landmark, aria-current="page", role="group" w/ aria-labelledby on sections',
+    'Keyboard navigable; Tab through items, Enter/Space to activate',
+  ],
+  accessibility: [
+    '<nav aria-label="Side navigation"> wraps entire component',
+    'aria-current="page" applied to selected item',
+    'Sections use role="group" w/ aria-labelledby pointing to section title',
+    'isHeaderHidden visually hides section title while keeping accessible to screen readers',
+  ],
+  keyboard: 'Tab through items, Enter/Space to activate links',
+  notes: [
+    'W/ XDSAppShell alongside XDSTopNav, omit XDSSideNavHeading; TopNav already provides app identity.',
+    'W/o TopNav, include XDSSideNavHeading to provide app identity.',
+    'Header interaction model: headingHref only = whole header is one link; headingHref+superheadingHref no menu = each text independent link; menu only no hrefs = whole header is popover trigger; menu+hrefs = links are independent <a> elements, chevron/remaining is popover trigger.',
+    'Depends on useXDSPopover for header menu popover + XDSIcon for rendering icon components in nav items.',
+  ],
+  components: [
+    {
+      name: 'XDSSideNav',
+      description:
+        'Container w/ five zones: header, topContent, children (scrollable), footer, footerIcons.',
+      propDescriptions: {
+        header: 'Header area (typically XDSSideNavHeading). Sticky.',
+        topContent: 'Content below header, e.g. create button.',
+        children: 'Navigation sections + items. Scrollable.',
+        footer: 'Footer area above icon bar.',
+        footerIcons: 'Footer icon bar.',
+        xstyle: 'StyleX styles for layout customization. Must be stylex.create() value.',
+      },
+    },
+    {
+      name: 'XDSSideNavHeading',
+      description:
+        'Product/suite/account heading w/ smart interaction boundary logic for links + menu popover.',
+      propDescriptions: {
+        heading: 'Product/app name.',
+        icon: 'Product/app icon.',
+        headingHref: 'Link for heading.',
+        superheading: 'Text above heading.',
+        superheadingHref: 'Link for superheading.',
+        subheading: 'Text below heading.',
+        subheadingHref: 'Link for subheading.',
+        menu: 'Menu content rendered inside popover.',
+      },
+    },
+    {
+      name: 'XDSSideNavItem',
+      description:
+        'Navigation item w/ icon, selected state, optional end content, nesting via children.',
+      propDescriptions: {
+        label: 'Item label.',
+        as: 'Custom link component.',
+        icon: 'Icon displayed in outline (unselected) variant.',
+        selectedIcon: 'Icon displayed when item selected (filled variant).',
+        isSelected: 'Marks this item as current page.',
+        isDisabled: 'Disabled state.',
+        href: 'Navigation URL.',
+        onClick: 'Click handler.',
+        endContent: 'Right-side content such as badges or counts.',
+        children: 'Sub-items for nesting.',
+      },
+    },
+    {
+      name: 'XDSSideNavSection',
+      description:
+        'Section grouping w/ optional title, subtitle, end content.',
+      propDescriptions: {
+        title: 'Section title.',
+        subtitle: 'Section subtitle.',
+        children: 'Section items.',
+        endContent: 'Right-side content in section header.',
+        isHeaderHidden: 'Visually hides section header while keeping accessible to screen readers.',
+      },
+    },
+  ],
+};

@@ -784,3 +784,110 @@ export const docsZh = {
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Composable utilities + components for structured layouts w/ container/content separation pattern.',
+  features: [
+    'Primitive + higher-order architecture; XDSLayoutContainer is primitive; XDSCard, XDSSection higher-order',
+    'Directional padding via CSS variables; inner/outer, horizontal/vertical padding control',
+    'Context-aware defaults; components detect slot + self-adjust',
+    'Automatic RTL support; uses CSS logical properties',
+    'XDSLayout provides page shell w/ header, sidebar(s), content, footer slots',
+    'XDSHStack + XDSVStack for simple stacking layouts',
+    'XDSStackItem for fill/alignment control within stacks',
+  ],
+  notes: [
+    'Use XDSLayout for page shells + app layouts (header bar, sidebar nav, scrollable content, action footer). Not for simple stacking (use XDSVStack/XDSHStack).',
+    'XDSLayoutContainer sets CSS vars child components read: --layout-padding-outer-x (outer horizontal), --layout-padding-outer-y (outer vertical), --layout-padding-inner-x (inner horizontal for Header/Footer/Content/Panel), --layout-padding-inner-y (inner vertical for Header/Footer/Content/Panel).',
+    'Architecture layers top to bottom: Higher-Order (XDSCard, XDSSection), Layout Structure (XDSLayout + Header/Footer/Content/Panel), Primitive (XDSLayoutContainer sets CSS vars), Utilities (XDSHStack, XDSVStack, stack(), stackItem()).',
+    'All layout utilities + components exported from @xds/core/Layout.',
+  ],
+  components: [
+    {
+      name: 'XDSLayout',
+      description:
+        'Page shell w/ header, sidebar(s), content, footer slots for full app layouts.',
+      propDescriptions: {
+        content: 'Main content area (center).',
+        header: 'Header slot.',
+        footer: 'Footer slot.',
+        start: 'Start panel (left in LTR).',
+        end: 'End panel (right in LTR).',
+        height: 'Height behavior; fill container or grow w/ content.',
+      },
+    },
+    {
+      name: 'XDSLayoutHeader',
+      description: 'Top bar for page titles, app bars, toolbars.',
+      propDescriptions: {
+        children: 'Header content.',
+        hasDivider: 'Border at bottom edge.',
+        height: 'Header height.',
+        label: 'Accessible label for landmark element.',
+        role: 'ARIA landmark role.',
+      },
+    },
+    {
+      name: 'XDSLayoutContent',
+      description: 'Scrollable main content area.',
+      propDescriptions: {
+        children: 'Content.',
+        isScrollable: 'Enable scrollable overflow.',
+        label: 'Accessible label for landmark element.',
+        role: 'ARIA landmark role.',
+      },
+    },
+    {
+      name: 'XDSLayoutFooter',
+      description: 'Bottom bar for action bars, pagination, status bars.',
+      propDescriptions: {
+        children: 'Footer content.',
+        hasDivider: 'Border at top edge.',
+        height: 'Footer height.',
+        label: 'Accessible label for landmark element.',
+        role: 'ARIA landmark role.',
+      },
+    },
+    {
+      name: 'XDSLayoutPanel',
+      description: 'Sidebar for navigation, settings, inspector panels.',
+      propDescriptions: {
+        children: 'Panel content.',
+        hasDivider: 'Border on appropriate edge.',
+        isScrollable: 'Enable scrollable overflow.',
+        label: 'Accessible label for landmark element.',
+        role: 'ARIA landmark role.',
+      },
+    },
+    {
+      name: 'XDSLayoutContainer',
+      description:
+        'Primitive setting CSS padding vars; base for XDSCard + XDSSection.',
+    },
+    {
+      name: 'XDSCard',
+      description:
+        'Card w/ elevation + themed styling, built on XDSLayoutContainer.',
+    },
+    {
+      name: 'XDSSection',
+      description:
+        'Section w/ background variants (section, transparent, wash), built on XDSLayoutContainer.',
+    },
+    {
+      name: 'XDSHStack',
+      description: 'Horizontal stack arranging children left-to-right.',
+    },
+    {
+      name: 'XDSVStack',
+      description: 'Vertical stack arranging children top-to-bottom.',
+    },
+    {
+      name: 'XDSStackItem',
+      description:
+        'Stack item w/ fill + alignment control inside XDSHStack or XDSVStack.',
+    },
+  ],
+};

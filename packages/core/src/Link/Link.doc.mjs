@@ -428,3 +428,61 @@ import {XDSLinkProvider} from '@xds/core/Link';
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Styled anchor links w/ multiple variants + polymorphic link infra for custom link components (Next.js Link, React Router Link, etc.).',
+  features: [
+    "Color control: uses XDSText color prop ('active' default, 'secondary', 'inherit', etc.)",
+    'External links: opens new tab w/ external link icon',
+    'Tooltip support: displays tooltip text on hover',
+    'Underline control: always show underline or only on hover',
+    'Inline support: inherits parent font styles when used within text',
+    'Standalone mode: applies base font sizing for independent links',
+    'Disabled state: visual + interaction disabled',
+    'Focus visible: accessible focus outline',
+    'Polymorphic link: render as custom component via `as` prop or XDSLinkProvider',
+  ],
+  notes: [
+    'Links inherit font family, size, line-height, weight from parent elements',
+    'Use isStandalone when link not inline within other text content',
+    'isExternalLink auto-sets target="_blank" + rel="noopener noreferrer" for security',
+    'Disabled state uses aria-disabled + pointer-events: none for accessibility',
+    'Tooltip wraps link in XDSTooltip when provided',
+    'XDSLinkComponentType is React.ElementType; allows string tags ("a") + custom components',
+    'XDSLinkContext separated from XDSLinkProvider (mirrors ThemeContext/XDSTheme pattern); consumers import context w/o full provider',
+    'XDSLinkProvider memoizes context value to prevent unnecessary re-renders',
+    'Resolution order: (1) per-component as prop (highest priority), (2) XDSLinkProvider context, (3) native <a> element (default)',
+    'All XDS link components (XDSLink, XDSTopNavItem, XDSSideNavItem, XDSBreadcrumbItem, XDSTab) support custom link rendering',
+  ],
+  components: [
+    {
+      name: 'XDSLink',
+      description:
+        'Styled anchor link w/ variants, external link support, polymorphic rendering.',
+      propDescriptions: {
+        as: 'Custom component to render instead of <a>',
+        label: 'Accessible label',
+        href: 'Link destination URL',
+        hasUnderline: 'Always show underline',
+        isDisabled: 'Disables link',
+        isExternalLink: 'Opens new tab w/ external icon',
+        target: 'Where to open linked document',
+        onClick: 'Click event handler',
+        tooltip: 'Tooltip text on hover',
+        isStandalone: 'Applies base font sizing',
+        children: 'Link content',
+      },
+    },
+    {
+      name: 'XDSLinkProvider',
+      description:
+        'Provider setting default link component for all XDS links in subtree.',
+      propDescriptions: {
+        component: 'Component for all link elements',
+        children: 'Subtree',
+      },
+    },
+  ],
+};

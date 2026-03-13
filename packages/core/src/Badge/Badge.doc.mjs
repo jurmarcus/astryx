@@ -98,3 +98,13 @@ export const docsZh = {
     ],
   },
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'badge for status indicators, counts, or labels',
+  propDescriptions: {
+    variant: 'visual style variant',
+    children: 'badge content; omit for dot indicator',
+    icon: 'optional leading icon',
+  },
+};

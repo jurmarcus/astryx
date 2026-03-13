@@ -302,3 +302,49 @@ export const docsZh = {
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'user avatar w/ profile pictures + fallback support',
+  features: [
+    'image loading: primary + fallback sources',
+    'initials fallback: auto-generates from user name',
+    'default icon: generic person icon w/o image or name',
+    'sizes: tiny(20px), xsmall(24px), small(36px), medium(48px), large(128px) + numeric px',
+    'status slot: corner position for indicators/badges',
+    'size-aware status dot: XDSAvatarStatusDot scales proportionally w/ avatar',
+    'proper role + aria-label support',
+  ],
+  notes: [
+    'always circular (border-radius: 50%)',
+    'color.deemphasized + color.textSecondary for fallback bg',
+    'initials from first+last word of name',
+    'XDSAvatarSizeContext gives resolved numeric size to sub-components',
+    'status dot uses CIRCLE_EDGE_OFFSET_RATIO for 45 deg circle edge positioning',
+    'fallback cascade: src, fallbackSrc, initials from name, generic person icon',
+    'status dot tiers: avatar <=36px: 8px dot 1px border; 40-72px: 16px dot 2px border; >=96px: 24px dot 4px border',
+  ],
+  components: [
+    {
+      name: 'XDSAvatar',
+      description: 'user avatar w/ image, initials fallback, optional status indicator',
+      propDescriptions: {
+        src: 'primary image URL',
+        fallbackSrc: 'fallback image on primary fail',
+        name: 'user name for initials+alt text',
+        alt: 'alt text (falls back to name)',
+        size: 'avatar size (named or numeric px)',
+        status: 'corner content for status indicators',
+      },
+    },
+    {
+      name: 'XDSAvatarStatusDot',
+      description: 'size-aware status dot, reads avatar size from context + scales proportionally',
+      propDescriptions: {
+        variant: 'semantic color variant',
+        label: 'accessible label for screen readers',
+        icon: 'icon centered in dot (hidden at tiny sizes)',
+      },
+    },
+  ],
+};

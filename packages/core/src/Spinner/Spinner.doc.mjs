@@ -120,3 +120,26 @@ export const docsZh = {
     '尺寸参考：sm = 10×10px / 3px 边框，md = 14×14px / 3px 边框，lg = 18×18px / 3px 边框。',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'Pure spinner for loading state. No layout, no text; just spinning indicator.',
+  features: [
+    'CSS border animation: lightweight border-based spinner w/ smooth 360\u00b0 rotation',
+    'Size variants: sm (10px), md (14px), lg (18px) matching inline spinners',
+    'Shade support: default for light bg, onMedia for dark/accent bg',
+    'Accessible: role="status" + aria-label="Loading" by default',
+  ],
+  notes: [
+    'CSS border technique: 3 visible borders + 1 transparent for gap.',
+    'Animation: rotate(360deg) at 0.75s linear infinite.',
+    'Color inherits currentColor, controlled by shade styles w/ theme tokens.',
+    'Element is <span> w/ display: inline-block for inline composability.',
+    'Intentionally minimal; compose w/ layout + text components for full loading states.',
+    'Size ref: sm=10x10px/3px border, md=14x14px/3px border, lg=18x18px/3px border.',
+  ],
+  propDescriptions: {
+    size: 'Spinner size (10px, 14px, 18px).',
+    shade: 'Color shade for light or dark backgrounds.',
+  },
+};

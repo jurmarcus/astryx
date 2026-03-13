@@ -967,3 +967,94 @@ export const docsZh = {
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'Top navigation bar for app headers w/ slot-based layout+companion nav item components.',
+  features: [
+    'Slot-based layout; heading, startContent, centerContent, endContent slots',
+    'Three-column centering; centerContent switches to CSS grid (1fr auto 1fr) for true horizontal centering',
+    'Companion components; XDSTopNavHeading, XDSTopNavItem, XDSTopNavMenu, XDSTopNavMegaMenu',
+    'Accessible; role="navigation" w/ aria-label, aria-current="page" on selected items',
+    'Themeable via className; target .xds-top-nav+sub-component classes',
+    'Link customization; XDSTopNavItem accepts as prop to swap anchor element (e.g. React Router)',
+  ],
+  notes: [
+    'Default height 48px (--spacing-12) w/ 16px horizontal padding.',
+    'W/o centerContent: heading+startContent grow to push endContent right (flex layout).',
+    'W/ centerContent: CSS grid (1fr auto 1fr); right column always rendered for 3-col structure.',
+    'Positioning (sticky/fixed) handled by layout system (e.g. XDSAppShell), not TopNav.',
+    'Dividers controlled by layout system (e.g. XDSLayoutHeader hasDivider), not TopNav.',
+    'XDSTopNavMegaMenu panels position relative to nearest positioned ancestor; wrap in position:relative container for full-width.',
+  ],
+  accessibility: [
+    'XDSTopNav renders <nav> w/ role="navigation"+aria-label from label prop.',
+    'XDSTopNavItem sets aria-current="page" when isSelected.',
+    'XDSTopNavItem sets aria-label for icon-only items (icon provided w/o children or visible label).',
+    'XDSTopNavItem sets aria-disabled+tabIndex=-1 when isDisabled.',
+    'XDSTopNavMenu sets aria-haspopup="true" on trigger button.',
+    'XDSTopNavMegaMenu sets aria-haspopup="true"+aria-expanded on trigger button.',
+    'XDSTopNavMegaMenu items unreachable by keyboard (tabIndex=-1) when panel closed.',
+    'Escape closes XDSTopNavMegaMenu panel.',
+  ],
+  keyboard: 'Tab navigates between items. Escape closes XDSTopNavMegaMenu panels.',
+  components: [
+    {
+      name: 'XDSTopNav',
+      description: 'Main nav bar container w/ slot-based layout.',
+      propDescriptions: {
+        heading: 'Heading slot (logo, brand) at left edge.',
+        startContent: 'Nav items/breadcrumbs after heading, left-aligned.',
+        centerContent: 'Center slot (tabs, search); switches to 3-column CSS grid for true centering.',
+        endContent: 'Search/icons/profile at right edge.',
+        label: 'A11y label for nav landmark, aria-label on <nav>.',
+        xstyle: 'StyleX layout styles (margins, positioning). Must be stylex.create() value.',
+      },
+    },
+    {
+      name: 'XDSTopNavHeading',
+      description: 'Heading for XDSTopNav heading slot; displays logo+heading text, optionally as clickable link.',
+      propDescriptions: {
+        heading: 'Heading text to display.',
+        logo: 'Logo before heading text. Image, XDSNavIcon, or ReactNode.',
+        href: 'URL on click. Renders as anchor.',
+      },
+    },
+    {
+      name: 'XDSTopNavItem',
+      description: 'Nav link for XDSTopNav startContent; renders as anchor w/ hover+selected states.',
+      propDescriptions: {
+        label: 'Visible text or aria-label for icon-only items.',
+        href: 'Navigation URL.',
+        isSelected: 'Sets aria-current="page"+highlighted styles.',
+        isDisabled: 'Sets aria-disabled, prevents interaction.',
+        icon: 'Icon before label. W/o children becomes icon-only.',
+        children: 'Custom content instead of label text.',
+        as: 'Custom link component. Overrides XDSLinkProvider default. Must accept href, className, style, children.',
+      },
+    },
+    {
+      name: 'XDSTopNavMenu',
+      description: 'Nav item w/ hover-triggered popover menu containing rich items w/ icon, title, optional description.',
+      propDescriptions: {
+        label: 'Trigger button visible label.',
+        items: 'Menu items in hover popover.',
+        delay: 'Show delay ms on hover.',
+        hideDelay: 'Hide delay ms after mouse leaves.',
+      },
+    },
+    {
+      name: 'XDSTopNavMegaMenu',
+      description: 'Nav item w/ full-width mega menu panel on hover; 2-column grid+optional featured area.',
+      propDescriptions: {
+        label: 'Trigger button visible label.',
+        items: 'Menu items in mega panel.',
+        featured: 'Optional featured content on right side of mega panel.',
+        delay: 'Show delay ms on hover.',
+        hideDelay: 'Hide delay ms after mouse leaves.',
+        isSingleColumn: 'Single-column layout instead of two columns.',
+        onOpenChange: 'Fired on open/close. For coordinating wrapper styles.',
+      },
+    },
+  ],
+};

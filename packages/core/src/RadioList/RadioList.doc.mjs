@@ -502,3 +502,62 @@ export const docsZh = {
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Radio group component for single-value selection from list of options.',
+  features: [
+    'Accessible; uses native <input type="radio"> w/ proper role="radiogroup" + ARIA attributes',
+    'Orientation; supports vertical + horizontal layouts',
+    'Sizes; sm (18px radio, 20px wrapper) + md (22px radio, 24px wrapper)',
+    'Descriptions; optional description text per item',
+    'Custom content; startContent + endContent slots on each item',
+    'Disabled state; supports disabling entire group or individual items',
+    'Field integration; uses XDSField for label, description, required/optional, status messaging',
+  ],
+  notes: [
+    'XDSRadioList creates RadioListContext providing name, value, onChange, isDisabled, isRequired, size, status to child items',
+    'XDSRadioListItem must be within XDSRadioList; throws if context missing',
+    'Uses hidden native <input type="radio"> w/ custom visual overlay for consistent styling',
+    'Focus outline uses standard XDS focus outline token w/ 2px offset',
+    'Hover states use color-mix() for consistent overlay tinting',
+    'Size variants match CheckboxInput dimensions for visual consistency',
+  ],
+  components: [
+    {
+      name: 'XDSRadioList',
+      description:
+        'Radio group container w/ field integration for label, description, status.',
+      propDescriptions: {
+        label: 'Label text for radio group (always rendered for accessibility).',
+        value: 'Currently selected value.',
+        onChange: 'Callback fired when selected value changes.',
+        children: 'XDSRadioListItem elements.',
+        isLabelHidden: 'Whether to visually hide label.',
+        description: 'Description text below label.',
+        orientation: 'Layout direction of radio items.',
+        isDisabled: 'Whether all radio items disabled.',
+        isRequired: 'Whether radio group required.',
+        isOptional: 'Whether field optional (mutually exclusive w/ isRequired).',
+        status: 'Status indicator ({ type, message }).',
+        size: 'Size of radio controls.',
+        labelTooltip: 'Tooltip text for info icon next to label.',
+        xstyle: 'StyleX styles for layout customization. Must be stylex.create() value.',
+      },
+    },
+    {
+      name: 'XDSRadioListItem',
+      description:
+        'Individual radio item w/ label, description, content slots.',
+      propDescriptions: {
+        label: 'Label text for radio item.',
+        value: 'Value of this radio item.',
+        description: 'Description text below label.',
+        isDisabled: 'Whether this individual radio item disabled.',
+        startContent: 'Content rendered before radio circle.',
+        endContent: 'Content rendered after label.',
+      },
+    },
+  ],
+};

@@ -424,3 +424,64 @@ export const docsZh = {
     ],
   },
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Click-triggered popover displaying interactive content anchored to trigger element; implements button+dialog ARIA pattern.',
+  features: [
+    'CSS Anchor Positioning for auto placement relative to trigger',
+    'Popover API for top-layer rendering; no React portals needed',
+    'Controlled + uncontrolled modes',
+    'Light dismiss support (click outside or Escape to close)',
+    'Focus trap inside open popovers',
+    'ARIA button+dialog pattern auto-applied to trigger elements',
+    'Sibling mode via anchorRef for external trigger elements',
+    'Stable anchor wrapper immune to pressed-state transforms',
+  ],
+  notes: [
+    'XDSPopover finds trigger button in children by searching <button> or [role="button"]; child tree must contain one. Applies click/keydown handlers + aria-haspopup, aria-expanded, aria-controls automatically.',
+    'Uses inline-flex anchor wrapper so pressed-state transforms (e.g. :active scale) don\'t shift anchor position causing jitter.',
+    'Sibling mode (anchorRef prop) attaches to external ref instead of wrapping children; useful when trigger+overlay not parent/child.',
+    'LayerPlacement values: above | below | start | end. LayerAlignment values: start | center | end.',
+  ],
+  accessibility: [
+    'Implements button+dialog ARIA pattern: aria-haspopup, aria-expanded, aria-controls set on trigger button automatically.',
+    'Traps focus inside popover dialog while open.',
+    'Supports keyboard activation for role="button" elements (Enter+Space) plus native <button> click synthesis.',
+  ],
+  keyboard:
+    'Escape closes popover. Enter/Space open popover when trigger focused. Focus trapped inside open popover.',
+  components: [
+    {
+      name: 'XDSPopover',
+      description:
+        'Click-triggered popover for interactive content anchored to trigger element.',
+      propDescriptions: {
+        children: 'Trigger element. Must contain <button> or [role="button"] element.',
+        anchorRef: 'External ref for popover anchor in sibling mode.',
+        content: 'Content displayed inside popover.',
+        placement: 'Position relative to trigger.',
+        alignment: 'Alignment along placement axis.',
+        isOpen: 'Whether popover shown in controlled mode.',
+        onOpenChange: 'Callback fired when popover visibility changes.',
+        isEnabled: 'When false, trigger interactions ignored.',
+        width: 'Popover container width.',
+        label: 'Accessible label for popover dialog.',
+      },
+    },
+    {
+      name: 'useXDSPopover',
+      description:
+        'Hook for popover dialogs w/ focus trapping. Combines useXDSLayer w/ useFocusTrap.',
+      propDescriptions: {
+        onShow: 'Callback fired when popover shown.',
+        onHide: 'Callback fired when popover hidden.',
+        hasLightDismiss: 'Whether clicking outside dismisses popover.',
+        hasAutoFocus: 'Whether to auto-focus first focusable element when opened.',
+        hasCloseButton: 'Whether to include hidden close button for accessibility.',
+        dialogLabel: 'Accessible label for dialog.',
+      },
+    },
+  ],
+};

@@ -184,3 +184,25 @@ export const docsZh = {
     ],
   },
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Container w/ background variants for creating visually distinct regions; auto-escapes parent container padding for edge-to-edge fills.',
+  features: [
+    'Background variants: section, transparent, wash',
+    'Auto-escapes parent container padding for edge-to-edge fills',
+    'Supports divider borders on any combination of sides (top, bottom, start, end)',
+    'Flexible sizing via SizeValue for width, height, maxWidth, minHeight',
+    'Full-bleed mode removes internal padding for edge-to-edge content',
+  ],
+  propDescriptions: {
+    variant: 'Background variant applied to section container.',
+    width: 'Section width; number interpreted as pixels, string used as-is.',
+    height: 'Section height; number interpreted as pixels, string used as-is.',
+    maxWidth: 'Maximum width of section.',
+    minHeight: 'Minimum height of section.',
+    children: 'Content rendered inside section.',
+    dividers: 'Which sides of section have divider borders.',
+  },
+};

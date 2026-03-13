@@ -726,3 +726,78 @@ function Article() {
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'Typography components: semantic body text, headings, wrapper for applying typography styles to native HTML.',
+  features: [
+    'Semantic text types (body, large, label, supporting, code) driven by theme tokens',
+    'Headings use native h1\u20136 w/ optional aria-level override for decoupled visual vs document hierarchy',
+    'Line-clamp truncation w/ automatic overflow-detecting tooltip',
+    'Optical alignment (text-box-trim / capsize) for precise vertical rhythm',
+    'XDSFontWrapper applies typography styles to native HTML; useful for UGC + markdown output',
+    'useXDSFontWrapperStyles hook for programmatic StyleX access to heading + prose styles',
+    'Tabular number support for aligned numeric data',
+    'All typography driven by CSS custom properties; fully themeable per-component',
+  ],
+  accessibility: [
+    'XDSHeading renders correct semantic h1\u20136 based on level prop.',
+    'When accessibilityLevel differs from level, aria-level set for correct document outline.',
+    'Truncated text sets native title attr as fallback + lazily renders XDSTooltip for keyboard users.',
+  ],
+  components: [
+    {
+      name: 'XDSText',
+      description: 'Semantic body text w/ type-based theme styling, optional truncation, decoration, layout props.',
+      propDescriptions: {
+        type: 'Semantic text type; determines size, weight, line-height from theme.',
+        children: 'Text content.',
+        size: 'Explicit font size override; overrides type size but preserves other properties. Prefer type alone.',
+        color: "Text color; defaults 'secondary' for supporting, 'primary' for others.",
+        weight: 'Font weight override.',
+        display: "Display type; overridden to 'block' when maxLines>0 or hasCapsize.",
+        as: 'HTML element to render.',
+        maxLines: 'Max lines before truncation; 0=none. Shows tooltip if truncated.',
+        hasTruncateTooltip: 'Tooltip for truncated text; true=default position, false=disabled, or LayerPlacement.',
+        wordBreak: "Word break behavior; defaults 'break-all' for single-line, 'break-word' otherwise.",
+        textWrap: 'Text wrapping behavior.',
+        hasCapsize: 'Optical alignment via text-box-trim; forces block display.',
+        hasStrikethrough: 'Strikethrough text decoration.',
+        hasTabularNumbers: 'Tabular (monospace) numbers for aligned data.',
+        id: 'HTML id attribute.',
+        xstyle: 'StyleX layout styles; must be stylex.create() value.',
+      },
+    },
+    {
+      name: 'XDSHeading',
+      description: 'Semantic h1\u20136 w/ themed styling, optional editorial scale, line-clamp truncation.',
+      propDescriptions: {
+        level: 'Visual heading level; determines HTML element + styling from theme.',
+        children: 'Heading content.',
+        accessibilityLevel: 'aria-level override when different from level for document outline.',
+        variant: "Visual variant; 'default'=dense scale (h1:20px), 'editorial'=larger (h1:32px).",
+        color: 'Text color.',
+        display: "Display type; overridden to 'block' when maxLines>0 or hasCapsize.",
+        maxLines: 'Max lines before truncation; 0=none. Shows tooltip if truncated.',
+        hasTruncateTooltip: 'Tooltip for truncated text; true=default position, false=disabled, or LayerPlacement.',
+        wordBreak: "Word break behavior; defaults 'break-all' for single-line, 'break-word' otherwise.",
+        textWrap: 'Text wrapping behavior.',
+        hasCapsize: 'Optical alignment via text-box-trim; forces block display.',
+        hasStrikethrough: 'Strikethrough text decoration.',
+        id: 'HTML id attribute.',
+      },
+    },
+    {
+      name: 'XDSFontWrapper',
+      description: 'Wrapper applying XDS typography to native HTML scope; for UGC, markdown, cases where XDSText/XDSHeading cannot be used directly.',
+      propDescriptions: {
+        children: 'Content to style w/ XDS typography.',
+        variant: "Heading scale; 'default'=dense for tools, 'editorial'=larger for content pages.",
+      },
+    },
+    {
+      name: 'useXDSFontWrapperStyles',
+      description: 'Hook returning StyleX style objects for headings + prose from current theme, for programmatic typography on native HTML.',
+    },
+  ],
+};

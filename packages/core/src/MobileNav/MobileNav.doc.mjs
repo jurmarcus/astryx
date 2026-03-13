@@ -293,3 +293,36 @@ const navSections = (
     ],
   },
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Slide-out drawer overlay for mobile navigation. Mobile counterpart to XDSSideNav; accepts same children (XDSSideNavSection, XDSSideNavItem, or any ReactNode).',
+  features: [
+    'Native <dialog> w/ showModal() for top-layer rendering; no z-index stacking issues',
+    'Animated slide-in from start or end edge w/ backdrop fade',
+    'Shares children w/ XDSSideNav; extract nav sections into variable + render in both',
+    'RTL-aware: auto mirrors slide direction for right-to-left layouts',
+    'Respects prefers-reduced-motion: reduces animation duration',
+  ],
+  accessibility: [
+    'Uses native <dialog> w/ showModal() for correct ARIA modal semantics.',
+    "aria-label set to title or 'Navigation' as fallback.",
+    'Focus trapping provided by showModal() (browser-native).',
+    'Escape key closes via native cancel event.',
+    'Backdrop click closes drawer.',
+    'Body scroll locked while modal open.',
+  ],
+  keyboard:
+    'Escape closes drawer; Tab/Shift+Tab cycles focus within drawer (browser-native focus trapping)',
+  propDescriptions: {
+    isOpen: 'Whether drawer is open.',
+    onOpenChange:
+      'Called when drawer visibility changes (backdrop click, Escape key, close button).',
+    children:
+      'Drawer content; typically XDSSideNavSection/XDSSideNavItem or any ReactNode.',
+    title: 'Optional title at top of drawer.',
+    width: 'Drawer width px. Capped at 85vw to prevent overflow on small screens.',
+    side: 'Slide direction. Start=left LTR, right RTL.',
+  },
+};

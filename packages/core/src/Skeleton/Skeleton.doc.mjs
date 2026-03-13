@@ -150,3 +150,29 @@ export const docsZh = {
     '动画时序常量：DELAY_TIME（1000ms）动画开始前的初始延迟，FADE_TIME（1000ms）一个透明度循环的持续时间，STAGGER_TIME（100ms）连续元素之间的延迟增量。',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Placeholder loading component displaying animated pulsing effect while content loads.',
+  features: [
+    'Pulsing Animation: smooth opacity animation using stepped timing for subtle shimmer effect',
+    'Staggered Animation: sequential skeletons can be staggered to create wave effect',
+    'High Contrast Support: auto-adjusts for users w/ prefers-contrast: more',
+    'Flexible Sizing: width + height props accept pixels or any CSS value',
+    'Token-aligned Radius: border radius options map directly to design tokens',
+  ],
+  notes: [
+    'Uses steps(10, end) timing function for subtle shimmer effect.',
+    'Animation alternates between 0.25 and 1.0 opacity.',
+    'Background color from glimmer token, w/ glimmerHighContrast for accessibility.',
+    'Numeric dimensions converted to pixels; strings passed through as-is.',
+    'Animation timing constants: DELAY_TIME (1000ms) initial delay before animation starts, FADE_TIME (1000ms) duration of one opacity cycle, STAGGER_TIME (100ms) delay increment between sequential elements.',
+  ],
+  propDescriptions: {
+    width: 'Width in pixels (number) or CSS value (string).',
+    height: 'Height in pixels (number) or CSS value (string).',
+    radius: 'Border radius using design tokens. none for sharp corners, rounded for fully rounded (avatars, pills, circles).',
+    index: 'Index for staggered animation timing. Element at index n starts at DELAY_TIME + (STAGGER_TIME \u00d7 n).',
+  },
+};

@@ -420,3 +420,50 @@ export const docsZh = {
   keyboard:
     '上/下方向键按配置的分钟增量调整当前时间。以常见格式（例如 "2:30 PM"、"14:30"）输入时间字符串会在失焦时解析。按清除按钮将焦点返回到输入框。',
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'Time input w/ free-text entry, text parsing, arrow-key navigation.',
+  features: [
+    'Accepts free-text time entry; parses common formats (e.g. "2:30 PM", "14:30")',
+    'Supports 12-hour+24-hour display formats',
+    'ArrowUp/ArrowDown adjust time by configurable minute increment',
+    'Optional seconds display via hasSeconds',
+    'Optional clear button via hasClear',
+    'Min/max range constraints reject out-of-range values',
+    'Async action support via onChangeAction w/ optimistic UI+loading spinner',
+    'Accessible; label, description, status message wired to aria-describedby; aria-required+aria-invalid reflect field state',
+  ],
+  accessibility: [
+    'Visible label associated w/ input via htmlFor/id.',
+    'isLabelHidden hides label visually; keeps in a11y tree.',
+    'description+status.message linked to input via aria-describedby.',
+    'aria-required set when isRequired is true.',
+    'aria-invalid set when status.type is "error".',
+    'aria-busy reflects loading/optimistic-pending state.',
+    'Clear button has aria-label "Clear time".',
+  ],
+  keyboard: 'ArrowUp/ArrowDown adjust time by configured increment in minutes. Typing common formats (e.g. "2:30 PM", "14:30") parsed on blur. Clear button press returns focus to input.',
+  propDescriptions: {
+    label: 'Label text (required for a11y).',
+    isLabelHidden: 'Visually hides label; keeps screen reader access.',
+    description: 'Description text between label+input.',
+    isOptional: 'Shows "(optional)" indicator. Mutually exclusive w/ isRequired.',
+    isRequired: 'Marks required+sets aria-required. Mutually exclusive w/ isOptional.',
+    isDisabled: 'Disables input, suppresses interactions.',
+    value: 'Controlled time in ISO format (HH:MM or HH:MM:SS).',
+    onChange: 'Fired on time change. Receives undefined when cleared.',
+    onChangeAction: 'Async action after onChange in React transition; triggers spinner while pending.',
+    isLoading: 'Loading state w/ spinner.',
+    min: 'Min selectable time in ISO format. Out-of-range rejected.',
+    max: 'Max selectable time in ISO format. Out-of-range rejected.',
+    hasSeconds: 'Includes seconds in display+parsing.',
+    hasClear: 'Shows clear button when value set+not disabled.',
+    hourFormat: "Display format. '12h' shows AM/PM; '24h' uses 24-hour notation.",
+    increment: 'Minutes to add/subtract on arrow up/down.',
+    placeholder: 'Placeholder when empty. Focused+empty shows format hint.',
+    size: 'Input element height.',
+    status: 'Colored border+icon. Message rendered below input.',
+    labelTooltip: 'Tooltip as info icon at label row end.',
+  },
+};

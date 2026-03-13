@@ -214,3 +214,29 @@ export const docsZh = {
     '焦点轮廓使用标准的 XDS 焦点轮廓令牌。',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'checkbox for toggling boolean values',
+  features: [
+    'accessible; always includes label (can be visually hidden)',
+    'indeterminate state for "select all" patterns',
+    'optional description text below label',
+    'custom styling via StyleX w/ XDS design tokens',
+    'full disabled state styling',
+  ],
+  notes: [
+    'hidden native <input type="checkbox"> w/ custom visual overlay',
+    'visual checkbox responds to hover, focus, checked via CSS sibling selectors',
+    'label clickable + associated via htmlFor/id',
+    'focus outline uses XDS focus outline token',
+  ],
+  propDescriptions: {
+    label: 'label text; always rendered for a11y',
+    isLabelHidden: 'visually hide label',
+    description: 'text below label',
+    value: 'checked, unchecked, or indeterminate',
+    onChange: 'callback on state change',
+    isDisabled: 'disable checkbox',
+  },
+};

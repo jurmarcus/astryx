@@ -140,3 +140,21 @@ export const docsZh = {
     ],
   },
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'centers children horizontally+vertically via flexbox',
+  features: [
+    'centering on both axes, horizontal only, or vertical only',
+    'inline-flex mode for inline content like text+icons',
+    'accepts explicit width+height to size container',
+  ],
+  propDescriptions: {
+    axis: 'centering direction(s)',
+    width: 'container width (px or CSS)',
+    height: 'container height (px or CSS)',
+    isInline: 'use inline-flex for text/icons',
+    children: 'content to center',
+    xstyle: 'StyleX styles for layout (margins, positioning, sizing); must be stylex.create() value',
+  },
+};

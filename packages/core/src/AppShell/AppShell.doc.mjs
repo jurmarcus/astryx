@@ -498,3 +498,50 @@ const isMobile = useMediaQuery('(max-width: 768px)');
     '在 "fill" 高度模式下，外壳填满 100dvh，TopNav 固定在顶部，SideNav 和内容区域各有独立的滚动容器。',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'app-level layout shell w/ header, side nav, main content; composes XDSLayout internally, replaces XDSPage+XDSPageLayout',
+  features: [
+    'two nav slots: topNav (horizontal bar) + sideNav (vertical sidebar)',
+    'two height modes: fill (viewport 100dvh, independent scroll) + auto (page-scroll w/ sticky nav)',
+    'controlled+uncontrolled sideNav collapse w/ responsive auto-collapse via sideNavBreakpoint',
+    'mobile: collapsed sideNav renders as overlay w/ backdrop',
+    'composes XDSLayout internally for auto padding collapse, scroll containment, slot awareness',
+    'semantic HTML: <main> role="main", SideNav role="navigation", skip-to-content link',
+    'Escape closes mobile sideNav overlay',
+  ],
+  notes: [
+    'w/ TopNav, omit SideNavHeading from SideNav to avoid double identity',
+    'w/o TopNav, include SideNavHeading for app name+logo',
+    'composes XDSLayout: topNav+banner map to XDSLayoutHeader, sideNav to XDSLayoutPanel, children to XDSLayoutContent',
+    'collapse animations snap open/closed; ViewTransitions planned',
+    '"auto" height: TopNav sticky top:0, SideNav sticky top:<header-height>',
+    '"fill" height: 100dvh, TopNav pinned, SideNav+content have independent scroll',
+  ],
+  accessibility: [
+    'semantic HTML via XDSLayout slots, each slot maps to landmark element',
+    '<main> has role="main" for landmark nav',
+    'SideNav has role="navigation" w/ aria-label="Application navigation"',
+    'skip-to-content link visually hidden, shown on focus for keyboard users',
+    'Escape closes mobile sideNav overlay',
+  ],
+  propDescriptions: {
+    children: 'main content area, rendered inside <main>',
+    topNav: 'top nav slot, typically XDSTopNav',
+    sideNav: 'side nav slot, typically XDSSideNav',
+    mobileNav: 'mobile nav slot, typically XDSMobileNav; rendered below sideNavBreakpoint',
+    banner: 'slot for system-wide announcements above topNav',
+    height:
+      'fill=viewport 100dvh w/ independent scroll; auto=content-driven w/ sticky nav',
+    isSideNavCollapsed: 'sideNav collapsed (controlled)',
+    defaultIsSideNavCollapsed: 'initial collapsed state (uncontrolled)',
+    onSideNavCollapsedChange: 'callback on sideNav collapse change',
+    sideNavBreakpoint: 'auto-collapse breakpoint; "none" disables responsive collapse',
+    sideNavWidth: 'sideNav panel width in px',
+    variant:
+      'nav bg style: wash=wash bg, surface=surface bg, section=dividers, elevated=wash nav w/ elevated surface content+radius',
+    xstyle: 'StyleX layout customization via stylex.create()',
+  },
+};

@@ -22,6 +22,8 @@ program
   .description('XDS design system CLI — components, themes, and tooling')
   .version('0.0.1')
   .option('--zh', 'Output docs in Chinese Simplified')
+  .option('--dense', 'Output docs in compressed dense format (token-efficient)')
+  .option('--lang <locale>', 'Output docs in specified language/format (en, zh, dense)')
   .addHelpCommand('help', 'Show all commands')
   .action(() => {
     program.help();

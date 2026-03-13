@@ -143,3 +143,22 @@ export const docsZh = {
     ],
   },
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'visual separator w/ optional label, using XDS design tokens',
+  features: [
+    'horizontal+vertical orientations',
+    'optional centered label on divider line',
+    'subtle+strong visual weight variants',
+    'full-bleed mode extends to container edges via negative margins',
+    'themeable via className; target .xds-divider w/ variant+orientation classes',
+  ],
+  propDescriptions: {
+    orientation: 'divider orientation',
+    label: 'optional centered label on divider',
+    variant: 'visual weight of divider line',
+    isFullBleed: 'extend to container edges w/ negative margins',
+    xstyle: 'StyleX styles for layout; must be stylex.create() value',
+  },
+};

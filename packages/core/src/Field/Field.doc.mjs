@@ -534,3 +534,68 @@ const bioDescId = useId();
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Form field wrapper providing label, description + optional/required indicators.',
+  features: [
+    'Label support; required for a11y (can be visually hidden)',
+    'Optional description text between label + input',
+    'Optional/Required indicators w/ bullet separator',
+    'Label tooltip; optional info icon w/ tooltip at end of label',
+    'Label properly associated w/ input via htmlFor/id',
+    'Styled w/ StyleX; uses XDS design tokens for consistent styling',
+  ],
+  notes: [
+    'Parent components generate IDs (useId hook).',
+    'Label always rendered for a11y; use isLabelHidden to hide visually.',
+    'Hidden label uses CSS technique accessible to screen readers.',
+    'Description rendered when provided; descriptionID sets element ID for aria-describedby.',
+    'isOptional + isRequired mutually exclusive; both set shows "Optional".',
+    'Optional/Required text on same line as label.',
+  ],
+  components: [
+    {
+      name: 'XDSField',
+      description: 'Form field wrapper w/ label, description + optional/required indicators.',
+      propDescriptions: {
+        label: 'Label text for field (always rendered for a11y).',
+        inputID: 'Input element ID (used for label htmlFor).',
+        children: 'Input or control to render.',
+        isLabelHidden: 'Visually hide label (still accessible to screen readers).',
+        description: 'Description text between label + input.',
+        descriptionID: 'ID for description element (use for aria-describedby on input).',
+        isOptional: 'Field optional (mutually exclusive w/ isRequired).',
+        isRequired: 'Field required (mutually exclusive w/ isOptional).',
+        labelIcon: 'Icon before label text.',
+        labelTooltip: 'Tooltip text in info icon at end of label.',
+        xstyle: 'StyleX styles for layout customization. Must be stylex.create() value.',
+      },
+    },
+    {
+      name: 'XDSFieldLabel',
+      description: 'Standalone label w/ optional/required indicators + tooltip support.',
+      propDescriptions: {
+        label: 'Label text.',
+        inputID: 'ID of input this label is for.',
+        isLabelHidden: 'Visually hide label.',
+        isDisabled: 'Associated input disabled.',
+        isOptional: 'Show "Optional" indicator.',
+        isRequired: 'Show "Required" indicator.',
+        labelIcon: 'Icon before label text.',
+        labelTooltip: 'Tooltip text for info icon at end of label.',
+      },
+    },
+    {
+      name: 'XDSFieldStatus',
+      description: 'Status message for form field validation feedback.',
+      propDescriptions: {
+        type: 'Status type.',
+        message: 'Status message text.',
+        id: 'ID for aria-describedby association.',
+        variant: 'Visual variant; attached overlaps input, detached floats below.',
+      },
+    },
+  ],
+};

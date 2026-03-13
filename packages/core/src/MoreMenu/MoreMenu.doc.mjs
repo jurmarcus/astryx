@@ -305,3 +305,40 @@ export const docsZh = {
     '在紧凑空间（表格行、卡片标题）中使用 XDSMoreMenu 作为仅图标的溢出操作。使用 XDSDropdownMenu 作为带标签和箭头的触发按钮。',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Overflow menu w/ three-dot icon trigger. Convenience wrapper composing icon-only XDSButton w/ dropdown menu, eliminating boilerplate for state management, positioning, accessibility.',
+  features: [
+    "Zero-config defaults: three-dot icon, 'More options' label, ghost variant; just pass items",
+    'Data-driven items: same items prop as XDSDropdownMenu (items, dividers, sections)',
+    'Icon-only trigger: always renders as square icon button w/ aria-label',
+    'Tooltip: shows label on hover, hidden when menu open',
+    'Custom rendering: optional children render function for custom item content',
+  ],
+  accessibility: [
+    'Proper ARIA roles: menu + menuitem on dropdown elements.',
+    'Trigger button has aria-haspopup="menu" + aria-expanded.',
+    'aria-activedescendant tracks highlighted menu item.',
+    'Disabled items have aria-disabled set.',
+    'Sections use role="group" w/ aria-label.',
+  ],
+  keyboard:
+    'Arrow keys navigate items; Home/End jump to first/last; Enter/Space select highlighted item; Escape closes menu',
+  notes: [
+    'For full control over trigger rendering or menu content, compose XDSButton + useXDSLayer + XDSDropdownMenuItem directly.',
+    'Use XDSMoreMenu for icon-only overflow actions in tight spaces (table rows, card headers). Use XDSDropdownMenu for labeled trigger buttons w/ chevrons.',
+  ],
+  propDescriptions: {
+    items: 'Menu items (actions, dividers, sections). Same type as XDSDropdownMenu items.',
+    label: 'Accessible label (aria-label) + tooltip text.',
+    variant: 'Trigger button visual style variant.',
+    size: 'Trigger button size.',
+    icon: 'Override default three-dot icon. Accepts any ReactNode.',
+    isDisabled: 'Whether menu trigger disabled.',
+    children: 'Custom render function for selectable items (not dividers/sections).',
+    xstyle:
+      'StyleX styles for layout customization (margins, positioning, sizing). Must be stylex.create() value.',
+  },
+};

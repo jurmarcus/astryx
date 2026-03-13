@@ -244,3 +244,38 @@ export const docsZh = {
     '不确定动画遵循 prefers-reduced-motion 偏好设置',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Progress bar for displaying determinate or indeterminate progress.',
+  features: [
+    'Determinate mode uses role="meter" w/ aria-valuenow, aria-valuemin, aria-valuemax',
+    'Indeterminate mode uses role="progressbar" w/o value attributes',
+    'Label always connected via aria-labelledby',
+    'aria-valuetext provides human-readable value description (determinate only)',
+    'Indeterminate animation respects prefers-reduced-motion',
+    'Supports four semantic color variants: accent, positive, warning, negative',
+    'Three track height sizes: sm=4px, md=8px, lg=12px',
+    'Supports custom value label formatter via formatValueLabel',
+  ],
+  accessibility: [
+    'Determinate: uses role="meter" w/ aria-valuenow, aria-valuemin, aria-valuemax',
+    'Indeterminate: uses role="progressbar" w/o value attributes',
+    'Label always connected via aria-labelledby',
+    'aria-valuetext provides human-readable value description (determinate only)',
+    'Indeterminate animation respects prefers-reduced-motion',
+  ],
+  propDescriptions: {
+    label: 'Accessible label (required).',
+    value: 'Current value (ignored when indeterminate).',
+    max: 'Maximum value.',
+    isLabelHidden: 'Visually hide label (remains accessible).',
+    hasValueLabel: 'Show formatted value text (ignored when indeterminate).',
+    formatValueLabel: 'Custom value label formatter; defaults to percentage string.',
+    variant: 'Semantic color variant.',
+    size: 'Track height: sm=4px, md=8px, lg=12px.',
+    isIndeterminate: 'Animated loading indicator for unknown progress.',
+    xstyle: 'StyleX styles for layout customization. Must be stylex.create() value.',
+  },
+};

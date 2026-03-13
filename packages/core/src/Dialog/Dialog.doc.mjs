@@ -510,3 +510,58 @@ function Example() {
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'modal dialog using native <dialog> w/ auto focus trapping, backdrop, purpose-based dismissal',
+  features: [
+    'native <dialog>: browser built-in modal via showModal()',
+    'auto focus trap inside dialog (browser-native)',
+    'native ::backdrop pseudo-element w/ blur',
+    'variants: standard (configurable dims) + fullscreen (full viewport)',
+    'purpose-based dismissal: required, form, info control Escape+backdrop-click',
+    'static position via position prop',
+    'proper ARIA attrs + keyboard nav',
+  ],
+  keyboard: 'Escape closes dialog (unless purpose="required"); focus trapped inside while open',
+  accessibility: [
+    'native <dialog> w/ showModal() for correct ARIA modal semantics',
+    'focus auto-trapped by browser via showModal()',
+    'XDSDialogHeader title receives focus on open',
+  ],
+  notes: [
+    'height unset (grows w/ content), constrained by maxHeight',
+    'variant="fullscreen" ignores width, maxHeight, position',
+    'form purpose: backdrop click only allowed before user interaction',
+    'required=no Escape+no backdrop click; form=no backdrop click after interaction; info=both allowed',
+    'designed for use w/ XDSLayout as child',
+  ],
+  components: [
+    {
+      name: 'XDSDialog',
+      description: 'modal dialog using native <dialog>',
+      propDescriptions: {
+        isOpen: 'dialog open state',
+        onOpenChange: 'callback on visibility change',
+        children: 'dialog content',
+        width: 'dialog width (px or CSS)',
+        maxHeight: 'max dialog height',
+        position: 'static position; centered by default',
+        variant: 'standard or fullscreen (fills viewport)',
+        purpose: 'dismissal behavior: required=no dismiss; form=no backdrop after interaction; info=both allowed',
+      },
+    },
+    {
+      name: 'XDSDialogHeader',
+      description: 'dialog header w/ title, optional subtitle, close button, start/end content slots',
+      propDescriptions: {
+        title: 'dialog title (receives focus on open)',
+        subtitle: 'subtitle below title',
+        onOpenChange: 'close button callback (omit=no button)',
+        startContent: 'content before title (e.g. back button)',
+        endContent: 'content after title, before close button',
+        hasDivider: 'bottom border',
+      },
+    },
+  ],
+};

@@ -464,3 +464,57 @@ export const docsZh = {
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Dropdown selector for choosing from list of options. Follows XDS input conventions w/ label, status, field props.',
+  features: [
+    'Supports string items (auto-converted to {value, label}), object items w/ optional icon + disabled state, dividers, labeled sections',
+    'Custom item rendering via children render prop + XDSSelectorItem helper',
+    'Integrates w/ XDS field conventions: label, description, isRequired, isOptional, isLabelHidden, status',
+    'Size variants: sm, md, lg',
+    'Full keyboard navigation w/ typeahead support',
+    'Accessible; role="combobox" trigger, role="listbox" dropdown, role="group" for sections, aria-activedescendant for focus',
+  ],
+  keyboard:
+    '\u2191\u2193 navigate, Enter/Space select, Escape close, Home/End jump, A-Z typeahead.',
+  accessibility: [
+    'Uses role="combobox" on trigger button.',
+    'Dropdown uses role="listbox".',
+    'Section groups use role="group".',
+    'aria-activedescendant tracks focused option.',
+  ],
+  components: [
+    {
+      name: 'XDSSelector',
+      description: 'Dropdown selector for choosing from list of options.',
+      propDescriptions: {
+        label: 'Label text for accessibility.',
+        options: 'Array of items; strings, objects w/ value/label/icon/disabled, dividers ({type: "divider"}), sections ({type: "section", title, items}).',
+        value: 'Currently selected value.',
+        onChange: 'Callback fired when selection changes.',
+        placeholder: 'Placeholder text when no value selected.',
+        size: 'Size variant for selector.',
+        isDisabled: 'Disables selector.',
+        isLabelHidden: 'Visually hides label while keeping accessible.',
+        description: 'Helper text below label.',
+        isOptional: 'Marks field optional.',
+        isRequired: 'Marks field required.',
+        status: 'Validation status w/ optional message.',
+        children: 'Custom render function for each dropdown item.',
+        xstyle: 'StyleX styles for layout customization. Must be stylex.create() value.',
+      },
+    },
+    {
+      name: 'XDSSelectorItem',
+      description:
+        'Helper component for custom item rendering inside XDSSelector children render prop.',
+      propDescriptions: {
+        label: 'Primary label text for item.',
+        icon: 'Icon displayed before label.',
+        description: 'Secondary description text below label.',
+      },
+    },
+  ],
+};

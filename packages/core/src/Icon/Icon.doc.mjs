@@ -184,3 +184,37 @@ import {Home} from 'lucide-react';
     '尺寸规格——xsm：12x12px（密集 UI、徽章、指示器）；sm：16x16px（与文本内联、紧凑 UI）；md：20x20px（默认，按钮、输入框）；lg：24x24px（强调、独立图标）。',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Renders icons w/ XDS design system colors + sizes. Supports direct SVG icon components + semantic icon names that adapt to active theme.',
+  features: [
+    "Semantic icon names: use 'close' or 'chevronDown'; resolved from theme icon registry",
+    'Direct icon components: pass any SVG component (heroicons, lucide, etc.)',
+    "Theme-adaptable: semantic icons auto-match active theme's icon set",
+    'Built-in fallbacks: 12 lightweight inline SVGs (~1.4KB) ensure rendering w/o theme',
+    'Theme colors: variants mapped to XDS icon color tokens',
+    'Consistent sizing: four size options aligned w/ common UI patterns',
+    'Accessible: icons hidden from screen readers by default (aria-hidden)',
+  ],
+  notes: [
+    'Semantic name resolution: (1) theme registry if XDSTheme active; (2) built-in fallback inline SVG. Themes accept partial overrides.',
+    'Component icon passes extra SVG props (aria-label, role) through to SVG element.',
+    'flexShrink: 0 prevents shrinking in flex containers.',
+    'String mode wraps in <span> w/ fontSize-based sizing for 1em registry icons.',
+    'Component mode passes stylex.props directly to SVG for zero-overhead styling.',
+    'Semantic names: close (CloseButton, TimeInput) chevronDown (DropdownMenu, Selector, TabMenu) chevronLeft/Right (Calendar) check (Selector, TabMenu) checkCircle/xCircle/warning (Input status) info (FieldLabel) calendar (DateInput) clock (TimeInput) externalLink (Link).',
+    'Color tokens: primary=--color-icon-primary; secondary=--color-icon-secondary; tertiary=--color-icon-tertiary; disabled=--color-icon-disabled; accent=--color-accent; positive=--color-positive; negative=--color-negative; warning=--color-warning; inherit=currentColor.',
+    'Size: xsm=12x12px sm=16x16px md=20x20px lg=24x24px.',
+  ],
+  accessibility: [
+    'Icons hidden from screen readers by default via aria-hidden="true"; typically decorative.',
+    'For meaningful icons: set aria-hidden={false}, role="img", aria-label for accessible context.',
+  ],
+  propDescriptions: {
+    icon: 'Semantic name or SVG icon component.',
+    color: 'Color variant mapped to XDS icon color tokens.',
+    size: 'Icon size.',
+  },
+};

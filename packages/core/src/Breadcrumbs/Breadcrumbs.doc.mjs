@@ -338,3 +338,48 @@ export const docsZh = {
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'navigation breadcrumb trail w/ semantic HTML',
+  features: [
+    'renders <nav> landmark w/ ordered breadcrumb list',
+    'configurable separator between items (default /)',
+    'two variants: default + supporting (smaller, secondary text)',
+    'current page marked w/ aria-current="page"',
+    'separators hidden from assistive tech via aria-hidden',
+    'startIcon before item labels',
+    'auto-detects last child as current page w/o isCurrent',
+  ],
+  accessibility: [
+    '<nav aria-label> landmark; label defaults to "Breadcrumb", customizable via label prop',
+    'items in <ol> w/ <li> wrappers for list semantics',
+    'current page gets aria-current="page"',
+    'separators aria-hidden="true" so screen readers skip',
+    'auto-detects last child as current w/o isCurrent set',
+  ],
+  components: [
+    {
+      name: 'XDSBreadcrumbs',
+      description: 'nav container rendering <nav> w/ ordered breadcrumb list',
+      propDescriptions: {
+        children: 'XDSBreadcrumbItem elements in breadcrumb trail',
+        separator: 'separator between items',
+        variant: 'supporting=smaller w/ secondary text styling',
+        label: 'nav landmark aria-label',
+        xstyle: 'StyleX layout customization via stylex.create()',
+      },
+    },
+    {
+      name: 'XDSBreadcrumbItem',
+      description: 'individual breadcrumb; link w/ href, plain text for current page',
+      propDescriptions: {
+        children: 'label content',
+        href: 'link URL; omit for non-navigable items',
+        onClick: 'click handler',
+        isCurrent: 'marks current page w/ aria-current="page"',
+        startIcon: 'icon before label',
+      },
+    },
+  ],
+};

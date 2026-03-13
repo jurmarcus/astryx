@@ -342,3 +342,39 @@ export const docsZh = {
     ],
   },
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'text input w/ calendar popover for date selection',
+  features: [
+    'manual date entry w/ flexible parsing (various formats)',
+    'calendar popover via icon click or keyboard',
+    'date constraints: min, max, custom dateConstraints fns',
+    'error, warning, success status indicators w/ messages',
+    'full keyboard nav, focus trapping, screen reader support',
+    'built on XDSField for consistent label, description, validation',
+  ],
+  keyboard: 'Tab=move between input+calendar icon; Enter/Space on icon=open calendar; Escape=close; Arrow keys=navigate days; PageUp/Down=navigate months',
+  notes: [
+    'accepts multiple date formats: ISO (2026-01-28), US (01/28/2026, 1/28/2026), written (Jan 28, 2026 / January 28 2026)',
+    'invalid input reverts to previous valid value on blur',
+  ],
+  propDescriptions: {
+    label: 'label text',
+    isLabelHidden: 'visually hide label',
+    description: 'helper text below label',
+    isOptional: 'show "(optional)" indicator',
+    isRequired: 'mark field required',
+    isDisabled: 'disable input+calendar',
+    value: 'selected date YYYY-MM-DD',
+    onChange: 'callback on date change',
+    min: 'min selectable date (YYYY-MM-DD)',
+    max: 'max selectable date (YYYY-MM-DD)',
+    dateConstraints: 'custom constraint fns to disable specific dates',
+    placeholder: 'placeholder text in input',
+    size: 'input control size',
+    status: 'error/warning/success status w/ message',
+    numberOfMonths: 'months shown simultaneously in calendar popover',
+    xstyle: 'StyleX styles for layout; must be stylex.create() value',
+  },
+};

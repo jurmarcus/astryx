@@ -256,3 +256,37 @@ export const docsZh = {
     'DateRange 接口：{ start: ISODateString; end: ISODateString }',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'calendar for date selection w/ single+range modes',
+  features: [
+    "selection modes: single (default) + range",
+    'multi-month: 1 or 2 side by side',
+    'date constraints: min, max, custom dateConstraints fns',
+    'weekStartsOn for configurable first day of week',
+    'optional ISO week number column',
+    'controlled/uncontrolled via value/defaultValue',
+  ],
+  notes: [
+    'ISODateString type: YYYY-MM-DD template literal',
+    'DayOfWeek type: 0|1|2|3|4|5|6',
+    'DateRange: { start: ISODateString; end: ISODateString }',
+  ],
+  propDescriptions: {
+    mode: 'selection mode',
+    value: 'controlled selected value',
+    defaultValue: 'uncontrolled default value',
+    onChange: 'selection callback',
+    numberOfMonths: 'months to display',
+    min: 'minimum selectable date',
+    max: 'maximum selectable date',
+    dateConstraints: 'custom constraint fns',
+    focusDate: 'controlled visible month',
+    onFocusDateChange: 'navigation callback',
+    hasOutsideDays: 'show days from adjacent months',
+    hasWeekNumbers: 'show ISO week numbers',
+    hasVariableRowCount: 'variable vs fixed 6-row grid',
+    weekStartsOn: 'first day of week (0=Sunday)',
+  },
+};

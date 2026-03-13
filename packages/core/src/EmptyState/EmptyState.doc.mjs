@@ -190,3 +190,31 @@ export const docsZh = {
     '标题渲染为 <h3> 元素，保持在文档标题大纲中。',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Empty state placeholder for content areas w/ no data. Displays icon/illustration, title, optional description + action buttons.',
+  features: [
+    'role="status" so screen readers auto-announce empty state',
+    'Icon slot renders decorative (aria-hidden="true"); no extra labeling needed',
+    'Title renders as <h3> for correct document outline',
+    'Actions horizontal by default; stack vertically in compact mode',
+    'Compact variant reduces spacing for constrained areas',
+    'Accepts xstyle, className, style for container adjustments',
+    'Forwarded ref on root <div> container',
+  ],
+  accessibility: [
+    'Container uses role="status" to announce empty state to screen readers.',
+    'Icon wrapper has aria-hidden="true"; decorative icons ignored by assistive tech.',
+    'Title renders as <h3>, keeping it in document heading outline.',
+  ],
+  propDescriptions: {
+    title: 'Primary msg rendered as <h3> inside empty state.',
+    description: 'Optional secondary text w/ additional context below title.',
+    icon: 'Optional icon/illustration above title; rendered decorative (aria-hidden="true").',
+    actions: 'Optional action buttons below description; horizontal by default, vertical when isCompact.',
+    isCompact: 'Enables compact variant w/ reduced spacing for constrained areas.',
+    xstyle: 'StyleX styles for layout customization. Must be stylex.create() value.',
+  },
+};

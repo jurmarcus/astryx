@@ -108,3 +108,17 @@ export const docsZh = {
     ],
   },
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Circular icon container w/ accent background for navigation headers.',
+  features: [
+    'Shared; used in both XDSTopNavHeading + XDSPageNavHeader',
+    'Accent background; uses --color-accent w/ --color-icon-on-media contrast',
+    'Fixed size; renders at medium (--size-md) design token size',
+  ],
+  propDescriptions: {
+    icon: 'Icon element inside circular background. Should be XDSIcon or similar.',
+  },
+};

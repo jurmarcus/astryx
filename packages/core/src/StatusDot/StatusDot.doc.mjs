@@ -144,3 +144,27 @@ export const docsZh = {
     'isPulsing 动画尊重 prefers-reduced-motion: reduce 设置。',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'Small colored dot indicator for status display (online/offline, severity, etc).',
+  features: [
+    'Five semantic color variants: positive, warning, negative, info, neutral',
+    'Two sizes: sm (8px) + md (10px)',
+    'Optional pulse animation respecting prefers-reduced-motion',
+    'Accessible: <span role="img" aria-label={label}> for screen readers',
+    'Not focusable (decorative indicator)',
+  ],
+  accessibility: [
+    'Renders <span role="img" aria-label={label}> for screen readers.',
+    'Not focusable; decorative indicator only.',
+    'isPulsing animation respects prefers-reduced-motion: reduce.',
+  ],
+  propDescriptions: {
+    variant: 'Semantic color variant.',
+    label: 'Accessible label via aria-label.',
+    size: 'Dot size: sm=8px, md=10px.',
+    isPulsing: 'Pulse animation; respects prefers-reduced-motion: reduce.',
+    xstyle: 'StyleX layout styles; must be stylex.create() value.',
+  },
+};

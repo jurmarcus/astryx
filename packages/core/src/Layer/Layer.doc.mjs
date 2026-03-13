@@ -178,3 +178,39 @@ layer.show();
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Core hook for overlay positioning using CSS Anchor Positioning + Popover API; no React portals needed. Popover, HoverCard, Tooltip build on this.',
+  features: [
+    'CSS Anchor Positioning for auto-placement relative to triggers',
+    'Popover API for top-layer rendering; no React portals needed',
+    'Type-safe mode system: context (anchor positioning) + fixed (manual coordinates)',
+    'TypeScript enforces correct render props per mode at compile time',
+    'Graceful degradation in Firefox: Popover API works, anchor positioning degrades acceptably',
+    'Full support in Chrome + Safari',
+  ],
+  notes: [
+    'CSS Anchor Positioning fully supported in Chrome + Safari. Firefox supports Popover API but not anchor positioning; acceptable degradation.',
+    'Context mode: pass ref to trigger, call render(children, { placement?, alignment? }). Fixed mode: call show() then render(children, { x, y }).',
+    'LayerPlacement: above | below | start | end. LayerAlignment: start | center | end.',
+    'For click popovers use XDSPopover (@xds/core/Popover). Hover overlays use XDSHoverCard (@xds/core/HoverCard). Tooltips use XDSTooltip (@xds/core/Tooltip).',
+  ],
+  accessibility: [
+    'Layer hook provides positioning + visibility foundation. ARIA patterns implemented by higher-level components (XDSPopover, XDSHoverCard, XDSTooltip).',
+  ],
+  keyboard: 'Escape closes any open layer.',
+  components: [
+    {
+      name: 'useXDSLayer',
+      description: 'Core layer hook w/ type-safe modes for positioning (context=anchor, fixed=coordinates).',
+      propDescriptions: {
+        mode: 'Positioning strategy: context uses CSS anchor positioning relative to trigger ref; fixed uses explicit x/y coordinates.',
+        onShow: 'Callback when layer becomes visible.',
+        onHide: 'Callback when layer hidden.',
+        xstyle: 'StyleX styles for layout customization.',
+      },
+    },
+  ],
+};

@@ -136,3 +136,31 @@ export const docsZh = {
     '按键显示符号遵循 macOS 惯例（⌘、⌥、⇧、⌃）',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Displays keyboard shortcut as styled <kbd> elements. Use in tooltips, menus + docs to show key combinations.',
+  features: [
+    'Key parsing; splits "mod+k" into individual styled <kbd> elements',
+    'Modifier symbols; maps mod/ctrl/alt/shift/enter/backspace/escape/arrows to platform symbols',
+    'Inline display; renders as inline-flex for use inside text, tooltips + menus',
+    'Accessible; aria-hidden="true" since shortcuts supplementary to visible labels',
+  ],
+  notes: [
+    'Fixed 20px height w/ min-width 20px per key badge',
+    'Uses --color-wash background + --color-text-secondary text color',
+    'Key display symbols follow macOS conventions (\u2318, \u2325, \u21e7, \u2303)',
+  ],
+  accessibility: [
+    'Renders w/ aria-hidden="true"; keyboard shortcuts are visual hints, not primary content',
+    'Uses semantic <kbd> elements for each key',
+  ],
+  keyboard: 'Not interactive; purely presentational',
+  propDescriptions: {
+    keys: 'Shortcut string. "+" separates keys. Special: mod (Cmd on Mac), ctrl, alt, shift, enter, backspace, escape, tab, up, down, left, right.',
+    xstyle: 'StyleX styles for layout customization. Must be stylex.create() value.',
+    className: 'CSS class for root element. Prefer xstyle; className for non-StyleX integration.',
+    style: 'Inline styles for root element. Prefer xstyle; inline styles bypass StyleX optimization.',
+  },
+};

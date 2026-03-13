@@ -110,3 +110,18 @@ export const docsZh = {
     ],
   },
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'maintains specific aspect ratio for children',
+  features: [
+    'any numeric ratio as width/height (e.g. 16/9, 4/3, 1)',
+    'children positioned absolutely to fill container',
+    'themeable via aspectRatio component key',
+  ],
+  propDescriptions: {
+    ratio: 'width/height ratio (e.g. 16/9, 1)',
+    children: 'content positioned absolutely to fill container',
+    xstyle: 'StyleX layout customization via stylex.create()',
+  },
+};

@@ -368,3 +368,60 @@ export const docsZh = {
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Hover/focus triggered overlay for displaying rich, interactive content anchored to trigger element.',
+  features: [
+    'CSS Anchor Positioning for auto-placement relative to triggers',
+    'Popover API for top-layer rendering; no React portals needed',
+    'Hover triggers w/ configurable show + hide delays',
+    'Focus triggers w/ auto-detection for focusable elements',
+    'Stay-open when mouse/focus moves into hover card',
+    'display:contents wrapper preserves children refs',
+    'Hover indication (dashed underline) for text-only triggers',
+  ],
+  notes: [
+    'useXDSHoverCard returns describedBy id; pass as aria-describedby on trigger for screen reader support.',
+    'Merge multiple aria-describedby sources w/ ids.filter(Boolean).join(" ") || undefined.',
+    'LayerPlacement: above | below | start | end. LayerAlignment: start | center | end.',
+  ],
+  accessibility: [
+    'Links hover card content to trigger via aria-describedby.',
+    'Merge multiple aria-describedby sources w/ utility.',
+    'Escape dismisses hover card + returns focus to trigger.',
+  ],
+  keyboard: 'Escape closes hover card. Focus triggers show/hide based on focusTrigger option.',
+  components: [
+    {
+      name: 'XDSHoverCard',
+      description: 'Component wrapper for hover card overlay; richer overlay triggered on hover/focus.',
+      propDescriptions: {
+        children: 'Trigger element; must accept ref.',
+        content: 'Hover card content.',
+        placement: 'Position relative to anchor element.',
+        alignment: 'Alignment along placement axis.',
+        delay: 'Show delay in ms.',
+        hideDelay: 'Hide delay in ms.',
+        focusTrigger: 'Controls when focus events trigger hover card.',
+        isEnabled: 'Enable/disable hover + focus triggers.',
+        hasHoverIndication: 'Dashed underline on trigger element.',
+      },
+    },
+    {
+      name: 'useXDSHoverCard',
+      description: 'Hook for hover card w/ hover/focus triggers. Builds on useXDSLayer.',
+      propDescriptions: {
+        placement: 'Position relative to anchor element.',
+        alignment: 'Alignment along placement axis.',
+        delay: 'Show delay in ms.',
+        hideDelay: 'Hide delay in ms.',
+        focusTrigger: 'Controls when focus events trigger layer.',
+        isEnabled: 'Enable/disable all hover + focus triggers.',
+        onShow: 'Callback when hover card becomes visible.',
+        onHide: 'Callback when hover card hidden.',
+      },
+    },
+  ],
+};

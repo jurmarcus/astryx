@@ -186,3 +186,23 @@ export const docsZh = {
     ],
   },
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'elevated container w/ themed styling',
+  features: [
+    'top-level container for elevated content',
+    'card appearance: background, shadow, border-radius',
+    'sets CSS vars for child layout components',
+    'optional full-bleed mode removes padding for edge-to-edge content',
+    'composable w/ XDSLayout, XDSCollapsible, XDSCollapsibleGroup',
+  ],
+  propDescriptions: {
+    width: 'card width (number=px, string=as-is)',
+    height: 'card height (number=px, string=as-is)',
+    maxWidth: 'max card width',
+    minHeight: 'min card height',
+    children: 'content inside card',
+    padding: 'internal padding via spacing scale',
+  },
+};

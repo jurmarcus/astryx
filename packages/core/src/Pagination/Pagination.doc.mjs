@@ -332,3 +332,50 @@ export const docsZh = {
     '还导出 generatePageRange 工具函数，用于计算带省略号的可见页码。',
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description:
+    'Standalone pagination controls for navigating content pages. Supports multiple display variants + works w/ known totals or cursor-based pagination.',
+  features: [
+    "Five display variants: 'pages', 'count', 'compact', 'dots', 'none'",
+    'Offset + cursor-based pagination: totalItems/totalPages for known totals, hasMore for cursor-based',
+    'Page size selector: shows dropdown when pageSizeOptions provided',
+    'Ellipsis truncation for page numbers via generatePageRange utility',
+    'React transitions: onChangeAction uses useTransition for built-in loading state',
+    "Sizes: 'sm' and 'md'",
+  ],
+  accessibility: [
+    'Root is <nav> w/ configurable aria-label.',
+    'Current page button has aria-current="page".',
+    'Prev/next buttons have descriptive aria-label.',
+    'Ellipsis elements are aria-hidden.',
+    'All interactive elements keyboard accessible.',
+  ],
+  notes: [
+    "Page number buttons use XDSButton (variant='ghost' inactive, variant='primary' active) for theming + swizzle compatibility.",
+    "Prev/next buttons use XDSButton w/ variant='ghost' + icon-only mode.",
+    'Dot indicators remain custom elements (intentionally different visual treatment from buttons).',
+    'Returns null when totalItems <= 0 or totalPages <= 0.',
+    'Exports generatePageRange utility for computing visible page numbers w/ ellipsis.',
+  ],
+  propDescriptions: {
+    page: 'Current page number (1-based).',
+    onChange: 'Called on page change.',
+    onChangeAction:
+      'Async action on page change. Fires after onChange; uses React transitions for loading.',
+    totalItems: 'Total items. Calculates page count. Precedence over totalPages.',
+    totalPages: 'Total pages. Use when page count known but not item count.',
+    hasMore: 'More pages exist after current. For cursor-based pagination.',
+    pageSize: 'Items per page.',
+    pageSizeOptions: 'Page size options. Shows selector dropdown when provided.',
+    onPageSizeChange: 'Called on page size change. Auto resets to page 1.',
+    variant: 'Display between prev/next buttons.',
+    siblingCount: "Page buttons each side of current; only variant='pages'.",
+    size: 'Control size.',
+    isDisabled: 'Component disabled.',
+    label: 'Accessible label for nav landmark.',
+    xstyle:
+      'StyleX styles for layout customization (margins, positioning, sizing). Must be stylex.create() value.',
+  },
+};

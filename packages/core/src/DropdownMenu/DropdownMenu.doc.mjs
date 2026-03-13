@@ -646,3 +646,82 @@ export const docsZh = {
     },
   ],
 };
+
+/** @type {import('../docs-types').TranslationDoc} */
+export const docsDense = {
+  description: 'dropdown menu for actionable items in popup',
+  features: [
+    'customize trigger button via button prop (all XDSButton props)',
+    'data-driven items via items prop w/ sections+dividers',
+    'controlled (isMenuOpen/onOpenChange) + uncontrolled modes',
+    'custom menu width via menuWidth prop (default matches button)',
+    'group related items w/ optional headers via XDSDropdownMenuSection',
+    'full keyboard: Arrow keys, Home, End, Enter, Space, Escape',
+    'proper ARIA roles (menu, menuitem) + attrs',
+    'optional children render fn w/ XDSDropdownMenuItem helper',
+  ],
+  keyboard: 'Arrow keys=navigate items; Home/End=first/last; Enter/Space=select; Escape=close',
+  accessibility: [
+    'ARIA roles: menu on popup, menuitem on each item',
+    'focus returns to trigger button on menu close',
+    'keyboard nav skips disabled items',
+  ],
+  notes: [
+    'uses useXDSLayer w/ mode:"context" for CSS anchor positioning',
+    'uses XDSButton internally w/ ChevronDownIcon inheriting text color',
+    'items tracked via items prop for keyboard nav',
+    'light dismiss enabled by default (click outside closes)',
+  ],
+  components: [
+    {
+      name: 'XDSDropdownMenu',
+      description: 'trigger button + popup item list',
+      propDescriptions: {
+        button: 'trigger button props (XDSButton props except onClick)',
+        items: 'menu items, dividers, or sections in popup',
+        isMenuOpen: 'controlled open state',
+        onOpenChange: 'callback on open state change',
+        menuWidth: 'custom menu width; default matches trigger button',
+        onClick: 'trigger button click callback',
+        children: 'custom render fn per item',
+      },
+    },
+    {
+      name: 'XDSDropdownMenuItem',
+      description: 'helper for custom item rendering w/ consistent styling',
+      propDescriptions: {
+        icon: 'icon before label',
+        label: 'primary label text',
+        description: 'secondary text below label',
+        children: 'additional content after label+description',
+        xstyle: 'StyleX styles for root container',
+      },
+    },
+    {
+      name: 'XDSDropdownMenuItemData',
+      description: 'data shape for single actionable menu item via items prop',
+      propDescriptions: {
+        label: 'display label',
+        onClick: 'callback on selection',
+        isDisabled: 'disabled; skipped in keyboard nav',
+        icon: 'icon before label',
+      },
+    },
+    {
+      name: 'XDSDropdownMenuDivider',
+      description: 'visual divider between items in items array',
+      propDescriptions: {
+        type: 'discriminant identifying entry as divider',
+      },
+    },
+    {
+      name: 'XDSDropdownMenuSection',
+      description: 'labeled group of items in items array',
+      propDescriptions: {
+        type: 'discriminant identifying entry as section',
+        title: 'optional header text above section items',
+        items: 'actionable items in this section',
+      },
+    },
+  ],
+};
