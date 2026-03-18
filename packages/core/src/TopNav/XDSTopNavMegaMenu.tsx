@@ -95,7 +95,6 @@ const styles = stylex.create({
   },
   // Animation styles applied to the layer's popover element.
   panelAnimation: {
-    backgroundColor: 'transparent',
     opacity: {
       default: 0,
       ':popover-open': 1,

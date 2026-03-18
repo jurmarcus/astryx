@@ -102,7 +102,6 @@ const styles = stylex.create({
   },
   menuOffset: {
     marginBlockStart: spacingVars['--spacing-1'],
-    backgroundColor: 'transparent',
   },
   menuItem: {
     display: 'flex',
