@@ -74,16 +74,20 @@ export const docs = {
       />
       <XDSTopNavMegaMenu
         label="Solutions"
-        items={[
-          {title: 'Enterprise', description: 'For large teams', icon: <BuildingIcon />, href: '/enterprise'},
-          {title: 'Startups', description: 'Move fast', icon: <RocketIcon />, href: '/startups'},
-        ]}
-        featured={{
-          title: 'New: AI Features',
-          description: 'Explore our latest AI-powered tools.',
-          linkText: 'Learn more \u2192',
-          linkHref: '/ai',
-        }}
+        items={
+          <>
+            <XDSTopNavMegaMenuItem title="Enterprise" description="For large teams" icon={<BuildingIcon />} href="/enterprise" />
+            <XDSTopNavMegaMenuItem title="Startups" description="Move fast" icon={<RocketIcon />} href="/startups" />
+          </>
+        }
+        featured={
+          <XDSTopNavMegaMenuFeaturedCard
+            title="New: AI Features"
+            description="Explore our latest AI-powered tools."
+            linkLabel="Learn more"
+            linkHref="/ai"
+          />
+        }
       />
     </>
   }
@@ -396,7 +400,7 @@ export const docs = {
     {
       name: 'XDSTopNavMegaMenu',
       description:
-        'Navigation item that displays a full-width mega menu panel on hover, with items in a two-column grid and an optional featured content area.',
+        'Navigation item that displays a full-width mega menu panel on hover. Uses a slots API with items and featured props. XDSTopNavMegaMenuItem renders itself in both desktop and mobile drawer modes. Supports inline collapsible drawer via render mode context.',
       props: [
         {
           name: 'label',
@@ -406,15 +410,13 @@ export const docs = {
         },
         {
           name: 'items',
-          type: 'XDSTopNavMegaMenuItemData[]',
-          description: 'Menu items to display in the mega menu panel.',
-          required: true,
+          type: 'ReactNode',
+          description: 'Menu items slot — typically XDSTopNavMegaMenuItem components, but accepts any ReactNode.',
         },
         {
           name: 'featured',
-          type: 'XDSTopNavMegaMenuFeatured',
-          description:
-            'Optional featured content displayed on the right side of the mega menu panel.',
+          type: 'ReactNode',
+          description: 'Featured content slot — rendered in the right panel on desktop, below items in the mobile drawer.',
         },
         {
           name: 'delay',
@@ -431,13 +433,6 @@ export const docs = {
           default: '250',
         },
         {
-          name: 'isSingleColumn',
-          type: 'boolean',
-          description:
-            'Whether to use a single-column layout for menu items instead of two columns.',
-          default: 'false',
-        },
-        {
           name: 'onOpenChange',
           type: '(isOpen: boolean) => void',
           description:
@@ -447,36 +442,34 @@ export const docs = {
       examples: [
         {
           label: 'With featured content',
-          code: `<div style={{position: 'relative'}}>
-  <XDSTopNav
-    startContent={
-      <XDSTopNavMegaMenu
-        label="Solutions"
-        items={[
-          {title: 'Enterprise', description: 'For large teams', icon: <BuildingIcon />, href: '/enterprise'},
-          {title: 'Startups', description: 'Move fast', icon: <RocketIcon />, href: '/startups'},
-        ]}
-        featured={{
-          title: 'New: AI Features',
-          description: 'Explore our latest AI-powered tools.',
-          linkText: 'Learn more \u2192',
-          linkHref: '/ai',
-        }}
-      />
-    }
-  />
-</div>`,
+          code: `<XDSTopNavMegaMenu
+  label="Solutions"
+  items={
+    <>
+      <XDSTopNavMegaMenuItem title="Enterprise" description="For large teams" icon={<BuildingIcon />} href="/enterprise" />
+      <XDSTopNavMegaMenuItem title="Startups" description="Move fast" icon={<RocketIcon />} href="/startups" />
+    </>
+  }
+  featured={
+    <XDSTopNavMegaMenuFeaturedCard
+      title="New: AI Features"
+      description="Explore our latest AI-powered tools."
+      linkLabel="Learn more"
+      linkHref="/ai"
+    />
+  }
+/>`,
         },
         {
-          label: 'Single column layout',
+          label: 'Without featured content',
           code: `<XDSTopNavMegaMenu
   label="Products"
-  isSingleColumn
-  items={[
-    {title: 'Analytics', description: 'Track behavior', icon: <ChartIcon />, href: '/analytics'},
-    {title: 'Messaging', description: 'Real-time comms', icon: <ChatIcon />, href: '/messaging'},
-    {title: 'Storage', description: 'Manage your data', icon: <DatabaseIcon />, href: '/storage'},
-  ]}
+  items={
+    <>
+      <XDSTopNavMegaMenuItem title="Analytics" description="Track behavior" icon={<ChartIcon />} href="/analytics" />
+      <XDSTopNavMegaMenuItem title="Messaging" description="Real-time comms" icon={<ChatIcon />} href="/messaging" />
+    </>
+  }
 />`,
         },
       ],
@@ -559,16 +552,20 @@ export const docsZh = {
       />
       <XDSTopNavMegaMenu
         label="Solutions"
-        items={[
-          {title: 'Enterprise', description: 'For large teams', icon: <BuildingIcon />, href: '/enterprise'},
-          {title: 'Startups', description: 'Move fast', icon: <RocketIcon />, href: '/startups'},
-        ]}
-        featured={{
-          title: 'New: AI Features',
-          description: 'Explore our latest AI-powered tools.',
-          linkText: 'Learn more \u2192',
-          linkHref: '/ai',
-        }}
+        items={
+          <>
+            <XDSTopNavMegaMenuItem title="Enterprise" description="大型团队解决方案" icon={<BuildingIcon />} href="/enterprise" />
+            <XDSTopNavMegaMenuItem title="Startups" description="快速启动" icon={<RocketIcon />} href="/startups" />
+          </>
+        }
+        featured={
+          <XDSTopNavMegaMenuFeaturedCard
+            title="新功能：AI 特性"
+            description="探索我们最新的 AI 驱动工具。"
+            linkLabel="了解更多"
+            linkHref="/ai"
+          />
+        }
       />
     </>
   }
@@ -881,7 +878,7 @@ export const docsZh = {
     {
       name: 'XDSTopNavMegaMenu',
       description:
-        '导航项，在悬停时显示全宽超级菜单面板，包含双列网格布局的项目和可选的特色内容区域。',
+        '导航项，在悬停时显示全宽超级菜单面板。使用插槽 API（items 和 featured）。XDSTopNavMegaMenuItem 在桌面和移动抽屉模式中自行渲染。',
       props: [
         {
           name: 'label',
@@ -891,15 +888,13 @@ export const docsZh = {
         },
         {
           name: 'items',
-          type: 'XDSTopNavMegaMenuItemData[]',
-          description: '在超级菜单面板中显示的菜单项。',
-          required: true,
+          type: 'ReactNode',
+          description: '菜单项插槽 — 通常为 XDSTopNavMegaMenuItem 组件，但接受任何 ReactNode。',
         },
         {
           name: 'featured',
-          type: 'XDSTopNavMegaMenuFeatured',
-          description:
-            '在超级菜单面板右侧显示的可选特色内容。',
+          type: 'ReactNode',
+          description: '特色内容插槽 — 桌面端显示在右侧面板，移动抽屉中显示在项目下方。',
         },
         {
           name: 'delay',
@@ -916,13 +911,6 @@ export const docsZh = {
           default: '250',
         },
         {
-          name: 'isSingleColumn',
-          type: 'boolean',
-          description:
-            '是否对菜单项使用单列布局而非双列。',
-          default: 'false',
-        },
-        {
           name: 'onOpenChange',
           type: '(isOpen: boolean) => void',
           description:
@@ -932,36 +920,34 @@ export const docsZh = {
       examples: [
         {
           label: '带特色内容',
-          code: `<div style={{position: 'relative'}}>
-  <XDSTopNav
-    startContent={
-      <XDSTopNavMegaMenu
-        label="Solutions"
-        items={[
-          {title: 'Enterprise', description: 'For large teams', icon: <BuildingIcon />, href: '/enterprise'},
-          {title: 'Startups', description: 'Move fast', icon: <RocketIcon />, href: '/startups'},
-        ]}
-        featured={{
-          title: 'New: AI Features',
-          description: 'Explore our latest AI-powered tools.',
-          linkText: 'Learn more \u2192',
-          linkHref: '/ai',
-        }}
-      />
-    }
-  />
-</div>`,
+          code: `<XDSTopNavMegaMenu
+  label="Solutions"
+  items={
+    <>
+      <XDSTopNavMegaMenuItem title="Enterprise" description="大型团队" icon={<BuildingIcon />} href="/enterprise" />
+      <XDSTopNavMegaMenuItem title="Startups" description="快速启动" icon={<RocketIcon />} href="/startups" />
+    </>
+  }
+  featured={
+    <XDSTopNavMegaMenuFeaturedCard
+      title="新功能：AI 特性"
+      description="探索我们最新的 AI 驱动工具。"
+      linkLabel="了解更多"
+      linkHref="/ai"
+    />
+  }
+/>`,
         },
         {
-          label: '单列布局',
+          label: '无特色内容',
           code: `<XDSTopNavMegaMenu
   label="Products"
-  isSingleColumn
-  items={[
-    {title: 'Analytics', description: 'Track behavior', icon: <ChartIcon />, href: '/analytics'},
-    {title: 'Messaging', description: 'Real-time comms', icon: <ChatIcon />, href: '/messaging'},
-    {title: 'Storage', description: 'Manage your data', icon: <DatabaseIcon />, href: '/storage'},
-  ]}
+  items={
+    <>
+      <XDSTopNavMegaMenuItem title="Analytics" description="Track behavior" icon={<ChartIcon />} href="/analytics" />
+      <XDSTopNavMegaMenuItem title="Messaging" description="Real-time comms" icon={<ChatIcon />} href="/messaging" />
+    </>
+  }
 />`,
         },
       ],
@@ -1046,14 +1032,13 @@ export const docsDense = {
     },
     {
       name: 'XDSTopNavMegaMenu',
-      description: 'Nav item w/ full-width mega menu panel on hover; 2-column grid+optional featured area.',
+      description: 'Nav item w/ full-width mega menu panel on hover. Slots API w/ items+featured ReactNode props. Mobile drawer inline collapsible.',
       propDescriptions: {
         label: 'Trigger button visible label.',
-        items: 'Menu items in mega panel.',
-        featured: 'Optional featured content on right side of mega panel.',
+        items: 'Menu items slot — typically XDSTopNavMegaMenuItem, accepts any ReactNode.',
+        featured: 'Featured content slot — right panel desktop, below items in drawer.',
         delay: 'Show delay ms on hover.',
         hideDelay: 'Hide delay ms after mouse leaves.',
-        isSingleColumn: 'Single-column layout instead of two columns.',
         onOpenChange: 'Fired on open/close. For coordinating wrapper styles.',
       },
     },

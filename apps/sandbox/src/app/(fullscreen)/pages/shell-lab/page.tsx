@@ -18,6 +18,8 @@ import {
   XDSTopNavItem,
   XDSTopNavMenu,
   XDSTopNavMegaMenu,
+  XDSTopNavMegaMenuItem,
+  XDSTopNavMegaMenuFeaturedCard,
 } from '@xds/core/TopNav';
 import {XDSMobileNav, XDSMobileNavToggle} from '@xds/core/MobileNav';
 import {XDSVStack, XDSHStack} from '@xds/core/Layout';
@@ -618,31 +620,38 @@ function SampleTopNav({
       <XDSTopNavItem label="Home" href="#" isSelected />
       <XDSTopNavMegaMenu
         label="Products"
-        items={[
-          {
-            title: 'Analytics',
-            description: 'View metrics and dashboards',
-            href: '#',
-          },
-          {
-            title: 'Reports',
-            description: 'Generate and export reports',
-            href: '#',
-          },
-          {
-            title: 'Pipelines',
-            description: 'Data processing workflows',
-            href: '#',
-          },
-          {title: 'Integrations', description: 'Connect your tools', href: '#'},
-        ]}
-        featured={{
-          title: 'New: AI Features',
-          description:
-            'Explore our latest AI-powered analytics tools for faster insights.',
-          linkText: 'Learn more →',
-          linkHref: '#',
-        }}
+        items={
+          <>
+            <XDSTopNavMegaMenuItem
+              title="Analytics"
+              description="View metrics and dashboards"
+              href="#"
+            />
+            <XDSTopNavMegaMenuItem
+              title="Reports"
+              description="Generate and export reports"
+              href="#"
+            />
+            <XDSTopNavMegaMenuItem
+              title="Pipelines"
+              description="Data processing workflows"
+              href="#"
+            />
+            <XDSTopNavMegaMenuItem
+              title="Integrations"
+              description="Connect your tools"
+              href="#"
+            />
+          </>
+        }
+        featured={
+          <XDSTopNavMegaMenuFeaturedCard
+            title="New: AI Features"
+            description="Explore our latest AI-powered analytics tools for faster insights."
+            linkLabel="Learn more"
+            linkHref="#"
+          />
+        }
       />
       <XDSTopNavItem label="Team" href="#" />
     </>

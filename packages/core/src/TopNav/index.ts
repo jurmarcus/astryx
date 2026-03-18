@@ -20,11 +20,13 @@ export {XDSTopNavMenu} from './XDSTopNavMenu';
 export type {XDSTopNavMenuProps, XDSTopNavMenuItemData} from './XDSTopNavMenu';
 
 export {XDSTopNavMegaMenu} from './XDSTopNavMegaMenu';
-export type {
-  XDSTopNavMegaMenuProps,
-  XDSTopNavMegaMenuItemData,
-  XDSTopNavMegaMenuFeatured,
-} from './XDSTopNavMegaMenu';
+export type {XDSTopNavMegaMenuProps} from './XDSTopNavMegaMenu';
+
+export {XDSTopNavMegaMenuItem} from './XDSTopNavMegaMenuItem';
+export type {XDSTopNavMegaMenuItemProps} from './XDSTopNavMegaMenuItem';
+
+export {XDSTopNavMegaMenuFeaturedCard} from './XDSTopNavMegaMenuFeaturedCard';
+export type {XDSTopNavMegaMenuFeaturedCardProps} from './XDSTopNavMegaMenuFeaturedCard';
 
 export {
   XDSTopNavRenderContext,
