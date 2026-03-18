@@ -36,6 +36,8 @@ import {
   sizeDefaults,
   radiusDefaults,
   elevationDefaults,
+  durationDefaults,
+  easingDefaults,
   transitionDefaults,
   typographyDefaults,
   textSizeDefaults,
@@ -64,6 +66,8 @@ export type XDSTokenName =
   | keyof typeof sizeDefaults
   | keyof typeof radiusDefaults
   | keyof typeof elevationDefaults
+  | keyof typeof durationDefaults
+  | keyof typeof easingDefaults
   | keyof typeof transitionDefaults
   | keyof typeof typographyDefaults
   | keyof typeof textSizeDefaults
@@ -211,6 +215,8 @@ export const xdsTokenDefaults: Record<string, string> = {
   ...sizeDefaults,
   ...radiusDefaults,
   ...elevationDefaults,
+  ...durationDefaults,
+  ...easingDefaults,
   ...transitionDefaults,
   ...typographyDefaults,
   ...textSizeDefaults,
