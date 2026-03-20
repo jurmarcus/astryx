@@ -26,15 +26,20 @@ import {
   lineHeightVars,
   durationVars,
   easeVars,
+  shadowVars,
 } from '../theme/tokens.stylex';
 import {XDSIcon} from '../Icon';
 import type {XDSIconType} from '../Icon';
 import {useXDSLinkComponent} from '../Link/useXDSLinkComponent';
 import type {XDSLinkComponentType} from '../Link/types';
+import {useXDSPopover} from '../Popover/useXDSPopover';
 import {xdsClassName, mergeProps} from '../utils';
 import {XDSTooltip} from '../Tooltip';
 import {navItemStyles} from '../NavItem/navItemStyles.stylex';
-import {useXDSSideNavCollapse} from './XDSSideNavCollapseContext';
+import {
+  useXDSSideNavCollapse,
+  XDSSideNavCollapseContext,
+} from './XDSSideNavCollapseContext';
 import {getIcon} from '../Icon/globalIconRegistry';
 
 // =============================================================================
@@ -92,7 +97,35 @@ const styles = stylex.create({
   expandChevronCollapsed: {
     transform: 'rotate(180deg)',
   },
+  // Popover surface for collapsed items with children
+  popoverSurface: {
+    backgroundColor: colorVars['--color-popover'],
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: colorVars['--color-border'],
+    borderRadius: radiusVars['--radius-2'],
+    boxShadow: shadowVars['--shadow-menu'],
+    paddingBlock: spacingVars['--spacing-1'],
+    paddingInline: spacingVars['--spacing-1'],
+    marginInlineStart: spacingVars['--spacing-1'],
+    minWidth: 180,
+  },
+  popoverHeader: {
+    paddingInline: spacingVars['--spacing-2'],
+    paddingBlock: spacingVars['--spacing-1'],
+    fontSize: textSizeVars['--text-xsm'],
+    fontWeight: fontWeightVars['--font-weight-semibold'],
+    color: colorVars['--color-text-secondary'],
+    lineHeight: lineHeightVars['--leading-snug'],
+  },
 });
+
+// Non-collapsed state for popover children — ensures nested items render expanded
+const EXPANDED_COLLAPSE_STATE = {
+  isCollapsed: false,
+  toggle: () => {},
+  isCollapsible: false,
+};
 
 // =============================================================================
 // Types
@@ -214,6 +247,14 @@ export function XDSSideNavItem({
   const LinkComponent = useXDSLinkComponent(as);
   const itemRef = useRef<HTMLDivElement>(null);
 
+  // Popover for collapsed items with children
+  const popover = useXDSPopover({
+    hasLightDismiss: true,
+    hasAutoFocus: true,
+    hasCloseButton: false,
+    dialogLabel: `${label} submenu`,
+  });
+
   // Collapse state for items with children
   const itemCollapsibleConfig =
     typeof itemCollapsible === 'object' ? itemCollapsible : {};
@@ -237,11 +278,6 @@ export function XDSSideNavItem({
 
   const displayIcon = isSelected && selectedIcon ? selectedIcon : icon;
 
-  // In collapsed mode: hide items without icons
-  if (isCollapsed && !icon) {
-    return <div style={{display: 'none'}} />;
-  }
-
   const handleClick = (e: React.MouseEvent) => {
     if (isDisabled) {
       e.preventDefault();
@@ -254,6 +290,150 @@ export function XDSSideNavItem({
     }
     onClick?.(e);
   };
+
+  // Hover handlers for collapsed popover (mirrors TopNavMenu pattern)
+  const showTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearPopoverTimeouts = useCallback(() => {
+    if (showTimeoutRef.current) {
+      clearTimeout(showTimeoutRef.current);
+      showTimeoutRef.current = null;
+    }
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+      hideTimeoutRef.current = null;
+    }
+  }, []);
+
+  const schedulePopoverShow = useCallback(() => {
+    clearPopoverTimeouts();
+    showTimeoutRef.current = setTimeout(() => {
+      popover.show({skipAutoFocus: true});
+    }, 150);
+  }, [clearPopoverTimeouts, popover]);
+
+  const schedulePopoverHide = useCallback(() => {
+    clearPopoverTimeouts();
+    hideTimeoutRef.current = setTimeout(() => {
+      popover.hide();
+    }, 200);
+  }, [clearPopoverTimeouts, popover]);
+
+  const handlePopoverMouseEnter = useCallback(() => {
+    schedulePopoverShow();
+  }, [schedulePopoverShow]);
+
+  const handlePopoverMouseLeave = useCallback(() => {
+    schedulePopoverHide();
+  }, [schedulePopoverHide]);
+
+  // In collapsed mode: hide items without icons
+  if (isCollapsed && !icon) {
+    return null;
+  }
+
+  // =========================================================================
+  // Collapsed mode — icon-only items, popover for items with children
+  // =========================================================================
+  if (isCollapsed) {
+    const collapsedIcon = displayIcon && (
+      <XDSIcon
+        icon={displayIcon}
+        size="sm"
+        color={isSelected ? 'primary' : isDisabled ? 'disabled' : 'secondary'}
+      />
+    );
+
+    // Shared collapsed item styles — used by trigger, link, and button
+    const collapsedItemStyles = mergeProps(
+      xdsClassName('side-nav-item'),
+      stylex.props(
+        navItemStyles.item,
+        styles.itemCollapsed,
+        isSelected && navItemStyles.selected,
+        isDisabled && navItemStyles.disabled,
+      ),
+    );
+
+    // Items with children: popover trigger + popover
+    if (hasChildren) {
+      return (
+        <div {...stylex.props(styles.root)}>
+          <button
+            ref={el => {
+              popover.triggerRef(el);
+              if (typeof ref === 'function') {
+                ref(el);
+              } else if (ref) {
+                (ref as React.MutableRefObject<HTMLElement | null>).current =
+                  el;
+              }
+            }}
+            type="button"
+            onClick={popover.toggle}
+            onMouseEnter={handlePopoverMouseEnter}
+            onMouseLeave={handlePopoverMouseLeave}
+            aria-label={label}
+            data-testid={testId}
+            {...popover.triggerProps}
+            {...collapsedItemStyles}>
+            {collapsedIcon}
+          </button>
+          {popover.render(
+            <div
+              {...stylex.props(styles.popoverSurface)}
+              onMouseEnter={handlePopoverMouseEnter}
+              onMouseLeave={handlePopoverMouseLeave}
+              onClick={() => popover.hide()}>
+              <div {...stylex.props(styles.popoverHeader)}>{label}</div>
+              <XDSSideNavCollapseContext value={EXPANDED_COLLAPSE_STATE}>
+                {children}
+              </XDSSideNavCollapseContext>
+            </div>,
+            {placement: 'end', alignment: 'start'},
+          )}
+        </div>
+      );
+    }
+
+    // Items without children: icon-only link/button with tooltip
+    const collapsedAriaProps = {
+      'aria-current': isSelected ? ('page' as const) : undefined,
+      'aria-disabled': isDisabled || undefined,
+      'aria-label': label,
+      'data-testid': testId,
+    };
+
+    const collapsedElement =
+      href && !isDisabled ? (
+        <LinkComponent
+          ref={ref as React.Ref<HTMLAnchorElement>}
+          href={href}
+          onClick={handleClick}
+          {...collapsedAriaProps}
+          {...collapsedItemStyles}>
+          {collapsedIcon}
+        </LinkComponent>
+      ) : (
+        <button
+          ref={ref as React.Ref<HTMLButtonElement>}
+          type="button"
+          onClick={handleClick}
+          disabled={isDisabled}
+          {...collapsedAriaProps}
+          {...collapsedItemStyles}>
+          {collapsedIcon}
+        </button>
+      );
+
+    return (
+      <div ref={itemRef} {...stylex.props(styles.root)}>
+        {collapsedElement}
+        <XDSTooltip content={label} placement="end" anchorRef={itemRef} />
+      </div>
+    );
+  }
 
   const itemContent = (
     <>
@@ -295,11 +475,13 @@ export function XDSSideNavItem({
         href={href}
         onClick={handleClick}
         {...ariaProps}
-        {...stylex.props(
-          navItemStyles.item,
-          isCollapsed && styles.itemCollapsed,
-          isSelected && navItemStyles.selected,
-          isDisabled && navItemStyles.disabled,
+        {...mergeProps(
+          xdsClassName('side-nav-item'),
+          stylex.props(
+            navItemStyles.item,
+            isSelected && navItemStyles.selected,
+            isDisabled && navItemStyles.disabled,
+          ),
         )}>
         {itemContent}
       </LinkComponent>
@@ -310,20 +492,20 @@ export function XDSSideNavItem({
         onClick={handleClick}
         disabled={isDisabled}
         {...ariaProps}
-        {...stylex.props(
-          navItemStyles.item,
-          isCollapsed && styles.itemCollapsed,
-          isSelected && navItemStyles.selected,
-          isDisabled && navItemStyles.disabled,
+        {...mergeProps(
+          xdsClassName('side-nav-item'),
+          stylex.props(
+            navItemStyles.item,
+            isSelected && navItemStyles.selected,
+            isDisabled && navItemStyles.disabled,
+          ),
         )}>
         {itemContent}
       </button>
     );
 
   const item = (
-    <div
-      ref={itemRef}
-      {...mergeProps(xdsClassName('side-nav-item'), stylex.props(styles.root))}>
+    <div ref={itemRef} {...stylex.props(styles.root)}>
       {itemElement}
       {hasChildren && !isCollapsed && (
         <div
@@ -346,14 +528,7 @@ export function XDSSideNavItem({
     </div>
   );
 
-  return (
-    <>
-      {item}
-      {isCollapsed && (
-        <XDSTooltip content={label} placement="end" anchorRef={itemRef} />
-      )}
-    </>
-  );
+  return item;
 }
 
 XDSSideNavItem.displayName = 'XDSSideNavItem';
