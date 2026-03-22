@@ -1,4 +1,5 @@
-import type {Meta, StoryObj} from '@storybook/react';
+'use client';
+
 import * as React from 'react';
 import {XDSButton} from '@xds/core/Button';
 import {XDSTextInput} from '@xds/core/TextInput';
@@ -817,7 +818,7 @@ function ComponentPreview() {
         <XDSText type="label" style={{marginBottom: '16px', display: 'block'}}>
           Typography Scale
         </XDSText>
-        <XDSCard padding="lg">
+        <XDSCard padding={4}>
           <article>
             <XDSHeading level={1}>Building Design Systems</XDSHeading>
             <XDSText
@@ -986,7 +987,6 @@ const styles = stylex.create({
         <XDSTable
           columns={spacingTableColumns}
           data={spacingData}
-          getRowKey={row => row.token}
           density="compact"
           dividers="rows"
         />
@@ -998,12 +998,11 @@ const styles = stylex.create({
           Badges
         </XDSText>
         <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
-          <XDSBadge label="Default" />
-          <XDSBadge label="Primary" variant="primary" />
-          <XDSBadge label="Ghost" variant="ghost" />
-          <XDSBadge label="Positive" sentiment="positive" />
-          <XDSBadge label="Negative" sentiment="negative" />
-          <XDSBadge label="Warning" sentiment="warning" />
+          <XDSBadge label="Neutral" />
+          <XDSBadge label="Info" variant="info" />
+          <XDSBadge label="Success" variant="success" />
+          <XDSBadge label="Warning" variant="warning" />
+          <XDSBadge label="Error" variant="error" />
         </div>
       </div>
 
@@ -1034,23 +1033,23 @@ const styles = stylex.create({
             gap: '12px',
             maxWidth: '300px',
           }}>
-          <XDSTextInput label="Text Input" placeholder="Enter text..." />
+          <XDSTextInput label="Text Input" placeholder="Enter text..." value="" onChange={() => {}} />
           <XDSSwitch
             label="Toggle Switch"
-            isSelected={switchValue}
+            value={switchValue}
             onChange={setSwitchValue}
           />
           <XDSCheckboxInput
             label="Checkbox"
-            isSelected={checkboxValue}
+            value={checkboxValue}
             onChange={setCheckboxValue}
           />
           <XDSSlider
             label="Slider"
             value={sliderValue}
             onChange={setSliderValue}
-            minValue={0}
-            maxValue={100}
+            min={0}
+            max={100}
           />
         </div>
       </div>
@@ -1106,9 +1105,9 @@ const styles = stylex.create({
           Avatars
         </XDSText>
         <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
-          <XDSAvatar name="John Doe" size="sm" />
-          <XDSAvatar name="Jane Smith" size="md" />
-          <XDSAvatar name="Bob Wilson" size="lg" />
+          <XDSAvatar name="John Doe" size="small" />
+          <XDSAvatar name="Jane Smith" size="medium" />
+          <XDSAvatar name="Bob Wilson" size="large" />
         </div>
       </div>
 
@@ -1146,8 +1145,8 @@ const styles = stylex.create({
         <XDSText type="label" style={{marginBottom: '12px', display: 'block'}}>
           Card
         </XDSText>
-        <XDSCard padding="md">
-          <XDSStack gap="sm">
+        <XDSCard padding={3}>
+          <XDSStack direction="vertical" gap={2}>
             <XDSHeading level={4}>Card Title</XDSHeading>
             <XDSText type="body">
               This is a sample card with some content to demonstrate how cards
@@ -1173,10 +1172,9 @@ const styles = stylex.create({
         />
         <XDSDialog
           isOpen={dialogOpen}
-          onClose={() => setDialogOpen(false)}
-          title="Sample Dialog">
+          onOpenChange={(open) => setDialogOpen(open)}>
           <div style={{padding: '0 24px 24px 24px'}}>
-            <XDSStack gap="md">
+            <XDSStack direction="vertical" gap={3}>
               <XDSText type="body">
                 This is a sample dialog to preview how dialogs look with the
                 current theme settings.
@@ -1184,6 +1182,8 @@ const styles = stylex.create({
               <XDSTextInput
                 label="Example Input"
                 placeholder="Type something..."
+                value=""
+                onChange={() => {}}
               />
               <div
                 style={{
@@ -1219,7 +1219,7 @@ function LandingPagePreview() {
     <div style={{display: 'flex', flexDirection: 'column', gap: '48px'}}>
       {/* Hero */}
       <div style={{textAlign: 'center', padding: '48px 24px'}}>
-        <XDSBadge variant="accent" label="New Release" />
+        <XDSBadge variant="info" label="New Release" />
         <XDSHeading level={1} style={{marginTop: 16, marginBottom: 12}}>
           Ship faster with XDS
         </XDSHeading>
@@ -1269,7 +1269,7 @@ function LandingPagePreview() {
               desc: 'JSDoc annotations with composition hints for LLM-assisted development.',
             },
           ].map(f => (
-            <XDSCard key={f.title} padding="md">
+            <XDSCard key={f.title} padding={3}>
               <XDSHeading level={3} style={{marginBottom: 8}}>
                 {f.title}
               </XDSHeading>
@@ -1282,13 +1282,13 @@ function LandingPagePreview() {
       </div>
 
       {/* Testimonial */}
-      <XDSCard padding="lg">
+      <XDSCard padding={4}>
         <XDSText type="large" display="block" style={{marginBottom: 12}}>
           &ldquo;XDS cut our dev time in half. The type scale system alone saved
           us weeks of bikeshedding.&rdquo;
         </XDSText>
         <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-          <XDSAvatar size="sm" name="Alex Chen" />
+          <XDSAvatar name="Alex Chen" size="small" />
           <div>
             <XDSText type="label">Alex Chen</XDSText>
             <XDSText type="supporting" color="secondary">
@@ -1385,7 +1385,7 @@ function DashboardPreview() {
           {label: 'Uptime', value: '99.97%', delta: '—'},
           {label: 'NPS', value: '72', delta: '+3'},
         ].map(kpi => (
-          <XDSCard key={kpi.label} padding="md">
+          <XDSCard key={kpi.label} padding={3}>
             <XDSText type="supporting" color="secondary" display="block">
               {kpi.label}
             </XDSText>
@@ -1409,16 +1409,16 @@ function DashboardPreview() {
           <XDSTab value="errors" label="Errors" />
         </XDSTabList>
         <div style={{marginTop: '16px'}}>
-          <XDSTable columns={dashboardColumns} data={metrics} size="sm" />
+          <XDSTable columns={dashboardColumns} data={metrics} density="compact" />
         </div>
       </div>
 
       {/* Activity Banner */}
       <XDSBanner
-        variant="educational"
+        status="info"
         title="System Update"
         description="A new version of the API is available. Review the changelog for breaking changes."
-        action={
+        endContent={
           <XDSButton label="View Changelog" variant="secondary" size="sm" />
         }
       />
@@ -1426,7 +1426,7 @@ function DashboardPreview() {
       {/* Bottom section */}
       <div
         style={{display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px'}}>
-        <XDSCard padding="md">
+        <XDSCard padding={3}>
           <XDSHeading level={3} style={{marginBottom: 12}}>
             Recent Activity
           </XDSHeading>
@@ -1461,7 +1461,7 @@ function DashboardPreview() {
                 padding: '8px 0',
                 borderBottom: i < 3 ? '1px solid var(--color-divider)' : 'none',
               }}>
-              <XDSAvatar size="sm" name={item.user} />
+              <XDSAvatar name={item.user} size="small" />
               <div style={{flex: 1}}>
                 <XDSText type="label">{item.user}</XDSText>
                 <XDSText type="body" color="secondary">
@@ -1475,7 +1475,7 @@ function DashboardPreview() {
             </div>
           ))}
         </XDSCard>
-        <XDSCard padding="md">
+        <XDSCard padding={3}>
           <XDSHeading level={3} style={{marginBottom: 12}}>
             Quick Stats
           </XDSHeading>
@@ -1492,7 +1492,7 @@ function DashboardPreview() {
                   43%
                 </XDSText>
               </div>
-              <XDSProgressBar value={43} />
+              <XDSProgressBar value={43} label="API Latency" isLabelHidden />
             </div>
             <div>
               <div
@@ -1506,7 +1506,7 @@ function DashboardPreview() {
                   67%
                 </XDSText>
               </div>
-              <XDSProgressBar value={67} />
+              <XDSProgressBar value={67} label="Error Rate" isLabelHidden />
             </div>
             <div>
               <div
@@ -1520,7 +1520,7 @@ function DashboardPreview() {
                   82%
                 </XDSText>
               </div>
-              <XDSProgressBar value={82} />
+              <XDSProgressBar value={82} label="Uptime" isLabelHidden />
             </div>
           </div>
         </XDSCard>
@@ -1597,7 +1597,7 @@ export const ${themeName}Theme = defineTheme({
 
   if (hasCustomTypeScale) {
     parts.push(
-      `  typeScale: { base: ${typeScaleBase}, ratio: ${typeScaleRatio} },`,
+      `  typography: { scale: { base: ${typeScaleBase}, ratio: ${typeScaleRatio} } },`,
     );
   }
 
@@ -1640,7 +1640,7 @@ function ThemeEditorComponent() {
   const [showCode, setShowCode] = React.useState(false);
 
   // Collect all defaults
-  const allDefaults = React.useMemo(
+  const allDefaults: Record<string, string> = React.useMemo(
     () => ({
       ...colorDefaults,
       ...spacingDefaults,
@@ -1703,7 +1703,7 @@ function ThemeEditorComponent() {
     }
     return defineTheme({
       name: themeName,
-      typeScale: {base: typeScaleBase, ratio: typeScaleRatio},
+      typography: {scale: {base: typeScaleBase, ratio: typeScaleRatio}},
       tokens: tokenOverrides as Partial<Record<string, string>>,
       icons: defaultIconRegistry,
     });
@@ -1729,7 +1729,7 @@ function ThemeEditorComponent() {
               label: category,
             }))}
             value={activeColorCategory}
-            onChange={v => setActiveColorCategory(v)}
+            onChange={(v: string) => setActiveColorCategory(v)}
           />
 
           {categoryTokens.map(tokenName => (
@@ -1818,8 +1818,8 @@ function ThemeEditorComponent() {
             max={24}
             step={1}
             value={typeScaleBase}
-            onChange={v => applyTypeScale(v, typeScaleRatio)}
-            formatValue={v => `${v}px`}
+            onChange={(v: number) => applyTypeScale(v, typeScaleRatio)}
+            formatValue={(v: number) => `${v}px`}
             valueDisplay="text"
           />
           <XDSSelector
@@ -1837,7 +1837,7 @@ function ThemeEditorComponent() {
               },
             ]}
             value={isCustomRatio ? 'custom' : String(typeScaleRatio)}
-            onChange={v => {
+            onChange={(v: string) => {
               if (v === 'custom') return;
               applyTypeScale(typeScaleBase, Number(v));
             }}
@@ -1850,8 +1850,8 @@ function ThemeEditorComponent() {
               max={1700}
               step={1}
               value={Math.round(typeScaleRatio * 1000)}
-              onChange={v => applyTypeScale(typeScaleBase, v / 1000)}
-              formatValue={v => (v / 1000).toFixed(3)}
+              onChange={(v: number) => applyTypeScale(typeScaleBase, v / 1000)}
+              formatValue={(v: number) => (v / 1000).toFixed(3)}
               valueDisplay="text"
             />
           )}
@@ -2014,7 +2014,7 @@ function ThemeEditorComponent() {
 
       const categoryValue = TYPOGRAPHY_CATEGORIES[
         activeTypographyCategory as keyof typeof TYPOGRAPHY_CATEGORIES
-      ] as TypographyCategoryValue | undefined;
+      ] as unknown as TypographyCategoryValue | undefined;
 
       // Get the list of tokens for this category
       const categoryTokens: string[] = categoryValue
@@ -2069,7 +2069,7 @@ function ThemeEditorComponent() {
               },
             ]}
             value={activeTypographyCategory}
-            onChange={v => setActiveTypographyCategory(v)}
+            onChange={(v: string) => setActiveTypographyCategory(v)}
           />
 
           {/* Description for semantic styles */}
@@ -2343,29 +2343,6 @@ function ThemeEditorComponent() {
   );
 }
 
-// =============================================================================
-// Storybook Meta
-// =============================================================================
-
-const meta: Meta = {
-  title: 'Theme Editor',
-  parameters: {
-    layout: 'fullscreen',
-    docs: {
-      page: null,
-    },
-  },
-};
-
-export default meta;
-
-type Story = StoryObj;
-
-export const ThemeEditor: Story = {
-  render: () => <ThemeEditorComponent />,
-  parameters: {
-    // Use default theme for the editor chrome (left panel).
-    // The preview panel wraps its own <XDSTheme theme={currentTheme}>.
-    xdsTheme: 'default',
-  },
-};
+export default function ThemeEditorPage() {
+  return <ThemeEditorComponent />;
+}
