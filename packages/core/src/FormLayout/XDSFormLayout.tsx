@@ -13,7 +13,6 @@
  * - /apps/storybook/stories/FormLayout.stories.tsx (storybook stories)
  */
 
-
 import {useMemo, type ReactNode} from 'react';
 import type {XDSBaseProps} from '../XDSBaseProps';
 import * as stylex from '@stylexjs/stylex';
@@ -78,7 +77,7 @@ export interface XDSFormLayoutProps extends XDSBaseProps<HTMLDivElement> {
    * - `'horizontal'` — Fields arrange left-to-right, wrapping when needed.
    *   Each child gets equal flex-grow.
    * - `'horizontal-labels'` — CSS Grid with labels to the left of inputs.
-   *   Collapses to vertical on narrow viewports (≤480px).
+   *   Collapses to vertical when the container is narrow (≤480px).
    *
    * @default 'vertical'
    */
@@ -105,11 +104,6 @@ export interface XDSFormLayoutProps extends XDSBaseProps<HTMLDivElement> {
    * inline styles, so these values take priority.
    */
   style?: React.CSSProperties;
-
-  /**
-   * Test ID for the root element.
-   */
-  'data-testid'?: string;
 }
 
 // =============================================================================
