@@ -10,10 +10,12 @@ import {XDSNumberInput} from '@xds/core/NumberInput';
 import {XDSSelector} from '@xds/core/Selector';
 import {XDSIcon} from '@xds/core/Icon';
 import {XDSBadge} from '@xds/core/Badge';
-import * as XDSCore from '@xds/core';
+import {XDSIconButton} from '@xds/core/IconButton';
+import {MinusIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {useMediaQuery} from '@xds/core/hooks';
 import type {PropControlDescriptor} from './parsePropType';
 import type {KnobProp} from './InteractivePreview';
+import {resolveElementDescriptor} from './resolveElements';
 import type {PropDoc} from '../../generated/componentRegistry';
 
 function formatType(type: string, defaultValue?: string): React.ReactNode {
@@ -49,19 +51,21 @@ function formatType(type: string, defaultValue?: string): React.ReactNode {
 
 function resolveSlotElement(
   componentName: string,
-  slotElements?: Array<{__element: string; props?: Record<string, unknown>}>,
+  slotElements?: Array<{
+    __element: string;
+    props?: Record<string, unknown>;
+    children?: unknown;
+  }>,
 ): React.ReactNode {
-  // If we have slotElements metadata, use the matching one
   if (slotElements) {
     const match = slotElements.find(el => el.__element === componentName);
     if (match) {
-      const key = match.__element.replace(/^XDS/, '') as keyof typeof XDSCore;
-      const Comp = typeof XDSCore[key] === 'function' ? XDSCore[key] : null;
-      if (Comp)
-        return createElement(Comp as React.ComponentType, match.props ?? {});
+      return resolveElementDescriptor(
+        match as import('../../generated/componentRegistry').ElementDescriptor,
+      );
     }
   }
-  // Fallback to hardcoded defaults
+  // Fallback for common components without slotElements declared
   switch (componentName) {
     case 'XDSIcon':
       return createElement(XDSIcon, {icon: 'check', size: 'sm'});
@@ -122,6 +126,71 @@ function ElementControl({
   );
 }
 
+function SlotListControl({
+  control,
+  value,
+  onChange,
+  prop,
+}: {
+  control: Extract<PropControlDescriptor, {kind: 'slot-list'}>;
+  value: unknown;
+  onChange: (next: unknown) => void;
+  prop: PropDoc;
+}) {
+  const items = Array.isArray(value) ? value : [];
+  const count = items.length;
+
+  const addItem = () => {
+    const slotEl = prop.slotElements?.[0];
+    if (!slotEl) return;
+    const n = count + 1;
+    const tweaked = {...slotEl};
+    const props = {...(tweaked.props ?? {})};
+    if (typeof props.label === 'string') props.label = `${props.label} ${n}`;
+    if (typeof props.value === 'string') props.value = `${props.value}-${n}`;
+    tweaked.props = props;
+    const children =
+      typeof tweaked.children === 'string'
+        ? `${tweaked.children} ${n}`
+        : tweaked.children;
+    const newEl = resolveElementDescriptor({
+      ...tweaked,
+      children,
+    } as import('../../generated/componentRegistry').ElementDescriptor);
+    onChange([...items, newEl]);
+  };
+
+  const removeItem = () => {
+    if (count > 0) onChange(items.slice(0, -1));
+  };
+
+  return (
+    <XDSHStack gap={2} vAlign="center">
+      <XDSText type="supporting" color="secondary">
+        {count} {control.options[0].label}
+        {count !== 1 ? 's' : ''}
+      </XDSText>
+      <XDSHStack gap={1}>
+        <XDSIconButton
+          label="Remove item"
+          icon={<MinusIcon width={16} height={16} />}
+          variant="ghost"
+          size="sm"
+          isDisabled={count === 0}
+          onClick={removeItem}
+        />
+        <XDSIconButton
+          label="Add item"
+          icon={<PlusIcon width={16} height={16} />}
+          variant="ghost"
+          size="sm"
+          onClick={addItem}
+        />
+      </XDSHStack>
+    </XDSHStack>
+  );
+}
+
 function InlineControl({
   control,
   value,
@@ -173,6 +242,15 @@ function InlineControl({
     case 'element':
       return (
         <ElementControl
+          control={control}
+          value={value}
+          onChange={onChange}
+          prop={prop}
+        />
+      );
+    case 'slot-list':
+      return (
+        <SlotListControl
           control={control}
           value={value}
           onChange={onChange}
