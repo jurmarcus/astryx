@@ -3,34 +3,20 @@
 import * as stylex from '@stylexjs/stylex';
 import {XDSHStack} from '@xds/core/Layout';
 import {XDSText} from '@xds/core/Text';
-import {XDSTable} from '@xds/core/Table';
+import {XDSTable, pixel} from '@xds/core/Table';
+import {useMediaQuery} from '@xds/core/hooks';
 import type {TokenTableProps} from './types';
-import {resolveTokenForMode, hasDualMode, getTokensByPrefix} from './helpers';
+import {
+  useResolveTokenForMode,
+  hasDualMode,
+  getTokensByPrefix,
+} from './helpers';
 
 const styles = stylex.create({
-  swatch: {
+  surface: {
     width: 28,
     height: 28,
     borderRadius: 'var(--radius-element)',
-    flexShrink: 0,
-    border: '1px solid var(--color-border)',
-  },
-  contextLight: {
-    width: 28,
-    height: 28,
-    borderRadius: 'var(--radius-element)',
-    backgroundColor: '#FFFFFF',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-    border: '1px solid var(--color-border)',
-  },
-  contextDark: {
-    width: 28,
-    height: 28,
-    borderRadius: 'var(--radius-element)',
-    backgroundColor: '#1C1C1E',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -41,6 +27,13 @@ const styles = stylex.create({
     width: 20,
     height: 20,
     borderRadius: 'var(--radius-inner)',
+  },
+  swatch: {
+    width: 28,
+    height: 28,
+    borderRadius: 'var(--radius-element)',
+    flexShrink: 0,
+    border: '1px solid var(--color-border)',
   },
 });
 
@@ -53,9 +46,8 @@ function ContextSwatch({
 }) {
   return (
     <div
-      {...stylex.props(
-        surface === 'light' ? styles.contextLight : styles.contextDark,
-      )}>
+      style={{backgroundColor: surface === 'light' ? '#FFFFFF' : '#1C1C1E'}}
+      {...stylex.props(styles.surface)}>
       <div
         {...stylex.props(styles.swatchInner)}
         style={{backgroundColor: value}}
@@ -73,11 +65,13 @@ function Swatch({value}: {value: string}) {
 export function ColorTokenTable({theme}: TokenTableProps) {
   const tokens = getTokensByPrefix(theme, '--color-');
   const isDual = hasDualMode(theme);
+  const resolveForMode = useResolveTokenForMode();
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   const data = tokens.map(name => ({
     tokenName: name,
-    light: resolveTokenForMode(theme, name, 'light'),
-    dark: resolveTokenForMode(theme, name, 'dark'),
+    light: resolveForMode(name, 'light'),
+    dark: resolveForMode(name, 'dark'),
   }));
 
   if (isDual) {
@@ -85,30 +79,27 @@ export function ColorTokenTable({theme}: TokenTableProps) {
       <XDSTable
         data={data as Record<string, unknown>[]}
         columns={[
-          {key: 'tokenName', header: 'Token'},
+          {key: 'tokenName', header: 'Token', width: pixel(260)},
           {
-            key: 'light',
-            header: 'Light',
-            renderCell: (item: Record<string, unknown>) => (
-              <XDSHStack gap={2} vAlign="center">
-                <ContextSwatch value={item.light as string} surface="light" />
-                <XDSText type="code" color="secondary">
-                  {item.light as string}
-                </XDSText>
-              </XDSHStack>
-            ),
-          },
-          {
-            key: 'dark',
-            header: 'Dark',
-            renderCell: (item: Record<string, unknown>) => (
-              <XDSHStack gap={2} vAlign="center">
-                <ContextSwatch value={item.dark as string} surface="dark" />
-                <XDSText type="code" color="secondary">
-                  {item.dark as string}
-                </XDSText>
-              </XDSHStack>
-            ),
+            key: 'value',
+            header: 'Value',
+            renderCell: (item: Record<string, unknown>) => {
+              const light = item.light as string;
+              const dark = item.dark as string;
+              const isSame = light === dark;
+
+              return (
+                <XDSHStack gap={2} vAlign="center">
+                  <ContextSwatch value={light} surface="light" />
+                  <ContextSwatch value={dark} surface="dark" />
+                  {!isMobile && (
+                    <XDSText type="code" color="secondary">
+                      {isSame ? light : `${light} / ${dark}`}
+                    </XDSText>
+                  )}
+                </XDSHStack>
+              );
+            },
           },
         ]}
         density="spacious"
@@ -122,16 +113,18 @@ export function ColorTokenTable({theme}: TokenTableProps) {
     <XDSTable
       data={data as Record<string, unknown>[]}
       columns={[
-        {key: 'tokenName', header: 'Token'},
+        {key: 'tokenName', header: 'Token', width: pixel(260)},
         {
           key: 'light',
           header: 'Value',
           renderCell: (item: Record<string, unknown>) => (
             <XDSHStack gap={2} vAlign="center">
               <Swatch value={item.light as string} />
-              <XDSText type="code" color="secondary">
-                {item.light as string}
-              </XDSText>
+              {!isMobile && (
+                <XDSText type="code" color="secondary">
+                  {item.light as string}
+                </XDSText>
+              )}
             </XDSHStack>
           ),
         },

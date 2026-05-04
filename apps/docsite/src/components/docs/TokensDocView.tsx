@@ -6,6 +6,7 @@ import {useXDSTheme} from '@xds/core/theme';
 import {
   ColorTokenTable,
   SpacingTokenTable,
+  SizeTokenTable,
   RadiusTokenTable,
   BorderTokenTable,
   ElevationTokenTable,
@@ -35,7 +36,7 @@ const TOPIC_SECTION_OVERRIDES: Record<
   tokens: {
     'Color Tokens': ColorTokenTable,
     'Spacing Tokens': SpacingTokenTable,
-    'Size Tokens': SpacingTokenTable,
+    'Size Tokens': SizeTokenTable,
     'Border Tokens': BorderTokenTable,
     'Radius Tokens': RadiusTokenTable,
     'Shadow Tokens': ElevationTokenTable,
@@ -83,10 +84,11 @@ function TokenSection({
   Table: TableComponent;
   theme: TokenTableProps['theme'];
 }) {
+  const prose = section.content.filter(block => block.type !== 'table');
   return (
     <XDSVStack gap={4}>
       <XDSText type="display-3">{section.title}</XDSText>
-      {section.content.map((block, i) => (
+      {prose.map((block, i) => (
         <ContentBlockRenderer key={i} block={block} />
       ))}
       <Table theme={theme} />

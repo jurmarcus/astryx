@@ -8,10 +8,7 @@ import type {TokenTableProps} from './types';
 import {resolveToken, getTokensByPrefix} from './helpers';
 
 const styles = stylex.create({
-  bar: {
-    minWidth: 2,
-    maxWidth: 64,
-    height: 12,
+  box: {
     borderRadius: 'var(--radius-element)',
     backgroundColor: 'var(--color-accent)',
     opacity: 0.6,
@@ -19,8 +16,8 @@ const styles = stylex.create({
   },
 });
 
-export function SpacingTokenTable({theme}: TokenTableProps) {
-  const tokens = getTokensByPrefix(theme, '--spacing-');
+export function SizeTokenTable({theme}: TokenTableProps) {
+  const tokens = getTokensByPrefix(theme, '--size-');
   const data = tokens.map(name => ({
     tokenName: name,
     value: resolveToken(theme, name),
@@ -37,8 +34,11 @@ export function SpacingTokenTable({theme}: TokenTableProps) {
           renderCell: (item: Record<string, unknown>) => (
             <XDSHStack gap={2} vAlign="center">
               <div
-                {...stylex.props(styles.bar)}
-                style={{width: item.value as string}}
+                {...stylex.props(styles.box)}
+                style={{
+                  width: item.value as string,
+                  height: item.value as string,
+                }}
               />
               <XDSText type="code" color="secondary">
                 {item.value as string}
