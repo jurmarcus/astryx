@@ -10,15 +10,13 @@ import {notFound} from 'next/navigation';
 import {XDSHeading, XDSText} from '@xds/core/Text';
 import {XDSVStack} from '@xds/core/Layout';
 import {XDSSection} from '@xds/core/Section';
-import {XDSBadge} from '@xds/core/Badge';
 import {XDSGrid} from '@xds/core/Grid';
-import {XDSClickableCard} from '@xds/core/ClickableCard';
 import {XDSDivider} from '@xds/core';
 import {packages} from '../../../../generated/packageRegistry';
 import {
-  components,
-  type ComponentEntry,
-} from '../../../../generated/componentRegistry';
+  groupedComponents,
+  type ComponentItem,
+} from '../../../../generated/groupedComponentRegistry';
 import {
   ThemePackagePage,
   type InstallStep,
@@ -30,6 +28,7 @@ import {matchaTheme} from '@xds/theme-matcha/built';
 import type {XDSDefinedTheme} from '@xds/core/theme';
 import {PackageHeading} from './PackageHeading';
 import {PackageStubPage} from './PackageStubPage';
+import {ComponentPreviewCard} from './ComponentPreviewCard';
 
 function slugToPackageName(slug: string): string {
   return `@xds/${slug}`;
@@ -92,7 +91,7 @@ export default async function PackagePage({
 
   const isTheme = pkg.name.includes('theme-');
   const isComponentPkg = pkg.name === '@xds/core';
-  const pkgComponents = components[pkg.name] || [];
+  const grouped = groupedComponents[pkg.name];
 
   if (isTheme) {
     const theme = THEME_MAP[pkg.name];
@@ -135,20 +134,19 @@ export default async function PackagePage({
 
         <XDSDivider />
 
-        <ComponentPackageContent components={pkgComponents} />
+        <ComponentPackageContent items={grouped?.items ?? []} />
       </XDSVStack>
     </XDSSection>
   );
 }
 
-function ComponentPackageContent({
-  components: pkgComponents,
-}: {
-  components: ComponentEntry[];
-}) {
-  const topLevel = pkgComponents.filter(c => !c.parentDoc);
+function ComponentPackageContent({items}: {items: ComponentItem[]}) {
+  const totalCount = items.reduce(
+    (sum, item) => sum + (item.type === 'group' ? item.entries.length : 1),
+    0,
+  );
 
-  if (topLevel.length === 0) {
+  if (items.length === 0) {
     return (
       <XDSText type="body" color="secondary">
         No components documented yet.
@@ -158,26 +156,22 @@ function ComponentPackageContent({
 
   return (
     <XDSVStack gap={4}>
-      <XDSHeading level={2}>Components ({topLevel.length})</XDSHeading>
-      <XDSGrid columns={3} gap={4} minChildWidth={200}>
-        {topLevel.map(c => (
-          <XDSClickableCard
-            key={c.name}
-            label={c.name}
-            href={`/components/${c.name}`}
-            padding={4}>
-            <XDSVStack gap={1}>
-              <XDSText type="body" weight="bold">
-                {c.name}
-              </XDSText>
-              {c.group && <XDSBadge label={c.group} />}
-              <XDSText type="supporting" color="secondary">
-                {c.description.slice(0, 100)}
-                {c.description.length > 100 ? '…' : ''}
-              </XDSText>
-            </XDSVStack>
-          </XDSClickableCard>
-        ))}
+      <XDSHeading level={2}>Components ({totalCount})</XDSHeading>
+      <XDSGrid columns={{minWidth: 260}} gap={4} rowGap={6}>
+        {items.map(item => {
+          const name = item.type === 'group' ? item.label : item.name;
+          const href = item.type === 'group' ? item.entries[0].href : item.href;
+          const groupSize = item.type === 'group' ? item.entries.length : 1;
+          return (
+            <ComponentPreviewCard
+              key={name}
+              name={name}
+              href={href}
+              description={item.description}
+              groupSize={groupSize}
+            />
+          );
+        })}
       </XDSGrid>
     </XDSVStack>
   );
