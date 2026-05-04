@@ -104,7 +104,24 @@ export interface XDSTableColumn<T extends Record<string, unknown>> {
   key: string;
   /** Header text displayed in `<th>`. Defaults to capitalized `key`. */
   header?: ReactNode;
-  /** Column width. Defaults to `proportional(1)`. */
+  /**
+   * Column width. Use `proportional()` for flexible columns or `pixel()` for fixed.
+   *
+   * - `proportional(1)` — shares space equally with other proportional columns.
+   *   Enforces a 120px minimum width to prevent squishing on narrow viewports.
+   * - `proportional(2)` — gets twice the space of `proportional(1)`.
+   * - `pixel(200)` — fixed 200px width.
+   * - Omitted — treated as `proportional(1)` for distribution, but with **no**
+   *   minimum width. Prefer explicit `proportional(1)` for text-heavy columns
+   *   so they don't collapse on mobile.
+   *
+   * @example
+   * ```
+   * { key: 'name', header: 'Name', width: proportional(1) }
+   * { key: 'bio', header: 'Bio', width: proportional(2) }
+   * { key: 'age', header: 'Age', width: pixel(80) }
+   * ```
+   */
   width?: ColumnWidth;
   /**
    * Horizontal text alignment for this column.
@@ -370,6 +387,13 @@ export interface XDSBaseTableProps<T extends Record<string, unknown>> {
   children?: ReactNode;
   /** Additional HTML attributes for the `<table>` element */
   tableProps?: HTMLAttributes<HTMLTableElement>;
+  /**
+   * Optional wrapper rendered around the `<table>` element, inside the
+   * plugin `transformTableContext` layer. Used by `XDSTable` to add a
+   * horizontal scroll container so plugin chrome (pagination, toolbars)
+   * stays outside the scrollable area.
+   */
+  scrollWrapper?: ComponentType<{children: ReactNode}>;
   /**
    * How default-rendered body cell text behaves when it exceeds column width.
    *
