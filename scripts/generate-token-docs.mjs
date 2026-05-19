@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// Copyright (c) Meta Platforms, Inc. and affiliates.
+
 
 /**
  * @file generate-token-docs.mjs
@@ -248,6 +250,8 @@ const totalTokens = groups.reduce(
 );
 
 const output = `\
+// Copyright (c) Meta Platforms, Inc. and affiliates.
+
 // AUTO-GENERATED — do not edit manually.
 // Source: packages/core/src/theme/tokens.stylex.ts
 // Run: node scripts/generate-token-docs.mjs

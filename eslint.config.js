@@ -1,3 +1,5 @@
+// Copyright (c) Meta Platforms, Inc. and affiliates.
+
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import xdsPlugin from "./internal/eslint-plugin-xds/index.js";
@@ -57,6 +59,16 @@ export default tseslint.config(
         destructuredArrayIgnorePattern: "^_",
         caughtErrorsIgnorePattern: "^_",
       }],
+    },
+  },
+  // Copyright header — all source files must have the Meta copyright notice
+  {
+    files: ["**/*.{ts,tsx}"],
+    plugins: {
+      '@xds': xdsPlugin,
+    },
+    rules: {
+      '@xds/copyright-header': 'error',
     },
   },
   // XDS design token enforcement - applies to core package (excluding theme files)
