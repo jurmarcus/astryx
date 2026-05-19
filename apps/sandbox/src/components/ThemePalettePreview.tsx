@@ -21,10 +21,7 @@ import type {XDSDefinedTheme} from '@xds/core/theme';
 import {XDSLayerProvider} from '@xds/core/Layer';
 import {defaultTheme} from '@xds/theme-default/built';
 
-import {
-  ThemeAuditDrawer,
-  useThemeAudit,
-} from './themePreview/ThemeAuditDrawer';
+import {ThemeAuditDrawer, useThemeAudit} from './themePreview/ThemeAuditDrawer';
 import {
   buildTonalUsageMap,
   tonalUsageKey,
@@ -205,10 +202,7 @@ const DARK_TONE_LIFT = 5;
 const DARK_LIFT_TAPER_START = 80;
 const DARK_LIFT_TAPER_END = 95;
 const DARK_CHROMA_FACTOR = 0.85;
-function darkTonalPalette(
-  hue: number,
-  chroma: number,
-): Record<number, string> {
+function darkTonalPalette(hue: number, chroma: number): Record<number, string> {
   const adjustedChroma = chroma * DARK_CHROMA_FACTOR;
   const maxChroma = adjustedChroma * 1.8;
   const result: Record<number, string> = {};
@@ -296,7 +290,7 @@ export interface CoreSwatch {
   hex: string;
   name: string;
   /** Optional dark-mode override. When present, replaces hex and name in the dark column. */
-  dark?: { hex: string; name: string };
+  dark?: {hex: string; name: string};
 }
 
 export interface ThemePalettePreviewProps {
@@ -543,9 +537,7 @@ function CoreSection({swatches, mode}: {swatches: CoreSwatch[]; mode?: Mode}) {
           return (
             <div key={hex}>
               <div style={S.coreSwatch(hex)} />
-              <div style={S.coreMeta}>
-                {name && <div>{name}</div>}
-              </div>
+              <div style={S.coreMeta}>{name && <div>{name}</div>}</div>
             </div>
           );
         })}
@@ -726,7 +718,7 @@ function ProgressBarSection() {
         <XDSProgressBar
           value={40}
           label="Upload"
-          variant="positive"
+          variant="success"
           hasValueLabel
         />
         <XDSProgressBar
@@ -1057,87 +1049,92 @@ function TonalSection({
         white (T100).
         {isDark && (
           <>
-            {' '}Dark mode applies the audit&apos;s &sect;4 transform
-            (<strong>+5 brightness</strong> with taper above T80,{' '}
-            <strong>×0.85 chroma</strong>) so saturated stops don&apos;t
-            vibrate against the dark canvas.
+            {' '}
+            Dark mode applies the audit&apos;s &sect;4 transform (
+            <strong>+5 brightness</strong> with taper above T80,{' '}
+            <strong>×0.85 chroma</strong>) so saturated stops don&apos;t vibrate
+            against the dark canvas.
           </>
         )}{' '}
         {usage
           ? 'Markers ● show tone steps consumed by theme tokens (open the audit drawer for the full report).'
           : 'Badge tokens use T90/T30 (light) and T70/T15 (dark).'}
       </p>
-      {colors.map(({name, sourceHex, semantic, note, tones: overrideTones, dark}) => {
-        // In dark mode, use per-mode overrides if provided.
-        const effectiveSourceHex = (isDark && dark?.sourceHex) || sourceHex;
-        const effectiveTones = (isDark && dark?.tones) || overrideTones;
-        const hct = hexToHct(effectiveSourceHex);
-        const computedTones = tonalPaletteForMode(hct.hue, hct.chroma, mode);
-        // Theme override wins when it has a hex for this step; otherwise
-        // fall back to the algorithm so the strip is always a full 21-step
-        // ramp (no missing cells when the theme defines a subset).
-        const resolveTone = (t: number): string => {
-          if (effectiveTones) {
-            const v = effectiveTones[t];
-            if (typeof v === 'string') return v;
-          }
-          return computedTones[t];
-        };
-        const steps = TONE_STEPS;
-        return (
-          <div key={name} style={S.tonalRow}>
-            <span style={S.tonalLabel}>
-              {name}
-              {semantic && (
-                <span style={{display: 'block', fontSize: 8, opacity: 0.5}}>
-                  = {semantic}
-                </span>
-              )}
-              {note && (
-                <span style={{display: 'block', fontSize: 8, opacity: 0.5}}>
-                  {note}
-                </span>
-              )}
-            </span>
-            <div style={S.tonalStrip}>
-              {steps.map(t => {
-                const hex = resolveTone(t);
-                const usages = usage?.[tonalUsageKey(name, mode, t)] ?? [];
-                // Title summarises which tokens snap to this step (max 4
-                // listed to keep the native tooltip readable on dense ramps).
-                const titleLines = [
-                  `${name} T${t}: ${hex}`,
-                  ...usages
-                    .slice(0, 4)
-                    .map(u => `· ${u.name} (\u0394E ${u.deltaE.toFixed(1)})`),
-                  usages.length > 4 ? `· +${usages.length - 4} more` : '',
-                ].filter(Boolean);
-                return (
-                  <div
-                    key={t}
-                    style={{
-                      ...S.tonalCell(hex),
-                      position: 'relative' as const,
-                    }}
-                    title={titleLines.join('\n')}>
-                    <span style={S.tonalNum(t)}>{t}</span>
-                    {usages.length > 0 && (
-                      <div style={S.markerDot(t)}>
-                        {usages.length > 1 && (
-                          <span style={S.markerCount(t)}>{usages.length}</span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+      {colors.map(
+        ({name, sourceHex, semantic, note, tones: overrideTones, dark}) => {
+          // In dark mode, use per-mode overrides if provided.
+          const effectiveSourceHex = (isDark && dark?.sourceHex) || sourceHex;
+          const effectiveTones = (isDark && dark?.tones) || overrideTones;
+          const hct = hexToHct(effectiveSourceHex);
+          const computedTones = tonalPaletteForMode(hct.hue, hct.chroma, mode);
+          // Theme override wins when it has a hex for this step; otherwise
+          // fall back to the algorithm so the strip is always a full 21-step
+          // ramp (no missing cells when the theme defines a subset).
+          const resolveTone = (t: number): string => {
+            if (effectiveTones) {
+              const v = effectiveTones[t];
+              if (typeof v === 'string') return v;
+            }
+            return computedTones[t];
+          };
+          const steps = TONE_STEPS;
+          return (
+            <div key={name} style={S.tonalRow}>
+              <span style={S.tonalLabel}>
+                {name}
+                {semantic && (
+                  <span style={{display: 'block', fontSize: 8, opacity: 0.5}}>
+                    = {semantic}
+                  </span>
+                )}
+                {note && (
+                  <span style={{display: 'block', fontSize: 8, opacity: 0.5}}>
+                    {note}
+                  </span>
+                )}
+              </span>
+              <div style={S.tonalStrip}>
+                {steps.map(t => {
+                  const hex = resolveTone(t);
+                  const usages = usage?.[tonalUsageKey(name, mode, t)] ?? [];
+                  // Title summarises which tokens snap to this step (max 4
+                  // listed to keep the native tooltip readable on dense ramps).
+                  const titleLines = [
+                    `${name} T${t}: ${hex}`,
+                    ...usages
+                      .slice(0, 4)
+                      .map(u => `· ${u.name} (\u0394E ${u.deltaE.toFixed(1)})`),
+                    usages.length > 4 ? `· +${usages.length - 4} more` : '',
+                  ].filter(Boolean);
+                  return (
+                    <div
+                      key={t}
+                      style={{
+                        ...S.tonalCell(hex),
+                        position: 'relative' as const,
+                      }}
+                      title={titleLines.join('\n')}>
+                      <span style={S.tonalNum(t)}>{t}</span>
+                      {usages.length > 0 && (
+                        <div style={S.markerDot(t)}>
+                          {usages.length > 1 && (
+                            <span style={S.markerCount(t)}>
+                              {usages.length}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <span style={S.tonalHct}>
+                H:{hct.hue.toFixed(0)} C:{hct.chroma.toFixed(0)}
+              </span>
             </div>
-            <span style={S.tonalHct}>
-              H:{hct.hue.toFixed(0)} C:{hct.chroma.toFixed(0)}
-            </span>
-          </div>
-        );
-      })}
+          );
+        },
+      )}
       <p
         style={{
           fontSize: 10,
@@ -1354,42 +1351,42 @@ export function ThemePalettePreview({
               position: 'relative',
               zIndex: 1,
             }}>
-          <div style={S.inner}>
-            <h1 style={S.title}>{title}</h1>
-            <p style={S.subtitle}>{subtitle}</p>
-            {tonalModes.map(m => (
-              <XDSTheme key={m} theme={theme} mode={m}>
-                <XDSLayerProvider>
-                  {/* Spread overrideVars *inside* the inner XDSTheme so
+            <div style={S.inner}>
+              <h1 style={S.title}>{title}</h1>
+              <p style={S.subtitle}>{subtitle}</p>
+              {tonalModes.map(m => (
+                <XDSTheme key={m} theme={theme} mode={m}>
+                  <XDSLayerProvider>
+                    {/* Spread overrideVars *inside* the inner XDSTheme so
                       pending overrides win over the theme's own
                       `:scope { --color-*: … }` rules. Same trick the
                       ModeColumn uses. */}
-                  <div
-                    style={{
-                      ...overrideVars,
-                      background: 'var(--color-background-body)',
-                      color: 'var(--color-text-primary)',
-                      borderRadius: 16,
-                      padding: 24,
-                      marginBottom: 16,
-                      border: '1px solid var(--color-border)',
-                    }}>
-                    {tonalModes.length > 1 && (
-                      <p style={{...S.modeLabel, marginBottom: 16}}>
-                        {m === 'light' ? 'Light Mode' : 'Dark Mode'}
-                      </p>
-                    )}
-                    <TonalSection
-                      colors={tonalColors}
-                      mode={m}
-                      usage={effectiveUsage}
-                    />
-                  </div>
-                </XDSLayerProvider>
-              </XDSTheme>
-            ))}
-            <div style={columnsStyle}>{renderColumns()}</div>
-          </div>
+                    <div
+                      style={{
+                        ...overrideVars,
+                        background: 'var(--color-background-body)',
+                        color: 'var(--color-text-primary)',
+                        borderRadius: 16,
+                        padding: 24,
+                        marginBottom: 16,
+                        border: '1px solid var(--color-border)',
+                      }}>
+                      {tonalModes.length > 1 && (
+                        <p style={{...S.modeLabel, marginBottom: 16}}>
+                          {m === 'light' ? 'Light Mode' : 'Dark Mode'}
+                        </p>
+                      )}
+                      <TonalSection
+                        colors={tonalColors}
+                        mode={m}
+                        usage={effectiveUsage}
+                      />
+                    </div>
+                  </XDSLayerProvider>
+                </XDSTheme>
+              ))}
+              <div style={columnsStyle}>{renderColumns()}</div>
+            </div>
           </div>
         </XDSLayerProvider>
       </XDSTheme>

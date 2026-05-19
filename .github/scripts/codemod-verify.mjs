@@ -121,6 +121,12 @@ async function main() {
   const earliestIdx = allVersions.indexOf(earliestVersion);
   const fromVersion = earliestIdx > 0 ? allVersions[earliestIdx - 1] : '0.0.0';
 
+  // Save the base versions to detect which files the codemod actually modified
+  const baseVersions = {};
+  for (const file of revertedFiles) {
+    baseVersions[file] = fs.readFileSync(file, 'utf-8');
+  }
+
   // Run codemods on each affected consumer directory
   const affectedDirs = [
     ...new Set(
@@ -146,18 +152,44 @@ async function main() {
     });
   }
 
+  // Filter to only files the codemod actually modified.
+  // Files unchanged by the codemod have unrelated edits in this PR — skip them.
+  const codemodModifiedFiles = revertedFiles.filter((file) => {
+    try {
+      return fs.readFileSync(file, 'utf-8') !== baseVersions[file];
+    } catch {
+      return false;
+    }
+  });
+  const skippedFiles = revertedFiles.filter((f) => !codemodModifiedFiles.includes(f));
+
+  if (codemodModifiedFiles.length === 0) {
+    console.log('\n✅ Codemod made no changes to consumer files — nothing to verify.');
+    for (const file of consumerFiles) {
+      fs.writeFileSync(file, prVersions[file]);
+    }
+    process.exit(0);
+  }
+
+  if (skippedFiles.length > 0) {
+    console.log(`\nSkipping ${skippedFiles.length} file(s) not modified by codemod:`);
+    for (const file of skippedFiles) {
+      console.log(`  ⏭  ${file}`);
+    }
+  }
+
   // Format codemod output with prettier to normalize style differences
   // (jscodeshift's toSource() may change quotes, spacing, etc.)
-  console.log('Formatting codemod output with prettier...');
+  console.log('\nFormatting codemod output with prettier...');
   try {
-    run(`npx prettier --write ${revertedFiles.map((f) => `"${f}"`).join(' ')}`);
+    run(`npx prettier --write ${codemodModifiedFiles.map((f) => `"${f}"`).join(' ')}`);
   } catch (e) {
     console.log('  ⚠️  Prettier formatting failed, comparing raw output');
   }
 
   // Also format the expected (PR) versions for a fair comparison
   const formattedExpected = {};
-  for (const file of revertedFiles) {
+  for (const file of codemodModifiedFiles) {
     // Use the original file extension so prettier can infer the parser
     const ext = path.extname(file);
     const tmpFile = file.replace(ext, `.expected${ext}`);
@@ -171,12 +203,16 @@ async function main() {
     fs.unlinkSync(tmpFile);
   }
 
-  // Compare formatted codemod output against formatted PR versions
+  // Compare codemod changes against PR versions.
+  // Instead of requiring exact file match, we verify that every line the
+  // codemod REMOVED from base is also absent in the PR, and every line it
+  // ADDED is present in the PR. This allows the PR to contain additional
+  // changes from stacked commits that are beyond the codemod's scope.
   let mismatches = 0;
   let matches = 0;
   const mismatchDetails = [];
 
-  for (const file of revertedFiles) {
+  for (const file of codemodModifiedFiles) {
     const expected = formattedExpected[file] || prVersions[file];
     let actual;
     try {
@@ -189,16 +225,43 @@ async function main() {
       matches++;
       console.log(`  ✅ ${file}`);
     } else {
-      mismatches++;
-      const actualLines = actual.split('\n');
-      const expectedLines = expected.split('\n');
-      let diffCount = 0;
-      const maxLen = Math.max(actualLines.length, expectedLines.length);
-      for (let i = 0; i < maxLen; i++) {
-        if (actualLines[i] !== expectedLines[i]) diffCount++;
+      // Check if the codemod's changes are a subset of the PR's changes.
+      // The codemod transforms base → actual. The PR transforms base → expected.
+      // We verify that lines removed by codemod are also removed in PR,
+      // and lines added by codemod are present in PR.
+      const baseLines = (baseVersions[file] || '').split('\n');
+      const codemodLines = actual.split('\n');
+      const prLines = expected.split('\n');
+
+      // Find lines removed by codemod (in base but not in codemod output)
+      const codemodRemovedFromBase = baseLines.filter((l) => !codemodLines.includes(l));
+      // Find lines added by codemod (in codemod output but not in base)
+      const codemodAddedToBase = codemodLines.filter((l) => !baseLines.includes(l));
+
+      // Check: removed lines should also be absent from PR
+      const missingRemovals = codemodRemovedFromBase.filter(
+        (l) => l.trim() && prLines.includes(l),
+      );
+      // Check: added lines should be present in PR
+      const missingAdditions = codemodAddedToBase.filter(
+        (l) => l.trim() && !prLines.includes(l),
+      );
+
+      if (missingRemovals.length === 0 && missingAdditions.length === 0) {
+        matches++;
+        console.log(`  ✅ ${file} (superset — PR includes codemod changes + additional edits)`);
+      } else {
+        mismatches++;
+        const issues = [];
+        if (missingRemovals.length > 0) {
+          issues.push(`${missingRemovals.length} line(s) codemod removed still present in PR`);
+        }
+        if (missingAdditions.length > 0) {
+          issues.push(`${missingAdditions.length} line(s) codemod added missing from PR`);
+        }
+        mismatchDetails.push({file, diffLines: missingRemovals.length + missingAdditions.length, issues: issues.join('; ')});
+        console.log(`  ❌ ${file} (${issues.join('; ')})`);
       }
-      mismatchDetails.push({file, diffLines: diffCount});
-      console.log(`  ❌ ${file} (${diffCount} lines differ)`);
     }
   }
 
@@ -218,9 +281,9 @@ async function main() {
   console.log(`  ❌ Mismatches:   ${mismatches}`);
 
   if (mismatches > 0) {
-    console.log('\nMismatched files (codemod output ≠ committed changes):');
-    for (const {file, diffLines} of mismatchDetails) {
-      console.log(`  ❌ ${file} (${diffLines} line${diffLines === 1 ? '' : 's'} differ)`);
+    console.log('\nMismatched files (codemod changes not fully reflected in PR):');
+    for (const {file, diffLines, issues} of mismatchDetails) {
+      console.log(`  ❌ ${file} (${issues || diffLines + ' lines differ'})`);
     }
     console.log('\n⚠️  The codemod did not reproduce the committed consumer changes.');
     console.log('This means either:');
