@@ -54,6 +54,7 @@ export * from './DateInput';
 export * from './DateTimePicker';
 export * from './DateRangePicker';
 export * from './Field';
+export * from './FileInput';
 export * from './FormLayout';
 export * from './Grid';
 export * from './Section';
