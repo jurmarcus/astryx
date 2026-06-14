@@ -179,23 +179,11 @@ const $ = id => document.getElementById(id);
 const data = await fetch('/registry.json').then(r => r.json());
 const REG = data.registry, BLOCKS = data.blocks;
 
-const heur = s => (String(s).match(/\w+|[^\s\w]/g) || []).length;
 const escapeHtml = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 
-// Canonical tokens come from the server (/tokens → gpt-tokenizer o200k_base,
-// heuristic fallback). Counts are cached per string; heuristic shows instantly.
-let ENCODER = 'est.';
-const tokCache = new Map();
-const tok = s => (tokCache.has(s) ? tokCache.get(s) : heur(s));
-async function refreshTokens(texts) {
-  try {
-    const r = await fetch('/tokens', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({texts})});
-    const j = await r.json();
-    ENCODER = j.encoder;
-    texts.forEach((t, i) => tokCache.set(t, j.counts[i]));
-    return true;
-  } catch { return false; }
-}
+// Tokenization is fully client-side: import the bundled tokenizer module the
+// server emits (gpt-tokenizer o200k_base, esbuild-bundled; heuristic fallback).
+const {countTokens: tok, ENCODER} = await import('/vendor/tokenizer.mjs');
 
 function metricsHtml(inTok, inChars, outTok, outChars) {
   const ratio = inTok > 0 && outTok > 0 ? (outTok / inTok).toFixed(1) + '×' : '—';
@@ -225,7 +213,6 @@ function render() {
     $('expand').disabled = false;
     const code = doExpand(); // live "rendered source"
     paintMetrics(expr, code);
-    refreshTokens([expr, code]).then(ok => ok && paintMetrics(expr, code)); // canonical refine
   } else {
     status.innerHTML = `<span class="pill err">${r.errors.length} error${r.errors.length===1?'':'s'}</span>`;
     errors.innerHTML = r.errors.map(e =>
@@ -236,7 +223,6 @@ function render() {
     $('code').textContent = '';
     $('expand').disabled = true;
     paintMetrics(expr, '');
-    refreshTokens([expr]).then(ok => ok && paintMetrics(expr, ''));
   }
 }
 
@@ -295,8 +281,6 @@ $('expand').addEventListener('click', doExpand);
 renderBrowser('');
 $('src').value = EXAMPLES[0][2];
 render();
-// Canonical per-example token counts (one batch call), then repaint the list.
-refreshTokens(EXAMPLES.map(e => e[2])).then(ok => ok && renderBrowser($('search').value));
 </script>
 </body>
 </html>
