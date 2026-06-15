@@ -38,17 +38,27 @@ function heuristicTokens(src: string): number {
 }
 
 /**
- * Loads gpt-tokenizer's o200k_base BPE encoder (the modern GPT-4o/5 vocab)
- * lazily on the client, falling back to the heuristic until it's ready.
- * Returns a {count, encoder} pair so the UI can show which is active.
+ * Loads the build-time tokenizer module from /xle-tokenizer.mjs (esbuild-bundled
+ * gpt-tokenizer o200k_base, or a heuristic fallback — see
+ * scripts/generate-xle-tokenizer.mjs). Loaded client-side via a webpackIgnore
+ * runtime import so the docsite build never depends on gpt-tokenizer resolving
+ * through webpack. Falls back to the inline heuristic until it's ready.
  */
+type TokenizerModule = {countTokens: (s: string) => number; ENCODER: string};
+// Variable specifier: keeps the path out of webpack's static graph (paired
+// with webpackIgnore) and out of TS module resolution — it's a runtime asset.
+const TOKENIZER_URL = '/xle-tokenizer.mjs';
+
 function useTokenCounter() {
   const [bpe, setBpe] = useState<((s: string) => number) | null>(null);
+  const [encoder, setEncoder] = useState('est.');
   useEffect(() => {
     let alive = true;
-    import('gpt-tokenizer/encoding/o200k_base')
+    (import(/* webpackIgnore: true */ TOKENIZER_URL) as Promise<TokenizerModule>)
       .then(m => {
-        if (alive) setBpe(() => (s: string) => m.countTokens(s));
+        if (!alive) return;
+        setBpe(() => (s: string) => m.countTokens(s));
+        setEncoder(m.ENCODER || 'o200k_base');
       })
       .catch(() => {
         /* keep heuristic */
@@ -57,10 +67,7 @@ function useTokenCounter() {
       alive = false;
     };
   }, []);
-  return {
-    count: bpe ?? heuristicTokens,
-    encoder: bpe ? 'o200k_base' : 'est.',
-  };
+  return {count: bpe ?? heuristicTokens, encoder: bpe ? encoder : 'est.'};
 }
 
 const s = stylex.create({
