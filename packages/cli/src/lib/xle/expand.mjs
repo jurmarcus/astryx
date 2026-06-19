@@ -385,7 +385,7 @@ class Emitter {
     return [...open, ...bodyLines, `${pad}</${tag}>`];
   }
 
-  emitSlotValue(slot, depth) {
+  emitSlotValue(slot, _depth) {
     const value = slot.value;
     if (value == null) {
       return [`${INDENT.repeat(0)}null /* TODO(xle): @${slot.key} */`];
