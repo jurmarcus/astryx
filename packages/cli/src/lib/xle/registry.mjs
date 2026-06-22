@@ -140,6 +140,48 @@ export async function buildRegistry({cwd = process.cwd()} = {}) {
     }
   }
 
+  // Some components are documented in a sibling `<Name>.doc.mjs` inside another
+  // component's dir (e.g. Text/Heading.doc.mjs documents Heading, with its own
+  // props like `level`). The per-dir main-doc read above only sees the bare
+  // `{name: 'Heading'}` cross-reference stub (no props), so without this those
+  // props go missing and valid attrs (e.g. Heading[level=2]) get rejected.
+  // Read every .doc.mjs in each contributing dir and upgrade props, keyed to
+  // each component's own export subpath. Props-only: never adds empty entries.
+  const upgradeFromDoc = (rawName, props, fallbackDir) => {
+    if (!props || props.length === 0) return;
+    const name = normalizeName(rawName);
+    // Prefer the component's own export subpath (Heading → @xds/core/Heading);
+    // fall back to the dir it was found in, then any existing entry's path.
+    const ip =
+      resolveImportPath(coreDir, name) ||
+      resolveImportPath(coreDir, fallbackDir) ||
+      components.get(name)?.importPath;
+    const entry = toComponentEntry(name, props, name, ip);
+    const existing = components.get(name);
+    if (!existing || entry.props.size > existing.props.size) components.set(name, entry);
+  };
+  for (const dirName of dirNames) {
+    const dirPath = path.join(coreDir, 'src', dirName);
+    let files;
+    try {
+      files = fs.readdirSync(dirPath).filter(f => f.endsWith('.doc.mjs'));
+    } catch {
+      continue;
+    }
+    for (const file of files) {
+      let docs;
+      try {
+        docs = await loadDocs(path.join(dirPath, file), {});
+      } catch {
+        continue;
+      }
+      if (docs.props) upgradeFromDoc(docs.name || file.replace(/\.doc\.mjs$/, ''), docs.props, dirName);
+      for (const sub of docs.components || []) {
+        if (sub?.name && sub.props?.length) upgradeFromDoc(sub.name, sub.props, dirName);
+      }
+    }
+  }
+
   // Exported components without their own doc entry (e.g. TableHeader,
   // TableBody) still get minimal registry entries so they can be named in
   // expressions — the validator warns rather than validates their props.
