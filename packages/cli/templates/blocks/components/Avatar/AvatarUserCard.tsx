@@ -6,19 +6,24 @@ import {Avatar, AvatarStatusDot} from '@xds/core/Avatar';
 import {Stack} from '@xds/core/Layout';
 import {Text} from '@xds/core/Text';
 
+const CDN = 'https://lookaside.facebook.com/assets/xds_oss';
+
 const USERS = [
   {
-    name: 'Alex Daniels',
+    name: 'Itai Jordaan',
+    src: `${CDN}/DATA-Itai-Jordaan.png`,
     role: 'Engineering Lead',
     variant: 'success' as const,
   },
   {
-    name: 'Ann Smith',
+    name: 'Margot Schroder',
+    src: `${CDN}/DATA-Margot-Schroder.png`,
     role: 'Product Designer',
     variant: 'neutral' as const,
   },
   {
-    name: 'Carol Davis',
+    name: 'Daniela Gimenez',
+    src: `${CDN}/DATA-Daniela-Gimenez.png`,
     role: 'Engineering Manager',
     variant: 'error' as const,
   },
@@ -30,6 +35,7 @@ export default function AvatarUserCard() {
       {USERS.map(user => (
         <Stack key={user.name} direction="horizontal" gap={3} vAlign="center">
           <Avatar
+            src={user.src}
             name={user.name}
             size="medium"
             status={

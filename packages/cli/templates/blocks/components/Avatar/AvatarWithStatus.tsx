@@ -5,21 +5,26 @@
 import {Avatar, AvatarStatusDot} from '@xds/core/Avatar';
 import {Stack} from '@xds/core/Layout';
 
+const CDN = 'https://lookaside.facebook.com/assets/xds_oss';
+
 export default function AvatarWithStatus() {
   return (
     <Stack direction="horizontal" gap={4} vAlign="center">
       <Avatar
-        name="Alex Daniels"
+        src={`${CDN}/DATA-Itai-Jordaan.png`}
+        name="Itai Jordaan"
         size="large"
         status={<AvatarStatusDot variant="success" label="Online" />}
       />
       <Avatar
-        name="Ann Smith"
+        src={`${CDN}/DATA-Margot-Schroder.png`}
+        name="Margot Schroder"
         size="large"
         status={<AvatarStatusDot variant="neutral" label="Offline" />}
       />
       <Avatar
-        name="Carol Davis"
+        src={`${CDN}/DATA-Pablo-Morales.png`}
+        name="Pablo Morales"
         size="large"
         status={<AvatarStatusDot variant="error" label="Busy" />}
       />

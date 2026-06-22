@@ -10,7 +10,11 @@ export default function AvatarFallbackChain() {
   return (
     <VStack gap={4}>
       <HStack gap={3} vAlign="center">
-        <Avatar name="Carol Davis" size="medium" />
+        <Avatar
+          src="https://lookaside.facebook.com/assets/xds_oss/DATA-Daniela-Gimenez.png"
+          name="Daniela Gimenez"
+          size="medium"
+        />
         <Text type="supporting">Valid src</Text>
       </HStack>
       <HStack gap={3} vAlign="center">

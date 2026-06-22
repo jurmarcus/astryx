@@ -7,21 +7,28 @@ import {AvatarGroup, AvatarGroupOverflow} from '@xds/core/AvatarGroup';
 import {Stack} from '@xds/core/Layout';
 import {Text} from '@xds/core/Text';
 
+const CDN = 'https://lookaside.facebook.com/assets/xds_oss';
+
 const USERS = [
   {
-    name: 'Alex Daniels',
+    name: 'Ami Pena',
+    src: `${CDN}/DATA-Ami-Pena.png`,
   },
   {
-    name: 'Ann Smith',
+    name: 'Drew Young',
+    src: `${CDN}/DATA-Drew-Young.png`,
   },
   {
-    name: 'Carol Davis',
+    name: 'Gabriela Fernandez',
+    src: `${CDN}/DATA-Gabriela-Fernandez.png`,
   },
   {
-    name: 'Gina Wilson',
+    name: 'Jihoo Song',
+    src: `${CDN}/DATA-Jihoo-Song.png`,
   },
   {
-    name: 'Eve Park',
+    name: 'Nam Tran',
+    src: `${CDN}/DATA-Nam-Tran.png`,
   },
 ];
 
@@ -34,7 +41,7 @@ export default function AvatarGroupBlock() {
         </Text>
         <AvatarGroup size="medium">
           {USERS.map(user => (
-            <Avatar key={user.name} name={user.name} />
+            <Avatar key={user.name} src={user.src} name={user.name} />
           ))}
           <AvatarGroupOverflow count={3} />
         </AvatarGroup>
@@ -45,7 +52,7 @@ export default function AvatarGroupBlock() {
         </Text>
         <AvatarGroup size="medium">
           {USERS.slice(0, 3).map(user => (
-            <Avatar key={user.name} name={user.name} />
+            <Avatar key={user.name} src={user.src} name={user.name} />
           ))}
           <AvatarGroupOverflow count={8} />
         </AvatarGroup>
