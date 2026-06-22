@@ -4,7 +4,6 @@
 
 import {useState, useMemo} from 'react';
 import * as stylex from '@stylexjs/stylex';
-import {SideNav, SideNavItem, SideNavSection} from '@astryxdesign/core/SideNav';
 
 import {Layout, LayoutContent, LayoutPanel} from '@astryxdesign/core/Layout';
 import {ResizeHandle, useResizable} from '@astryxdesign/core/Resizable';
@@ -27,22 +26,8 @@ import type {TreeListItemData} from '@astryxdesign/core/TreeList';
 import {
   FolderIcon,
   DocumentTextIcon,
-  CodeBracketIcon,
   MagnifyingGlassIcon,
-  CommandLineIcon,
-  ExclamationTriangleIcon,
-  InformationCircleIcon,
-  BugAntIcon,
-  HomeIcon,
-  FolderOpenIcon,
-  PuzzlePieceIcon,
 } from '@heroicons/react/24/outline';
-import {
-  HomeIcon as HomeIconSolid,
-  FolderOpenIcon as FolderOpenSolid,
-  MagnifyingGlassIcon as MagnifyingGlassSolid,
-  PuzzlePieceIcon as PuzzlePieceSolid,
-} from '@heroicons/react/24/solid';
 
 const styles = stylex.create({
   contentFill: {
@@ -60,6 +45,14 @@ const styles = stylex.create({
   metadataCompact: {
     gap: `${spacingVars['--spacing-1']} ${spacingVars['--spacing-3']}`,
   },
+  sidePanelText: {
+    display: 'block',
+    minWidth: 0,
+    maxWidth: '100%',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
   historyTimelineDot: {
     width: 8,
     height: 8,
@@ -74,6 +67,17 @@ const styles = stylex.create({
   },
   fileExplorer: {
     padding: 16,
+    minWidth: 0,
+  },
+  propertiesPanel: {
+    height: '100%',
+  },
+  propertiesContent: {
+    flex: 1,
+    minHeight: 0,
+  },
+  propertyActions: {
+    marginTop: 'auto',
   },
   terminalArea: {
     height: '100%',
@@ -82,12 +86,6 @@ const styles = stylex.create({
   hideOnMobile: {
     display: {
       default: 'contents',
-      '@media (max-width: 768px)': 'none',
-    },
-  },
-  hideSideNav: {
-    display: {
-      default: 'flex',
       '@media (max-width: 768px)': 'none',
     },
   },
@@ -151,22 +149,27 @@ $ `;
 function buildFileTree(
   onFileClick: (name: string) => void,
 ): TreeListItemData[] {
+  const label = (text: string) => (
+    <span title={text} {...stylex.props(styles.sidePanelText)}>
+      {text}
+    </span>
+  );
   const file = (id: string): TreeListItemData => ({
     id,
-    label: id,
+    label: label(id),
     startContent: <Icon icon={DocumentTextIcon} size="xsm" />,
     onClick: () => onFileClick(id),
   });
   return [
     {
       id: 'src',
-      label: 'src',
+      label: label('src'),
       startContent: <Icon icon={FolderIcon} size="xsm" />,
       isExpanded: true,
       children: [
         {
           id: 'components',
-          label: 'components',
+          label: label('components'),
           startContent: <Icon icon={FolderIcon} size="xsm" />,
           isExpanded: true,
           children: [
@@ -177,14 +180,14 @@ function buildFileTree(
         },
         {
           id: 'pages',
-          label: 'pages',
+          label: label('pages'),
           startContent: <Icon icon={FolderIcon} size="xsm" />,
           isExpanded: true,
           children: [file('index.tsx'), file('about.tsx')],
         },
         {
           id: 'styles',
-          label: 'styles',
+          label: label('styles'),
           startContent: <Icon icon={FolderIcon} size="xsm" />,
           isExpanded: true,
           children: [file('tokens.stylex.ts'), file('theme.ts')],
@@ -216,7 +219,6 @@ const HISTORY_ITEMS = [
 
 export default function ResizableWorkspacePage() {
   const [activeFile, setActiveFile] = useState('Counter.tsx');
-  const [activeNavItem, setActiveNavItem] = useState('Explorer');
   const [activeTermTab, setActiveTermTab] = useState('terminal');
   const [activePropertiesTab, setActivePropertiesTab] = useState('properties');
   const fileTree = useMemo(() => buildFileTree(setActiveFile), []);
@@ -248,51 +250,6 @@ export default function ResizableWorkspacePage() {
   return (
     <Layout
       height="fill"
-      start={
-        <LayoutPanel hasDivider={false} padding={0}>
-          <SideNav
-            collapsible={{defaultIsCollapsed: true}}
-            resizable
-            xstyle={styles.hideSideNav}>
-            <SideNavSection title="Navigation" isHeaderHidden>
-              <SideNavItem
-                label="Home"
-                icon={HomeIcon}
-                selectedIcon={HomeIconSolid}
-                isSelected={activeNavItem === 'Home'}
-                onClick={() => setActiveNavItem('Home')}
-              />
-              <SideNavItem
-                label="Explorer"
-                icon={FolderOpenIcon}
-                selectedIcon={FolderOpenSolid}
-                isSelected={activeNavItem === 'Explorer'}
-                onClick={() => setActiveNavItem('Explorer')}
-              />
-              <SideNavItem
-                label="Search"
-                icon={MagnifyingGlassIcon}
-                selectedIcon={MagnifyingGlassSolid}
-                isSelected={activeNavItem === 'Search'}
-                onClick={() => setActiveNavItem('Search')}
-              />
-              <SideNavItem
-                label="Source Control"
-                icon={CodeBracketIcon}
-                isSelected={activeNavItem === 'Source Control'}
-                onClick={() => setActiveNavItem('Source Control')}
-              />
-              <SideNavItem
-                label="Extensions"
-                icon={PuzzlePieceIcon}
-                selectedIcon={PuzzlePieceSolid}
-                isSelected={activeNavItem === 'Extensions'}
-                onClick={() => setActiveNavItem('Extensions')}
-              />
-            </SideNavSection>
-          </SideNav>
-        </LayoutPanel>
-      }
       content={
         <LayoutContent padding={0}>
           <Layout
@@ -335,13 +292,13 @@ export default function ResizableWorkspacePage() {
                   height="fill"
                   content={
                     <LayoutContent padding={0}>
-                      <Stack
-                        direction="vertical"
-                        xstyle={styles.contentFill}>
+                      <Stack direction="vertical" xstyle={styles.contentFill}>
                         <div {...stylex.props(styles.editorArea)}>
                           <CodeBlock
                             code={EDITOR_CODE}
                             language="typescript"
+                            container="section"
+                            hasLanguageLabel={false}
                             hasLineNumbers
                             highlightLines={[21]}
                             hasCopyButton={false}
@@ -378,43 +335,17 @@ export default function ResizableWorkspacePage() {
                                 size="sm"
                                 hasDivider={false}
                                 xstyle={styles.tabListPadding}>
-                                <Tab
-                                  label="Terminal"
-                                  value="terminal"
-                                  icon={
-                                    <Icon icon={CommandLineIcon} size="sm" />
-                                  }
-                                />
-                                <Tab
-                                  label="Problems"
-                                  value="problems"
-                                  icon={
-                                    <Icon
-                                      icon={ExclamationTriangleIcon}
-                                      size="sm"
-                                    />
-                                  }
-                                />
-                                <Tab
-                                  label="Output"
-                                  value="output"
-                                  icon={
-                                    <Icon
-                                      icon={InformationCircleIcon}
-                                      size="sm"
-                                    />
-                                  }
-                                />
-                                <Tab
-                                  label="Debug"
-                                  value="debug"
-                                  icon={<Icon icon={BugAntIcon} size="sm" />}
-                                />
+                                <Tab label="Terminal" value="terminal" />
+                                <Tab label="Problems" value="problems" />
+                                <Tab label="Output" value="output" />
+                                <Tab label="Debug" value="debug" />
                               </TabList>
                               <div {...stylex.props(styles.terminalWrapper)}>
                                 <CodeBlock
                                   code={TERMINAL_OUTPUT}
                                   language="bash"
+                                  container="section"
+                                  hasLanguageLabel={false}
                                   hasCopyButton={false}
                                   size="sm"
                                   style={{
@@ -446,7 +377,10 @@ export default function ResizableWorkspacePage() {
                           width={endPanel.size}
                           hasDivider={false}
                           padding={4}>
-                          <Stack direction="vertical" gap={3}>
+                          <Stack
+                            direction="vertical"
+                            gap={3}
+                            xstyle={styles.propertiesPanel}>
                             <SegmentedControl
                               label="Properties panel sections"
                               value={activePropertiesTab}
@@ -463,17 +397,22 @@ export default function ResizableWorkspacePage() {
                               />
                             </SegmentedControl>
                             {activePropertiesTab === 'properties' ? (
-                              <>
+                              <Stack
+                                direction="vertical"
+                                gap={3}
+                                xstyle={styles.propertiesContent}>
                                 <Stack direction="vertical" gap={1}>
-                                  <Heading level={3}>
+                                  <Heading level={3} maxLines={1}>
                                     {activeFile}
                                   </Heading>
-                                  <Text color="secondary" type="supporting">
+                                  <Text
+                                    color="secondary"
+                                    type="supporting"
+                                    maxLines={1}>
                                     src/components/{activeFile}
                                   </Text>
                                 </Stack>
-                                <MetadataList
-                                  xstyle={styles.metadataCompact}>
+                                <MetadataList xstyle={styles.metadataCompact}>
                                   {PROPERTIES.map(prop => (
                                     <MetadataListItem
                                       key={prop.label}
@@ -482,26 +421,27 @@ export default function ResizableWorkspacePage() {
                                     </MetadataListItem>
                                   ))}
                                 </MetadataList>
-                                <Stack direction="vertical" gap={2}>
-                                  <Stack direction="vertical" gap={2}>
-                                    <Button
-                                      label="Format Document"
-                                      size="md"
-                                      variant="secondary"
-                                    />
-                                    <Button
-                                      label="Go to Definition"
-                                      size="md"
-                                      variant="secondary"
-                                    />
-                                    <Button
-                                      label="Find References"
-                                      size="md"
-                                      variant="secondary"
-                                    />
-                                  </Stack>
+                                <Stack
+                                  direction="vertical"
+                                  gap={2}
+                                  xstyle={styles.propertyActions}>
+                                  <Button
+                                    label="Format Document"
+                                    size="sm"
+                                    variant="secondary"
+                                  />
+                                  <Button
+                                    label="Go to Definition"
+                                    size="sm"
+                                    variant="secondary"
+                                  />
+                                  <Button
+                                    label="Find References"
+                                    size="sm"
+                                    variant="secondary"
+                                  />
                                 </Stack>
-                              </>
+                              </Stack>
                             ) : (
                               <Stack direction="vertical" gap={1}>
                                 <List>
@@ -512,7 +452,8 @@ export default function ResizableWorkspacePage() {
                                       endContent={
                                         <Text
                                           type="supporting"
-                                          color="secondary">
+                                          color="secondary"
+                                          maxLines={1}>
                                           {item.time}
                                         </Text>
                                       }

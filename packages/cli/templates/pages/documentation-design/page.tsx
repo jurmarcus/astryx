@@ -2,14 +2,8 @@
 
 'use client';
 
-import {useState, useMemo} from 'react';
+import {useEffect, useRef, useState, useMemo} from 'react';
 import * as stylex from '@stylexjs/stylex';
-import {
-  SideNav,
-  SideNavHeading,
-  SideNavItem,
-  SideNavSection,
-} from '@astryxdesign/core/SideNav';
 import {Heading, Text} from '@astryxdesign/core/Text';
 import {Button} from '@astryxdesign/core/Button';
 import {IconButton} from '@astryxdesign/core/IconButton';
@@ -20,8 +14,9 @@ import {Token} from '@astryxdesign/core/Token';
 import {Banner} from '@astryxdesign/core/Banner';
 import {CodeBlock} from '@astryxdesign/core/CodeBlock';
 import {TabList, Tab} from '@astryxdesign/core/TabList';
+import {Selector} from '@astryxdesign/core/Selector';
 import {HStack, VStack, StackItem} from '@astryxdesign/core/Stack';
-import {Layout, LayoutContent, LayoutPanel} from '@astryxdesign/core/Layout';
+import {Layout, LayoutContent} from '@astryxdesign/core/Layout';
 import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
 import {Divider} from '@astryxdesign/core/Divider';
 import {Tooltip} from '@astryxdesign/core/Tooltip';
@@ -29,6 +24,7 @@ import {Table, pixel} from '@astryxdesign/core/Table';
 import {Icon} from '@astryxdesign/core/Icon';
 import {Section} from '@astryxdesign/core/Section';
 import {Center} from '@astryxdesign/core/Center';
+import {Outline, type OutlineItem} from '@astryxdesign/core/Outline';
 import {
   ArrowTopRightOnSquareIcon,
   ArrowsPointingOutIcon,
@@ -37,7 +33,160 @@ import {
 
 const styles = stylex.create({
   tabListFlush: {marginInlineStart: '-12px'},
+  docGrid: {
+    display: 'grid',
+    gridTemplateColumns: {
+      default: 'minmax(0, 1fr) 220px',
+      '@media (max-width: 768px)': 'minmax(0, 1fr)',
+    },
+    gap: 32,
+    maxWidth: 960,
+    marginInline: 'auto',
+  },
+  docBody: {
+    minWidth: 0,
+  },
+  outlineAside: {
+    paddingBlockStart: 120,
+    display: {
+      default: 'block',
+      '@media (max-width: 768px)': 'none',
+    },
+  },
+  outlineSticky: {
+    position: 'sticky',
+    top: 24,
+    alignSelf: 'start',
+  },
+  mobileOutlineSelector: {
+    display: {
+      default: 'none',
+      '@media (max-width: 768px)': 'block',
+    },
+  },
 });
+
+const COMPONENT_OUTLINE_ITEMS: OutlineItem[] = [
+  {id: 'usage', label: 'Usage', level: 2},
+  {id: 'best-practices', label: 'Best practices', level: 3},
+  {id: 'examples', label: 'Examples', level: 2},
+];
+
+const COMPONENT_OUTLINE_OPTIONS = COMPONENT_OUTLINE_ITEMS.map(item => ({
+  value: item.id,
+  label: item.label,
+}));
+
+function getScrollRoot(element: HTMLElement | null): HTMLElement | Window {
+  let current = element?.parentElement ?? null;
+
+  while (current != null) {
+    const style = window.getComputedStyle(current);
+    const isScrollable =
+      /(auto|scroll|overlay)/.test(style.overflowY) &&
+      current.scrollHeight > current.clientHeight;
+
+    if (isScrollable) {
+      return current;
+    }
+
+    current = current.parentElement;
+  }
+
+  return window;
+}
+
+function getScrollTop(root: HTMLElement | Window): number {
+  return root instanceof Window ? window.scrollY : root.scrollTop;
+}
+
+function getViewportHeight(root: HTMLElement | Window): number {
+  return root instanceof Window ? window.innerHeight : root.clientHeight;
+}
+
+function getScrollHeight(root: HTMLElement | Window): number {
+  return root instanceof Window
+    ? document.documentElement.scrollHeight
+    : root.scrollHeight;
+}
+
+function getRootTop(root: HTMLElement | Window): number {
+  return root instanceof Window ? 0 : root.getBoundingClientRect().top;
+}
+
+function scrollRootTo(root: HTMLElement | Window, top: number) {
+  root.scrollTo({top, behavior: 'smooth'});
+}
+
+function usePageOutline(items: OutlineItem[]) {
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const [activeId, setActiveId] = useState(items[0]?.id);
+
+  const scrollToId = (id: string) => {
+    const target = document.getElementById(id);
+    const root = getScrollRoot(contentRef.current);
+    if (target == null) {
+      setActiveId(id);
+      return;
+    }
+
+    const nextTop =
+      getScrollTop(root) +
+      target.getBoundingClientRect().top -
+      getRootTop(root);
+
+    scrollRootTo(root, nextTop);
+    setActiveId(id);
+    window.history.pushState(null, '', `#${id}`);
+  };
+
+  useEffect(() => {
+    const updateActiveId = () => {
+      const root = getScrollRoot(contentRef.current);
+      let nextId = items[0]?.id;
+      let closestTop = Number.NEGATIVE_INFINITY;
+      const rootTop = getRootTop(root);
+
+      for (const item of items) {
+        const target = document.getElementById(item.id);
+        if (target == null) {
+          continue;
+        }
+
+        const top = target.getBoundingClientRect().top - rootTop;
+        if (top <= 96 && top > closestTop) {
+          closestTop = top;
+          nextId = item.id;
+        }
+      }
+
+      if (
+        getScrollTop(root) + getViewportHeight(root) >=
+        getScrollHeight(root) - 2
+      ) {
+        nextId = items[items.length - 1]?.id;
+      }
+
+      setActiveId(nextId);
+    };
+
+    updateActiveId();
+    // Capture scroll events from the page, the docsite preview frame, or any
+    // nested scroll container that hosts the template.
+    document.addEventListener('scroll', updateActiveId, {
+      capture: true,
+      passive: true,
+    });
+    window.addEventListener('resize', updateActiveId);
+
+    return () => {
+      document.removeEventListener('scroll', updateActiveId, true);
+      window.removeEventListener('resize', updateActiveId);
+    };
+  }, [items]);
+
+  return {activeId, contentRef, scrollToId};
+}
 
 // ---------------------------------------------------------------------------
 // DialogPreview — stateful dialog preview for component previews
@@ -493,14 +642,11 @@ function getComponentDocs(key: string) {
 // ComponentDetailView
 // ---------------------------------------------------------------------------
 
-function ComponentDetailView({
-  activeNav,
-  nav,
-}: {
-  activeNav: string;
-  nav: React.ReactNode;
-}) {
+function ComponentDetailView({activeNav}: {activeNav: string}) {
   const [exampleTabs, setExampleTabs] = useState<Record<string, string>>({});
+  const {activeId, contentRef, scrollToId} = usePageOutline(
+    COMPONENT_OUTLINE_ITEMS,
+  );
 
   const EXAMPLE_PREVIEWS: Record<string, React.ReactNode[]> = {
     button: [
@@ -556,144 +702,172 @@ function ComponentDetailView({
 
   return (
     <Layout
-      height="fill"
-      contentWidth={960}
-      start={
-        <LayoutPanel hasDivider padding={0}>
-          {nav}
-        </LayoutPanel>
-      }
+      height="auto"
       content={
-        <LayoutContent padding={8}>
-          <VStack gap={8}>
-            <VStack gap={2}>
-              <Text type="display-1">{getComponentName(activeNav)}</Text>
-              <Text type="supporting" color="secondary">
-                March 30, 2026 · Updated 5:40 p.m. PST
-              </Text>
-            </VStack>
-
-            <Divider />
-
-            <Card variant="muted" padding={0}>
-              <Center height={360}>
-                {COMPONENT_PREVIEWS[activeNav] ?? (
+        <LayoutContent ref={contentRef} isScrollable={false} padding={8}>
+          <section {...stylex.props(styles.docGrid)}>
+            <article {...stylex.props(styles.docBody)}>
+              <VStack gap={8}>
+                <VStack gap={2}>
+                  <Text type="display-1">{getComponentName(activeNav)}</Text>
                   <Text type="supporting" color="secondary">
-                    Preview coming soon
+                    March 30, 2026 · Updated 5:40 p.m. PST
                   </Text>
-                )}
-              </Center>
-            </Card>
+                  <div {...stylex.props(styles.mobileOutlineSelector)}>
+                    <Selector
+                      label="On this page"
+                      isLabelHidden
+                      options={COMPONENT_OUTLINE_OPTIONS}
+                      value={activeId}
+                      onChange={scrollToId}
+                      width="100%"
+                    />
+                  </div>
+                </VStack>
 
-            <VStack gap={4}>
-              <Heading level={2}>Usage</Heading>
-              <Text type="large" weight="normal">
-                {docs.usage}
-              </Text>
-              <Heading level={3}>Best practices</Heading>
-              <Table
-                data={docs.bestPractices as Record<string, unknown>[]}
-                columns={[
-                  {
-                    key: 'type',
-                    header: 'Guidance',
-                    width: pixel(125),
-                    renderCell: (item: Record<string, unknown>) => (
-                      <Badge
-                        label={item.type === 'do' ? 'Do' : 'Dont'}
-                        variant={item.type === 'do' ? 'success' : 'error'}
-                      />
-                    ),
-                  },
-                  {
-                    key: 'text',
-                    header: 'Practices',
-                    renderCell: (item: Record<string, unknown>) => (
-                      <Text type="body" textWrap="wrap">
-                        {item.text as string}
+                <Card variant="muted" padding={0}>
+                  <Center height={360}>
+                    {COMPONENT_PREVIEWS[activeNav] ?? (
+                      <Text type="supporting" color="secondary">
+                        Preview coming soon
                       </Text>
-                    ),
-                  },
-                ]}
-                density="spacious"
-                dividers="rows"
-              />
-            </VStack>
+                    )}
+                  </Center>
+                </Card>
 
-            <Divider />
-
-            <VStack gap={4}>
-              <Heading level={2}>Examples</Heading>
-              <Text type="large" weight="normal">
-                Explore common configurations, variations, and states for this
-                component.
-              </Text>
-            </VStack>
-            <VStack gap={8}>
-              {docs.examples.map((example, i) => {
-                const tabKey = `${activeNav}-${i}`;
-                const activeTab = exampleTabs[tabKey] ?? 'description';
-                return (
-                  <Card key={i} padding={0}>
-                    <Section padding={3} variant="transparent">
-                      <HStack gap={3} vAlign="center">
-                        <StackItem size="fill">
-                          <Text type="body" weight="medium">
-                            {example.title}
+                <VStack gap={4}>
+                  <Heading id="usage" level={2}>
+                    Usage
+                  </Heading>
+                  <Text type="large" weight="normal">
+                    {docs.usage}
+                  </Text>
+                  <Heading id="best-practices" level={3}>
+                    Best practices
+                  </Heading>
+                  <Table
+                    data={docs.bestPractices as Record<string, unknown>[]}
+                    dividers="none"
+                    columns={[
+                      {
+                        key: 'type',
+                        header: 'Guidance',
+                        width: pixel(125),
+                        renderCell: (item: Record<string, unknown>) => (
+                          <Badge
+                            label={item.type === 'do' ? 'Do' : 'Dont'}
+                            variant={item.type === 'do' ? 'success' : 'error'}
+                          />
+                        ),
+                      },
+                      {
+                        key: 'text',
+                        header: 'Practices',
+                        renderCell: (item: Record<string, unknown>) => (
+                          <Text type="body" textWrap="wrap">
+                            {item.text as string}
                           </Text>
-                        </StackItem>
-                        <HStack gap={1} vAlign="center">
-                          <Button
-                            label="Open in Craft"
-                            variant="ghost"
-                            size="sm"
-                            icon={<Icon icon={ArrowTopRightOnSquareIcon} />}
-                          />
-                          <Button
-                            label="Send to CLI"
-                            variant="ghost"
-                            size="sm"
-                          />
-                          <IconButton
-                            label="Fullscreen"
-                            variant="ghost"
-                            size="sm"
-                            icon={<Icon icon={ArrowsPointingOutIcon} />}
-                          />
-                        </HStack>
-                      </HStack>
-                    </Section>
-                    <Center height={280}>
-                      {previews[i] ?? (
-                        <Text type="supporting" color="secondary">
-                          Preview coming soon
-                        </Text>
-                      )}
-                    </Center>
-                    <Section variant="muted" padding={3} dividers={['top']}>
-                      <VStack gap={3}>
-                        <TabList
-                          value={activeTab}
-                          onChange={value =>
-                            setExampleTabs(prev => ({...prev, [tabKey]: value}))
-                          }
-                          size="sm"
-                          xstyle={styles.tabListFlush}>
-                          <Tab value="description" label="Description" />
-                          <Tab value="code" label="Code" />
-                        </TabList>
-                        {activeTab === 'description' ? (
-                          <Text type="body">{example.description}</Text>
-                        ) : (
-                          <CodeBlock code={example.code} language="tsx" />
-                        )}
-                      </VStack>
-                    </Section>
-                  </Card>
-                );
-              })}
-            </VStack>
-          </VStack>
+                        ),
+                      },
+                    ]}
+                    density="spacious"
+                  />
+                </VStack>
+
+                <Divider />
+
+                <VStack gap={4}>
+                  <Heading id="examples" level={2}>
+                    Examples
+                  </Heading>
+                  <Text type="large" weight="normal">
+                    Explore common configurations, variations, and states for
+                    this component.
+                  </Text>
+                </VStack>
+                <VStack gap={8}>
+                  {docs.examples.map((example, i) => {
+                    const tabKey = `${activeNav}-${i}`;
+                    const activeTab = exampleTabs[tabKey] ?? 'description';
+                    return (
+                      <Card key={i} padding={0}>
+                        <Section padding={3} variant="transparent">
+                          <HStack gap={3} vAlign="center">
+                            <StackItem size="fill">
+                              <Text type="body" weight="medium">
+                                {example.title}
+                              </Text>
+                            </StackItem>
+                            <HStack gap={1} vAlign="center">
+                              <Button
+                                label="Open in Craft"
+                                variant="ghost"
+                                size="sm"
+                                icon={<Icon icon={ArrowTopRightOnSquareIcon} />}
+                              />
+                              <Button
+                                label="Send to CLI"
+                                variant="ghost"
+                                size="sm"
+                              />
+                              <IconButton
+                                label="Fullscreen"
+                                variant="ghost"
+                                size="sm"
+                                icon={<Icon icon={ArrowsPointingOutIcon} />}
+                              />
+                            </HStack>
+                          </HStack>
+                        </Section>
+                        <Center height={280}>
+                          {previews[i] ?? (
+                            <Text type="supporting" color="secondary">
+                              Preview coming soon
+                            </Text>
+                          )}
+                        </Center>
+                        <Section variant="muted" padding={3} dividers={['top']}>
+                          <VStack gap={3}>
+                            <TabList
+                              value={activeTab}
+                              onChange={value =>
+                                setExampleTabs(prev => ({
+                                  ...prev,
+                                  [tabKey]: value,
+                                }))
+                              }
+                              size="sm"
+                              xstyle={styles.tabListFlush}>
+                              <Tab value="description" label="Description" />
+                              <Tab value="code" label="Code" />
+                            </TabList>
+                            {activeTab === 'description' ? (
+                              <Text type="body">{example.description}</Text>
+                            ) : (
+                              <CodeBlock
+                                code={example.code}
+                                language="tsx"
+                                width="100%"
+                              />
+                            )}
+                          </VStack>
+                        </Section>
+                      </Card>
+                    );
+                  })}
+                </VStack>
+              </VStack>
+            </article>
+            <aside {...stylex.props(styles.outlineAside)}>
+              <div {...stylex.props(styles.outlineSticky)}>
+                <Outline
+                  items={COMPONENT_OUTLINE_ITEMS}
+                  activeId={activeId}
+                  onActiveIdChange={scrollToId}
+                />
+              </div>
+            </aside>
+          </section>
         </LayoutContent>
       }
     />
@@ -705,31 +879,5 @@ function ComponentDetailView({
 // ---------------------------------------------------------------------------
 
 export default function DesignDocumentationPage() {
-  const [activePage, setActivePage] = useState<string>('button');
-
-  return (
-    <ComponentDetailView
-      activeNav={activePage}
-      nav={
-        <SideNav header={<SideNavHeading heading="Product Name" />}>
-          {COMPONENT_CATEGORIES.map(category => (
-            <SideNavSection key={category.label} title={category.label}>
-              {category.items.map(item => (
-                <SideNavItem
-                  key={item.key}
-                  label={item.name}
-                  isSelected={activePage === item.key}
-                  onClick={
-                    item.key === 'button'
-                      ? () => setActivePage(item.key)
-                      : undefined
-                  }
-                />
-              ))}
-            </SideNavSection>
-          ))}
-        </SideNav>
-      }
-    />
-  );
+  return <ComponentDetailView activeNav="button" />;
 }
