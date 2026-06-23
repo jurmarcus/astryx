@@ -22,19 +22,8 @@ import {Button} from '@xds/core/Button';
 import {Divider} from '@xds/core/Divider';
 import {CheckboxInput} from '@xds/core/CheckboxInput';
 import {Typeahead} from '@xds/core/Typeahead';
-import * as stylex from '@stylexjs/stylex';
 import {MagnifyingGlassIcon} from '@heroicons/react/24/outline';
 import type {SearchableItem, SearchSource} from '@xds/core/Typeahead';
-
-// Caps + centers the whole layout shell (header + sidebar + content). Layout
-// has no max-width prop for the outer shell — contentWidth only caps slot
-// content, not the sidebar/header. Tracked in #2625.
-const styles = stylex.create({
-  constrainedShell: {
-    maxWidth: 1440,
-    marginInline: 'auto',
-  },
-});
 
 const NAV_ITEMS = [
   'Profile',
@@ -77,14 +66,12 @@ export default function SettingsTemplate() {
   const [dataExport, setDataExport] = useState(false);
   const [adminMembers, setAdminMembers] = useState(false);
   const [twoFactor, setTwoFactor] = useState(false);
-  const [searchValue, setSearchValue] = useState<SearchableItem | null>(
-    null,
-  );
+  const [searchValue, setSearchValue] = useState<SearchableItem | null>(null);
 
   return (
     <Layout
       height="auto"
-      xstyle={styles.constrainedShell}
+      contentWidth={1440}
       header={
         <LayoutHeader hasDivider>
           <HStack vAlign="center">
