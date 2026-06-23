@@ -137,16 +137,16 @@ export function TableHeaderCell({
     );
   }
 
+  // Header cells always get the bottom divider (separates header from body).
+  // Column dividers use the shared buildDividerStyles — but only for
+  // the column axis, since the row divider is the headerDividerStyles.
   const cellStyles: StyleXStyles[] = [
     headerStyles.cell,
     densityStyles[ctx.density],
+    headerDividerStyles.cell,
     overflowStyles.cell,
     containerEdgeStyles[ctx.density],
   ];
-
-  if (ctx.dividers === 'rows' || ctx.dividers === 'grid') {
-    cellStyles.push(headerDividerStyles.cell);
-  }
 
   // Only add column dividers from the shared builder
   if (ctx.dividers === 'columns' || ctx.dividers === 'grid') {
