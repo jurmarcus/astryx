@@ -9,6 +9,7 @@ import {Heading, Text} from '@xds/core/Text';
 import {Link} from '@xds/core/Link';
 import {spacingVars} from '@xds/core/theme/tokens.stylex';
 import {components} from '../../../generated/componentRegistry';
+import {layout} from '../../../layout.stylex';
 
 // Count of public @xds/core components (excluding hooks and hidden entries).
 // Sourced from the generated registry so the number stays accurate as the
@@ -45,17 +46,12 @@ const styles = stylex.create({
   // direct children of the grid and the 1-col gridTemplateColumns
   // can lay them all out in source order.
   //
-  // Literal pixel values are intentional marketing-section
-  // dimensions, not derivable from the spacing scale:
-  //   • maxWidth 1200 — shared content cap across all three home
-  //     showcases (Features, About, Discover) so they line up.
-  //   • minHeight 720 — keeps the bento tall enough on desktop
-  //     that the dominant "Themes" card has room for its larger
-  //     image composition; below this height the right column
-  //     reads as cramped against the left/middle.
+  // minHeight 720 keeps the bento tall enough on desktop that the
+  // dominant "Themes" card has room for its larger image composition;
+  // below this the right column reads as cramped against the left/middle.
   gridLayout: {
     width: '100%',
-    maxWidth: 1200,
+    maxWidth: layout.contentMaxWidth,
     display: 'grid',
     gap: spacingVars['--spacing-8'],
     gridTemplateColumns: {

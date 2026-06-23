@@ -17,6 +17,7 @@ import {
 import {packages} from '../../../generated/packageRegistry';
 import {themeObjects} from '../../../generated/themeRegistry';
 import {ThemeShowcaseTile} from '../../../components/ThemeShowcaseTile';
+import {layout} from '../../../layout.stylex';
 
 // Gallery order — mirrors the dedicated /themes page (most restrained
 // → most expressive). Keeps the landing showcase consistent with the
@@ -98,7 +99,6 @@ const CARD_HEIGHT = 620;
 // content sits flush with the same 24px page rim as the other
 // sections.
 const PAGE_GUTTER = 24;
-const CONTENT_MAX_WIDTH = 1200;
 // At wide viewports, the gutter resolves to the empty space
 // between the viewport edge and the centered 1200px content
 // column — same horizontal start as the other 1200px-centered
@@ -106,7 +106,7 @@ const CONTENT_MAX_WIDTH = 1200;
 // At narrower viewports, the max() clamp kicks in and pads the
 // content by PAGE_GUTTER from the viewport edge so things don't
 // touch the screen rim.
-const CONTENT_GUTTER_FORMULA = `max(${PAGE_GUTTER}px, calc((100vw - ${CONTENT_MAX_WIDTH}px) / 2))`;
+const CONTENT_GUTTER_FORMULA = `max(${PAGE_GUTTER}px, calc((100vw - ${layout.contentMaxWidth}px) / 2))`;
 
 const styles = stylex.create({
   // Section root — adds breathing room above the heading so the

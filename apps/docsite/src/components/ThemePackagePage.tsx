@@ -23,6 +23,7 @@ import {ThemeShowcaseStore} from '../../../../packages/cli/templates/pages/theme
 import {getThemeShowcaseContent} from './themeShowcaseContent';
 import {buildPlaygroundHref} from './playgroundLink';
 import {packages} from '../generated/packageRegistry';
+import {layout} from '../layout.stylex';
 import {themeObjects} from '../generated/themeRegistry';
 import {templates} from '../generated/templateRegistry';
 import {trackOpenPlayground, trackToggle} from '../lib/analytics';
@@ -422,14 +423,13 @@ const styles = stylex.create({
   showcaseCard: {
     overflow: 'hidden',
   },
-  // Caps the showcase at the site's "wide content" max-width (1200px,
-  // matching home-page showcases / docs index) and centers it so it
-  // doesn't run viewport-edge to viewport-edge on very wide screens.
-  // overflow:hidden clips any template content that exceeds the
-  // available width on mobile (e.g. inventory filter rows, tables).
+  // Caps the showcase at the site's wide-content width and centers it
+  // so it doesn't run edge-to-edge on very wide screens. overflow:hidden
+  // clips template content that exceeds the width on mobile (e.g.
+  // inventory filter rows, tables).
   showcaseBlock: {
     width: '100%',
-    maxWidth: 1200,
+    maxWidth: layout.contentMaxWidth,
     marginInline: 'auto',
     overflow: 'hidden',
     borderRadius: 'var(--radius-container)',

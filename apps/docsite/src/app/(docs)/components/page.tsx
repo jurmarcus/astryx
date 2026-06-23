@@ -22,6 +22,7 @@ import {CodeExampleBlock} from '../../../components/CodeExampleBlock';
 import {components as componentRegistry} from '../../../generated/componentRegistry';
 import {blocks} from '../../../generated/blockRegistry';
 import {ShowcaseThumbnail} from '../../../components/ShowcaseThumbnail';
+import {layout} from '../../../layout.stylex';
 
 /**
  * Category display order for the overview page.
@@ -130,7 +131,7 @@ export default function ComponentsGalleryPage() {
   }, [categorizedItems]);
 
   return (
-    <Section maxWidth={1200} padding={6} xstyle={styles.section}>
+    <Section maxWidth={layout.contentMaxWidth} padding={6} xstyle={styles.section}>
       <VStack gap={10}>
         <VStack gap={4} hAlign="center">
           <VStack gap={2} style={{alignItems: 'center'}}>

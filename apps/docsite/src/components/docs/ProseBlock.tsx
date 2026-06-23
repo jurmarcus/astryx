@@ -5,9 +5,10 @@
 import * as stylex from '@stylexjs/stylex';
 import {Text} from '@xds/core/Text';
 import {renderInlineCode} from './renderInlineCode';
+import {layout} from '../../layout.stylex';
 
 const styles = stylex.create({
-  prose: {maxWidth: 800},
+  prose: {maxWidth: layout.proseMaxWidth},
 });
 
 export function ProseBlock({text}: {text: string}) {

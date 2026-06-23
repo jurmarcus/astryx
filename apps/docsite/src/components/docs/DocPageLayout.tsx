@@ -14,6 +14,7 @@ import {VStack} from '@xds/core/Layout';
 import {Section} from '@xds/core/Section';
 import {Divider} from '@xds/core/Divider';
 import {spacingVars} from '@xds/core/theme/tokens.stylex';
+import {layout} from '../../layout.stylex';
 
 const styles = stylex.create({
   section: {
@@ -32,7 +33,7 @@ export function DocPageLayout({
   children: ReactNode;
 }) {
   return (
-    <Section maxWidth={800} padding={6} xstyle={styles.section}>
+    <Section maxWidth={layout.proseMaxWidth} padding={6} xstyle={styles.section}>
       <VStack gap={10}>
         <VStack gap={4}>
           <Heading level={1} type="display-1">

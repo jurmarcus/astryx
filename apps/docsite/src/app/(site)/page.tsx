@@ -14,6 +14,7 @@ import {spacingVars} from '@xds/core/theme/tokens.stylex';
 // Built theme (__built:true) so <XDSTheme> uses the pre-built CSS and skips
 // runtime style injection. Importing the source astryxTheme.ts re-triggers it.
 import {astryxTheme} from '@/themes/astryx';
+import {layout} from '../../layout.stylex';
 import {
   HeroReelProvider,
   HeroReelCards,
@@ -69,7 +70,7 @@ const styles = stylex.create({
       '@media (min-width: 1024px)': 0,
     },
     paddingBlockEnd: spacingVars['--spacing-12'],
-    maxWidth: 800,
+    maxWidth: layout.proseMaxWidth,
     marginInline: 'auto',
     paddingInline: spacingVars['--spacing-6'],
     textAlign: 'center',

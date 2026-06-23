@@ -25,6 +25,7 @@ import {buildPlaygroundHref} from '../../../components/playgroundLink';
 import {TemplatePreviewDialog} from '../../../components/TemplatePreviewDialog';
 import type {TemplatePreviewItem} from '../../../components/TemplatePreviewDialog';
 import {trackOpenPlayground, trackView} from '../../../lib/analytics';
+import {layout} from '../../../layout.stylex';
 
 const CARD_STYLE: CSSProperties & {'--color-overlay': string} = {
   '--color-overlay':
@@ -198,7 +199,7 @@ export default function TemplatesPage() {
   );
 
   return (
-    <Section maxWidth={1200} padding={6} style={{marginInline: 'auto'}}>
+    <Section maxWidth={layout.contentMaxWidth} padding={6} style={{marginInline: 'auto'}}>
       <VStack gap={10}>
         {/* Header */}
         <VStack gap={6} align="stretch">

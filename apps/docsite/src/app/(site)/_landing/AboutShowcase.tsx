@@ -8,6 +8,7 @@ import {VStack} from '@xds/core/Layout';
 import {Heading, Text} from '@xds/core/Text';
 import {Link} from '@xds/core/Link';
 import {spacingVars} from '@xds/core/theme/tokens.stylex';
+import {layout} from '../../../layout.stylex';
 
 // Editorial-style "about" section: a left-anchored heading block sits
 // alongside three feature columns. Each feature column leads with a
@@ -32,12 +33,11 @@ const YELLOW_PASTEL = 'var(--color-background-yellow)';
 const SHAPE_SIZE = 40;
 
 const styles = stylex.create({
-  // Cap the section at the same 1200px maxWidth used by sibling
-  // showcases (Features, Discover) so all three sections line up
-  // vertically inside the showcaseOverlay container.
+  // Cap the section so all three home showcases line up vertically
+  // inside the showcaseOverlay container.
   sectionLayout: {
     width: '100%',
-    maxWidth: 1200,
+    maxWidth: layout.contentMaxWidth,
   },
   // Responsive grid for the heading + 3 feature columns.
   //

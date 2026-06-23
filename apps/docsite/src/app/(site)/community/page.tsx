@@ -39,6 +39,7 @@ import {Button} from '@xds/core/Button';
 import {getKey} from '@xds/core/utils';
 import {AstryxLogo} from '../../../components/logos';
 import {GITHUB_REPO} from '../../../constants';
+import {layout} from '../../../layout.stylex';
 
 const WIKI_BASE = `${GITHUB_REPO}/wiki`;
 
@@ -46,21 +47,15 @@ const WIKI_BASE = `${GITHUB_REPO}/wiki`;
 // Styles
 // =============================================================================
 
-// Page max-width. Sized for the 3-card grids (channels, start-
-// here paths, contributors) to read comfortably without going
-// edge-to-edge on wide viewports. Matches the dedicated theme
-// page width so the two sibling pages feel visually aligned.
-const PAGE_MAX_WIDTH = 1200;
-
 const styles = stylex.create({
-  // Wrap the section so it caps at PAGE_MAX_WIDTH and centers in
-  // the viewport. Done on a plain wrapper instead of via the
-  // section's maxWidth prop because Section's negative-inline-
-  // margin styles (used to break out of container padding
-  // elsewhere) beat any margin-inline:auto we try to set on the
-  // section itself. Same pattern used on /themes.
+  // Wrap the section so it caps at the shared content width and
+  // centers in the viewport. Done on a plain wrapper instead of via
+  // the section's maxWidth prop because Section's negative-inline-
+  // margin styles (used to break out of container padding elsewhere)
+  // beat any margin-inline:auto we try to set on the section itself.
+  // Same pattern used on /themes.
   pageWrap: {
-    maxWidth: PAGE_MAX_WIDTH,
+    maxWidth: layout.contentMaxWidth,
     marginInline: 'auto',
     width: '100%',
   },
@@ -82,7 +77,7 @@ const styles = stylex.create({
     // own width. Matches the 1200px max-width used by the home
     // page's section grids (FeaturesShowcase, AboutShowcase,
     // DiscoverShowcase) so the two pages feel visually aligned.
-    maxWidth: 1200,
+    maxWidth: layout.contentMaxWidth,
     width: '100%',
     marginInline: 'auto',
     // Add the same section gap as bottom padding so the

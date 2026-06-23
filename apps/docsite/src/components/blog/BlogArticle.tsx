@@ -4,7 +4,7 @@
  * @file BlogArticle.tsx
  *
  * Article layout matching the docs page typography: a centered, readable column
- * (maxWidth 800) with a display-1 title, large regular-weight dek, byline, a
+ * (reading-width column) with a display-1 title, large regular-weight dek, byline, a
  * neutral cover placeholder, the prose body (rendered via XDSMarkdown), optional
  * curated related-doc links, and a link back to the blog index. No sidebar.
  *
@@ -26,6 +26,7 @@ import {spacingVars} from '@xds/core/theme/tokens.stylex';
 import type {BlogPost} from '../../lib/blog/schema';
 import {POST_TYPE_LABELS} from '../../lib/blog/schema';
 import {AuthorByline} from './AuthorByline';
+import {layout} from '../../layout.stylex';
 
 const styles = stylex.create({
   section: {
@@ -58,7 +59,7 @@ export interface BlogArticleProps {
 
 export function BlogArticle({post}: BlogArticleProps) {
   return (
-    <XDSSection maxWidth={800} padding={6} xstyle={styles.section}>
+    <XDSSection maxWidth={layout.proseMaxWidth} padding={6} xstyle={styles.section}>
       <XDSVStack gap={10}>
         {/* Header — matches the docs page treatment */}
         <XDSVStack gap={4}>

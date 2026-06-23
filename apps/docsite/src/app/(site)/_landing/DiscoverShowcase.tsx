@@ -12,6 +12,7 @@ import {Button} from '@xds/core/Button';
 import {spacingVars} from '@xds/core/theme/tokens.stylex';
 import {AstryxLogo} from '../../../components/logos';
 import {components} from '../../../generated/componentRegistry';
+import {layout} from '../../../layout.stylex';
 
 // Count of public @xds/core components (excluding hooks and hidden entries),
 // rounded down to the nearest 10 for marketing copy. Sourced from the
@@ -29,15 +30,12 @@ const styles = stylex.create({
     overflowX: 'clip',
   },
   // The "stage" hosts the absolutely-positioned floating preview
-  // images + the centered CTA card. maxWidth: 1200 matches the
-  // shared marketing-section cap used by FeaturesShowcase and
-  // AboutShowcase so all three sections line up vertically inside
-  // showcaseOverlay; the value isn't on the spacing scale, it's a
-  // marketing page measure intentionally kept as a literal.
+  // images + the centered CTA card, capped so all three home
+  // showcases line up vertically inside showcaseOverlay.
   stage: {
     position: 'relative',
     width: '100%',
-    maxWidth: 1200,
+    maxWidth: layout.contentMaxWidth,
     overflow: 'hidden',
     borderRadius: 'var(--radius-container)',
     isolation: 'isolate',
