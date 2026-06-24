@@ -12,10 +12,8 @@
    reset, astryx-base, astryx-theme so product styles always win. */
 @stylex;
 
-/* Disable rubber-band overscroll. The home hero's pin-and-cover layers
-   (hero band, nav backdrop, aurora glow, floating cards) are position:fixed,
-   so an elastic bounce past the top/bottom exposes them behind the footer.
-   The (site) layout scrolls the document (AppShell height="auto"). */
+/* Disable overscroll bounce so the home hero's position:fixed layers can't
+   show through past the top/bottom of the page. */
 html {
   overscroll-behavior-y: none;
 }
