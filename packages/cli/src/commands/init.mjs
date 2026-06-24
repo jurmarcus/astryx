@@ -248,7 +248,7 @@ export function registerInit(program) {
       humanLog('    2. Optionally add a theme:');
       humanLog("       import { neutralTheme } from '@astryxdesign/theme-neutral'");
       humanLog('       <Theme theme={neutralTheme}>...</Theme>');
-      humanLog(`    3. ${run} xds --help for all commands`);
+      humanLog(`    3. ${run} astryx --help for all commands`);
       humanLog('');
     });
 }

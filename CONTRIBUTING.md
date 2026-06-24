@@ -131,7 +131,7 @@ xds/
 │
 ├── packages/
 │   ├── core/           # Core components (Button, Input, etc.)
-│   ├── cli/            # CLI tooling (npx xds)
+│   ├── cli/            # CLI tooling (npx astryx)
 │   ├── lab/            # Experimental components (not yet stable)
 │   └── themes/         # Theme presets (default, neutral, daily, and more)
 │
