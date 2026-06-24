@@ -26,13 +26,13 @@ import {
 export type ResolvedThemeMode = 'light' | 'dark';
 
 /** Options for resolving all tokens from a theme object. */
-export interface ResolveXDSThemeTokensOptions {
+export interface ResolveThemeTokensOptions {
   /** Effective mode to resolve. Pass an explicit value; this helper does not read media queries. */
   mode: ResolvedThemeMode;
 }
 
 /** Options for resolving one token from a theme object. */
-export interface ResolveXDSThemeTokenOptions extends ResolveXDSThemeTokensOptions {
+export interface ResolveThemeTokenOptions extends ResolveThemeTokensOptions {
   /** Value to return when the token name is unknown. Defaults to an empty string. */
   fallback?: string;
 }
@@ -48,19 +48,19 @@ export interface ResolveXDSThemeTokenOptions extends ResolveXDSThemeTokensOption
  * ```ts
  * const theme = {
  *   colors: {
- *     text: xdsTokenVar('--color-text-primary'),
- *     surface: xdsTokenVar('--color-background-surface'),
+ *     text: tokenVar('--color-text-primary'),
+ *     surface: tokenVar('--color-background-surface'),
  *   },
  * };
  * ```
  */
-export function xdsTokenVar(name: TokenName | (string & {})): string {
+export function tokenVar(name: TokenName | (string & {})): string {
   return `var(${name})`;
 }
 
 /** Flat map of every known XDS token name to its `var(--token-name)` reference. */
-export const xdsTokenVars: Record<TokenName, string> = Object.fromEntries(
-  Object.keys(xdsTokenDefaults).map(name => [name, xdsTokenVar(name)]),
+export const tokenVars: Record<TokenName, string> = Object.fromEntries(
+  Object.keys(xdsTokenDefaults).map(name => [name, tokenVar(name)]),
 ) as Record<TokenName, string>;
 
 /**
@@ -155,9 +155,9 @@ function resolveXDSTokenValue(
  *
  * Pass `theme` as null/undefined to resolve defaults only.
  */
-export function resolveXDSThemeTokens(
+export function resolveThemeTokens(
   theme: DefinedTheme | null | undefined,
-  options: ResolveXDSThemeTokensOptions,
+  options: ResolveThemeTokensOptions,
 ): Record<string, string> {
   const {mode} = options;
   const resolved: Record<string, string> = {};
@@ -186,11 +186,11 @@ export function resolveXDSThemeTokens(
 }
 
 /** Resolve one XDS token value for a theme and effective color mode. */
-export function resolveXDSThemeToken(
+export function resolveThemeToken(
   theme: DefinedTheme | null | undefined,
   name: TokenName | (string & {}),
-  options: ResolveXDSThemeTokenOptions,
+  options: ResolveThemeTokenOptions,
 ): string {
-  const tokens = resolveXDSThemeTokens(theme, options);
+  const tokens = resolveThemeTokens(theme, options);
   return tokens[name] ?? options.fallback ?? '';
 }

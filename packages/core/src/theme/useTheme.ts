@@ -19,7 +19,7 @@
 import {createContext, use, useMemo} from 'react';
 import type {ThemeMode} from './types';
 import type {DefinedTheme} from './defineTheme';
-import {resolveXDSThemeTokens} from './tokens';
+import {resolveThemeTokens} from './tokens';
 import {useMediaQuery} from '../hooks/useMediaQuery';
 
 // =============================================================================
@@ -125,7 +125,7 @@ export function useTheme(): UseThemeReturn {
 
   // Build the full resolved map, memoized on theme + effective mode
   const tokens = useMemo(
-    () => resolveXDSThemeTokens(theme, {mode: effectiveMode}),
+    () => resolveThemeTokens(theme, {mode: effectiveMode}),
     [theme, effectiveMode],
   );
 
