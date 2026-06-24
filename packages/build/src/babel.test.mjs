@@ -4,8 +4,7 @@
  * @file babel.test.mjs
  * @description Verifies that the XDS babel wrapper applies the configured
  *   library StyleX class-name prefix to XDS library files. Part of the
- *   XDS-prefix migration (P2380608025): the prefix defaults to `xds` and is
- *   configurable to `astryx` so the library atom prefix can be rebranded
+ *   the library atom prefix defaults to `astryx` and is configurable
  *   before the final cutover.
  */
 
@@ -51,24 +50,24 @@ function transformLibraryFile(libraryPrefix) {
 /** Extract the StyleX atomic class names referenced in the emitted code. */
 function atomicClasses(code) {
   // StyleX emits atoms like "xds1a2b3c" / "astryx1a2b3c" in the compiled output.
-  return code.match(/\b(?:xds|astryx)[a-z0-9]{4,}\b/g) ?? [];
+  return code.match(/\b(?:xds|astryx|lib)[a-z0-9]{4,}\b/g) ?? [];
 }
 
 describe('xds babel wrapper -- library StyleX prefix', () => {
-  it('defaults library atoms to the `xds` prefix', () => {
+  it('defaults library atoms to the `astryx` prefix', () => {
     const code = transformLibraryFile(undefined);
-    const atoms = atomicClasses(code);
-    expect(atoms.length).toBeGreaterThan(0);
-    expect(atoms.every(c => c.startsWith('xds'))).toBe(true);
-  });
-
-  it('uses the configured `astryx` prefix for library atoms', () => {
-    const code = transformLibraryFile('astryx');
     const atoms = atomicClasses(code);
     expect(atoms.length).toBeGreaterThan(0);
     expect(atoms.every(c => c.startsWith('astryx'))).toBe(true);
     expect(
       atoms.some(c => c.startsWith('xds') && !c.startsWith('astryx')),
     ).toBe(false);
+  });
+
+  it('uses a configured custom prefix for library atoms', () => {
+    const code = transformLibraryFile('lib');
+    const atoms = atomicClasses(code);
+    expect(atoms.length).toBeGreaterThan(0);
+    expect(atoms.every(c => c.startsWith('lib'))).toBe(true);
   });
 });

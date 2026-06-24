@@ -3,7 +3,7 @@
 Build plugins for XDS source builds. Provides babel, PostCSS, and Vite integrations that compile XDS library and product code with separate class name prefixes, which enables independent CSS layers:
 
 ```
-reset < astryx-base (library, xds prefix) < astryx-theme < product (app, x prefix)
+reset < astryx-base (library, astryx prefix) < astryx-theme < product (app, x prefix)
 ```
 
 ## Why?
@@ -12,7 +12,7 @@ StyleX generates atomic CSS: same declaration = same class name. Without separat
 
 `@xds/build` solves this by:
 
-1. Compiling XDS library code with `xds` prefix (`.xds78zum5`)
+1. Compiling XDS library code with `astryx` prefix (`.astryx78zum5`)
 2. Compiling product code with default `x` prefix (`.x78zum5`)
 3. Placing each group in its own CSS `@layer`
 
@@ -179,7 +179,7 @@ export default defineConfig({
 
 ### Babel plugin (`@xds/build/babel`)
 
-Wraps `@stylexjs/babel-plugin` with two internal instances: one with `classNamePrefix: 'xds'` for library files, one with default `'x'` for product files. Routes each file to the correct instance based on its path.
+Wraps `@stylexjs/babel-plugin` with two internal instances: one with `classNamePrefix: 'astryx'` for library files, one with default `'x'` for product files. Routes each file to the correct instance based on its path.
 
 Library patterns (configurable):
 
@@ -215,8 +215,8 @@ Wraps `@stylexjs/unplugin` and intercepts the dev CSS endpoint (`/virtual:stylex
       'node_modules/@xds/',
     ],
 
-    // Class name prefix for library styles (default: 'xds')
-    libraryPrefix: 'xds',
+    // Class name prefix for library styles (default: 'astryx')
+    libraryPrefix: 'astryx',
 
     // Class name prefix for product styles (default: 'x')
     classNamePrefix: 'x',
@@ -232,7 +232,7 @@ Wraps `@stylexjs/unplugin` and intercepts the dev CSS endpoint (`/virtual:stylex
 '@xds/build/postcss': {
   appDir: 'src',           // Your app source directory
   babelPlugins: [...],     // StyleX babel plugin config
-  libraryPrefix: 'xds',   // Prefix for library CSS (default: 'xds')
+  libraryPrefix: 'astryx',   // Prefix for library CSS (default: 'astryx')
   extraInclude: [...],     // Additional glob patterns
   layers: {                // Layer names (defaults shown)
     library: 'astryx-base',

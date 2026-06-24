@@ -8,7 +8,7 @@
  * Babel plugin that delegates to @stylexjs/babel-plugin with a
  * different classNamePrefix for XDS library files vs product files.
  *
- * Library files get 'xds' prefix (.xds78zum5), product files get 'x' (.x78zum5).
+ * Library files get 'astryx' prefix (.astryx78zum5), product files get 'x' (.x78zum5).
  */
 
 const XDS_LIBRARY_PATTERNS = [
@@ -23,7 +23,7 @@ module.exports = function xdsBabelPlugin(api, options) {
 
   const {
     libraryPatterns = XDS_LIBRARY_PATTERNS,
-    libraryPrefix = 'xds',
+    libraryPrefix = 'astryx',
     classNamePrefix = 'x',
     ...stylexOptions
   } = options;

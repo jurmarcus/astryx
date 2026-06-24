@@ -20,7 +20,7 @@ Reference application for compiling **@xds/core** from raw TypeScript + StyleX s
 
 This creates completely independent class namespaces:
 
-- `.xds78zum5 { display: flex }` in `@layer astryx-base`
+- `.astryx78zum5 { display: flex }` in `@layer astryx-base`
 - `.x78zum5 { display: flex }` in `@layer product`
 
 Theme sits between them in `@layer astryx-theme`, so:
