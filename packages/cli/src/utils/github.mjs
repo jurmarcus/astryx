@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 /**
- * @file GitHub utilities for XDS CLI
+ * @file GitHub utilities for Astryx CLI
  *
  * Shared helpers for interacting with the GitHub CLI (`gh`).
  * Used by gap-report and swizzle commands.

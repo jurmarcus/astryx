@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 /**
- * @file XDS CLI — stable machine-readable error codes.
+ * @file Astryx CLI — stable machine-readable error codes.
  *
  * ## Why codes exist
  *
@@ -78,7 +78,7 @@
  */
 
 /**
- * The complete, frozen set of XDS CLI error codes. Append-only.
+ * The complete, frozen set of Astryx CLI error codes. Append-only.
  * @type {Readonly<Record<ErrorCode, ErrorCode>>}
  */
 export const ERROR_CODES = Object.freeze({

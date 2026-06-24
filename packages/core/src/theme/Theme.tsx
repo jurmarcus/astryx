@@ -8,7 +8,7 @@
  * Applies theme tokens and sets color-scheme for light-dark() to work.
  * Themes are created with `defineTheme()` and applied via CSS:
  * - Token overrides set as CSS custom properties on [data-astryx-theme]
- * - Component overrides scoped via @scope'd CSS selectors on the stable XDS
+ * - Component overrides scoped via @scope'd CSS selectors on the stable Astryx
  *   selector surface (`.xds-*` classes today; components also emit `data-*`
  *   prop reflections for the data-attribute selector migration)
  *

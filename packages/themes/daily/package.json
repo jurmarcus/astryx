@@ -2,7 +2,7 @@
   "name": "@astryxdesign/theme-daily",
   "version": "0.0.15",
   "private": false,
-  "description": "Daily theme for XDS — warm, productivity-focused palette with Lucide icon set",
+  "description": "Daily theme for Astryx — warm, productivity-focused palette with Lucide icon set",
   "author": "Meta Open Source",
   "license": "MIT",
   "homepage": "https://github.com/facebookexperimental/xds#readme",

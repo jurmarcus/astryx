@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 /**
- * defineTheme — Create an XDS theme from a flat token map.
+ * defineTheme — Create an Astryx theme from a flat token map.
  *
  * Two distribution modes:
  * - Unbuilt: Theme generates CSS and injects a <style> tag at runtime
@@ -74,7 +74,7 @@ import type {SyntaxThemeDefinition} from './syntax';
 // Types
 // =============================================================================
 
-/** All valid XDS core token names */
+/** All valid Astryx core token names */
 export type CoreTokenName =
   | keyof typeof colorDefaults
   | keyof typeof spacingDefaults
@@ -89,7 +89,7 @@ export type CoreTokenName =
   | keyof typeof fontWeightDefaults
   | keyof typeof typeScaleDefaults;
 
-/** All valid XDS token names — core + domain tokens */
+/** All valid Astryx token names — core + domain tokens */
 export type TokenName = CoreTokenName | DomainTokenName;
 
 /**
@@ -360,7 +360,7 @@ export interface DefinedTheme {
 // All defaults merged into a single flat map
 // =============================================================================
 
-/** All XDS token defaults as a flat map. Useful for resolving full token sets. */
+/** All Astryx token defaults as a flat map. Useful for resolving full token sets. */
 export const xdsTokenDefaults: Record<string, string> = {
   ...colorDefaults,
   ...spacingDefaults,
@@ -469,10 +469,10 @@ function buildFontFamily(
 }
 
 /**
- * Create an XDS theme.
+ * Create an Astryx theme.
  *
  * Pass only the tokens you want to override — everything else
- * inherits from the XDS defaults.
+ * inherits from the Astryx defaults.
  *
  * When `typography.scale` is provided, it generates typography token overrides
  * that are merged into the token map. Explicit `tokens` entries take

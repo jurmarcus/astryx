@@ -88,7 +88,7 @@ export interface UseThemeReturn {
 // =============================================================================
 
 /**
- * Access the current XDS theme's token values, resolved for the active color mode.
+ * Access the current Astryx theme's token values, resolved for the active color mode.
  *
  * Returns raw CSS values (hex colors, px values, etc.) suitable for
  * non-CSS consumers like canvas, SVG, or data visualization libraries

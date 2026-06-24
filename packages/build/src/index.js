@@ -5,8 +5,8 @@
 /**
  * @astryxdesign/postcss-plugin
  *
- * PostCSS plugin for XDS source builds. Compiles StyleX from both
- * XDS library source and product code in two separate passes with
+ * PostCSS plugin for Astryx source builds. Compiles StyleX from both
+ * Astryx library source and product code in two separate passes with
  * different class name prefixes, then outputs them in separate layers:
  *
  *   reset < astryx-base (library, prefix: 'astryx') < astryx-theme < product (prefix: 'x')

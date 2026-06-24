@@ -6,7 +6,7 @@
  * @astryxdesign/build/babel
  *
  * Babel plugin that delegates to @stylexjs/babel-plugin with a
- * different classNamePrefix for XDS library files vs product files.
+ * different classNamePrefix for Astryx library files vs product files.
  *
  * Library files get 'astryx' prefix (.astryx78zum5), product files get 'x' (.x78zum5).
  */

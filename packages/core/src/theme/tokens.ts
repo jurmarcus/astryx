@@ -6,7 +6,7 @@
  * @output Server-safe token helpers for resolving theme values and building CSS var references
  * @position Public theme utility; backs useTheme and external styling-library adapters
  *
- * Use these helpers when code outside React hooks needs XDS token values:
+ * Use these helpers when code outside React hooks needs Astryx token values:
  * build-time theme adapters, chart configuration, canvas/SVG rendering, tests,
  * or plain JS theme objects for other styling libraries.
  *
@@ -38,11 +38,11 @@ export interface ResolveThemeTokenOptions extends ResolveThemeTokensOptions {
 }
 
 /**
- * Return a CSS custom property reference for an XDS token name.
+ * Return a CSS custom property reference for an Astryx token name.
  *
  * Useful for non-StyleX styling-library configs (Panda, Chakra, MUI,
  * Emotion, styled-components, UnoCSS, CSS Modules) where the value should
- * stay connected to the active XDS theme through the CSS cascade.
+ * stay connected to the active Astryx theme through the CSS cascade.
  *
  * @example
  * ```ts
@@ -58,7 +58,7 @@ export function tokenVar(name: TokenName | (string & {})): string {
   return `var(${name})`;
 }
 
-/** Flat map of every known XDS token name to its `var(--token-name)` reference. */
+/** Flat map of every known Astryx token name to its `var(--token-name)` reference. */
 export const tokenVars: Record<TokenName, string> = Object.fromEntries(
   Object.keys(xdsTokenDefaults).map(name => [name, tokenVar(name)]),
 ) as Record<TokenName, string>;
@@ -145,7 +145,7 @@ function resolveXDSTokenValue(
 }
 
 /**
- * Resolve all XDS token values for a theme and effective color mode.
+ * Resolve all Astryx token values for a theme and effective color mode.
  *
  * The result starts with `xdsTokenDefaults`, applies `theme.tokens`, then
  * reapplies `theme.__inputTokens` when available so explicit tuple overrides
@@ -185,7 +185,7 @@ export function resolveThemeTokens(
   return resolved;
 }
 
-/** Resolve one XDS token value for a theme and effective color mode. */
+/** Resolve one Astryx token value for a theme and effective color mode. */
 export function resolveThemeToken(
   theme: DefinedTheme | null | undefined,
   name: TokenName | (string & {}),

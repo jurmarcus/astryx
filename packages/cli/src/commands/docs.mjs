@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 /**
- * @file docs command — Print XDS reference docs
+ * @file docs command — Print Astryx reference docs
  *
  * Auto-discovers .doc.mjs files from the docs/ directory.
  * Supports --detail (full|compact|brief) and --lang (en|zh|dense).

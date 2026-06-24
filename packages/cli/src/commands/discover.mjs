@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 /**
- * @file discover command — find external XDS packages and components
+ * @file discover command — find external Astryx packages and components
  *
  * Usage:
  *   xds discover                           List all packages

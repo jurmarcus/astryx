@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 /**
- * @file XDS CLI — Commander program setup
+ * @file Astryx CLI — Commander program setup
  *
  * Registers all commands via lazy loading. If one command fails to load
  * (bad import, syntax error), the other commands still work.

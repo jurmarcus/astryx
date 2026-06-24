@@ -2,7 +2,7 @@
 
 /**
  * @file types.ts
- * @input Vega and Vega-Lite spec types, and the XDS Vega wrapper API surface
+ * @input Vega and Vega-Lite spec types, and the Astryx Vega wrapper API surface
  * @output Shared TypeScript types for @astryxdesign/vega
  * @position Type definitions; imported by all components in this package
  *
@@ -92,7 +92,7 @@ export type ViewData = Record<string, unknown[]>;
  * `dangerouslySetInnerHTML`) for full DOM event passthrough — drag, pointer,
  * keyboard, clipboard, `data-testid`, etc.
  *
- * Note: unlike other XDS components, this component does not accept `xstyle`
+ * Note: unlike other Astryx components, this component does not accept `xstyle`
  * because `@astryxdesign/vega` does not depend on StyleX. Use `className` or `style`
  * for layout overrides instead.
  */

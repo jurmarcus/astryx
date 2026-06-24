@@ -328,7 +328,7 @@ export async function checkConfig(ctx) {
 }
 
 /**
- * Check 6 — agent docs exist and contain the XDS section markers.
+ * Check 6 — agent docs exist and contain the Astryx section markers.
  * @param {DoctorContext} ctx
  * @returns {DoctorCheck}
  */

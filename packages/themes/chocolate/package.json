@@ -3,7 +3,7 @@
   "version": "0.0.15",
   "displayName": "Chocolate Theme",
   "private": false,
-  "description": "Warm chocolate theme for XDS — rich brown palette with Fraunces headings, Albert Sans body, and Lucide icons",
+  "description": "Warm chocolate theme for Astryx — rich brown palette with Fraunces headings, Albert Sans body, and Lucide icons",
   "author": "Meta Open Source",
   "license": "MIT",
   "homepage": "https://github.com/facebookexperimental/xds#readme",

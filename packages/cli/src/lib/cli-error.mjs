@@ -1,11 +1,11 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 /**
- * @file XDS CLI — central error handling helper.
+ * @file Astryx CLI — central error handling helper.
  *
  * ## Exit-code policy
  *
- * The XDS CLI follows one rule above all: **exit code is the contract**. CI
+ * The Astryx CLI follows one rule above all: **exit code is the contract**. CI
  * scripts and AI agents read it before they read any text. Every error path
  * across every command must agree on the exit code so that callers can
  * detect failure without parsing stdout/stderr.

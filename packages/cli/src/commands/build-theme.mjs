@@ -162,7 +162,7 @@ async function getKnownValues(componentName) {
  * component prop values found in the theme's `components` keys. Reads known
  * values from doc files to filter out base prop values.
  *
- * Interface naming convention: XDS + PascalCase(component) + PascalCase(prop) + Map
+ * Interface naming convention: Astryx + PascalCase(component) + PascalCase(prop) + Map
  *   banner + status → XDSBannerStatusMap
  *   button + variant → XDSButtonVariantMap
  *
@@ -431,7 +431,7 @@ ${iconType}export declare const ${toIdentifier(themeDef.name)}Theme: DefinedThem
 // =============================================================================
 
 /**
- * Known XDS component names and their visual props.
+ * Known Astryx component names and their visual props.
  * Used to warn on typos in defineTheme component overrides.
  */
 const KNOWN_COMPONENTS = {

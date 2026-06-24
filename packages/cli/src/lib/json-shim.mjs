@@ -113,7 +113,7 @@ function emitJsonError(message, suggestions, code) {
 }
 
 /**
- * Map a Commander parse-error code (and its message) to a stable XDS error
+ * Map a Commander parse-error code (and its message) to a stable Astryx error
  * code. Commander's own codes are stable enough, but they aren't part of our
  * documented contract — so we translate them into the `ERR_*` taxonomy.
  *

@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 /**
- * @file Programmatic API for the XDS CLI.
+ * @file Programmatic API for the Astryx CLI.
  *
  * Every function returns the same { type, data } envelope that `xds --json` outputs.
  * Errors throw AstryxError (with optional .suggestions).

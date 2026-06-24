@@ -3,7 +3,7 @@
 'use client';
 
 /**
- * XDS Theme System
+ * Astryx Theme System
  *
  * Exports:
  * - Theme: Provider component that applies theme
