@@ -355,8 +355,8 @@ export function checkAgentDocs(ctx) {
     try {
       const content = fs.readFileSync(path.join(ctx.cwd, rel), 'utf-8');
       return (
-        content.includes('<!-- XDS:START -->') &&
-        content.includes('<!-- XDS:END -->')
+        (content.includes('<!-- ASTRYX:START -->') || content.includes('<!-- XDS:START -->')) &&
+        (content.includes('<!-- ASTRYX:END -->') || content.includes('<!-- XDS:END -->'))
       );
     } catch {
       return false;
@@ -368,7 +368,7 @@ export function checkAgentDocs(ctx) {
       id: 'agent-docs',
       label: 'AI agent docs',
       status: 'warn',
-      message: `Agent docs present (${present.join(', ')}) but no XDS section markers found.`,
+      message: `Agent docs present (${present.join(', ')}) but no Astryx section markers found.`,
       fix: 'Add the XDS section to your agent docs with `astryx init --features agents`.',
     };
   }
