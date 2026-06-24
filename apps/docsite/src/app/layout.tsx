@@ -25,6 +25,11 @@ const SITE_TITLE = 'Astryx Design System';
 const SITE_DESCRIPTION =
   'An open source design system that is fully customizable and agent ready.';
 
+// Default social card image: the launch banner that the announcement blog post
+// uses for its cover. Reusing the same branded banner keeps the shared-link
+// preview consistent with the launch creative across the site and the post.
+const OG_IMAGE = '/blog-post-01.png';
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -45,9 +50,9 @@ export const metadata: Metadata = {
     url: '/',
     images: [
       {
-        url: '/og-default.png',
+        url: OG_IMAGE,
         width: 1200,
-        height: 630,
+        height: 675,
         alt: 'Astryx — an open source design system by Meta',
       },
     ],
@@ -56,7 +61,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
-    images: ['/og-default.png'],
+    images: [OG_IMAGE],
   },
 };
 

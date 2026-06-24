@@ -26,13 +26,13 @@ export const metadata: Metadata = {
     title: `${BLOG_TITLE} · Astryx`,
     description: BLOG_DESCRIPTION,
     url: '/blog',
-    images: ['/og-default.png'],
+    images: ['/blog-post-01.png'],
   },
   twitter: {
     card: 'summary_large_image',
     title: `${BLOG_TITLE} · Astryx`,
     description: BLOG_DESCRIPTION,
-    images: ['/og-default.png'],
+    images: ['/blog-post-01.png'],
   },
 };
 
