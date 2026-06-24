@@ -30,18 +30,14 @@ const butterTheme = themeObjects['@astryxdesign/theme-butter'];
 // stays in sync with the themes page.
 const butterContent = getThemeShowcaseContent('butter');
 
-// The swatches + "Aa" wordmark read the Butter theme's CSS vars directly (the
-// rail is wrapped in a Butter <Theme> scope below), instead of hardcoded hex —
-// brand --color-accent, the yellow categorical background, and the creamy
-// --color-background-body — so they stay in sync with the theme and follow
-// light/dark like the rest of the preview.
+// Swatch + "Aa" colors as Butter theme tokens (resolved via the Butter <Theme>
+// scope around the rail below) rather than hardcoded hex, so they stay in sync.
 const BUTTER_BLUE = 'var(--color-accent)';
 const BUTTER_YELLOW = 'var(--color-background-yellow)';
 const BUTTER_CREAM = 'var(--color-background-body)';
 
-// Butter's signature display cursive (theme scopes it to text display roles via
-// type:display-*); set explicitly for the static "Aa" since it sits outside the
-// Butter <Theme> scope.
+// Butter's signature display cursive — the theme only applies it to display-role
+// text, so the "Aa" sets the family explicitly.
 const BUTTER_SCRIPT = 'Sarina, "Brush Script MT", "Snell Roundhand", cursive';
 
 // The store template's natural (pre-scale) render width and the layout height
@@ -146,8 +142,7 @@ const styles = stylex.create({
     transform: `scale(calc(min(${STORE_MAX}px, calc(100cqw - ${RAIL_RESERVE}px)) / ${STORE_RENDER_WIDTH + 4}px))`,
     transformOrigin: 'top left',
   },
-  // Static Butter palette swatches + script wordmark, stacked vertically on the
-  // right and left-aligned (the swatches and the "Aa" share a common left edge).
+  // Butter swatches + script wordmark, stacked vertically and left-aligned.
   rail: {
     flexShrink: 0,
     flexDirection: 'column',
@@ -189,11 +184,9 @@ const FORCE_DESKTOP_MOBILE_CONTEXT: AppShellMobileContextValue = {
   hasAutoToggle: false,
 };
 
-// Live, theme-aware replacement for the old /feature-brand.png. The LEFT panel
-// reuses the real /themes showcase (ThemeShowcaseStore + Butter content) inside
-// the Butter <Theme> scope — real themed surfaces, so it's dark-mode correct
-// and stays in sync with the themes page. The RIGHT rail keeps the reference's
-// static Butter swatches + script "Aa".
+// Live, theme-aware replacement for the old /feature-brand.png: the real /themes
+// ThemeShowcaseStore (Butter content) on the left + Butter swatches & script "Aa"
+// on the right, both in a Butter <Theme> scope so they're dark-mode correct.
 export function ThemesPreview() {
   // Follow the docsite light/dark toggle so the Butter preview switches modes
   // (keeps Butter's palette; 'system' defers to the OS before the toggle).

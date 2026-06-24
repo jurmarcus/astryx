@@ -51,12 +51,11 @@ const styles = stylex.create({
     // Decorative — never interactive (TemplateThumbnail is already inert).
     pointerEvents: 'none',
   },
-  // Narrow card: a vertical stack of 2-per-row groups (each row offset/bled).
-  // Wide card: a single 3-column grid (the row wrappers dissolve via
-  // display:contents below, so all 6 tiles flow into these 3 columns → 2 lines).
+  // Narrow card: a flex-column stack of 2-per-row groups (each row offset/bled).
+  // Wide card: a single 3-column grid — the row wrappers dissolve via
+  // display:contents below, so all 6 tiles flow into these 3 columns → 2 lines.
+  // (The unused flex/grid properties for each mode are ignored.)
   root: {
-    // flex column (stack of rows) on a narrow card; grid (3 per line) on a wide
-    // card. The unused properties for each mode are simply ignored.
     display: {
       default: 'flex',
       [WIDE_CARD]: 'grid',

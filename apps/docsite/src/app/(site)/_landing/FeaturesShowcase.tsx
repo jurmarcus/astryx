@@ -368,9 +368,8 @@ const features: Record<string, Feature> = {
     description:
       'Fully customizable themes ready for use. Make it yours without starting from scratch.',
     href: '/themes',
-    // Live Butter-themed faux landing + static Butter swatches/"Aa" instead of
-    // the old /feature-brand.png — the PNG stayed light on the dark surface;
-    // ThemesPreview's left panel re-themes for dark mode via the Butter scope.
+    // Live Butter-themed store preview + swatches/"Aa" instead of the old
+    // /feature-brand.png, so it re-themes for dark mode (the PNG stayed light).
     preview: <ThemesPreview />,
   },
   templates: {
@@ -378,10 +377,9 @@ const features: Record<string, Feature> = {
     description:
       'Production-ready templates for common pages, just plug in your content.',
     href: '/templates',
-    // Live scaled-down renders of the same real page templates the old
-    // /feature-templates.png collage showed (storefront, IDE, payment, login,
-    // product detail, AI chat, gallery) — re-themes for dark mode and stays in
-    // sync with the actual templates instead of a baked screenshot.
+    // Live scaled-down renders of real page templates instead of the baked
+    // /feature-templates.png, so they re-theme for dark mode and stay in sync
+    // with the actual templates.
     preview: <TemplatesPreview />,
   },
   cli: {
