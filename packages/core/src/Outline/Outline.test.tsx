@@ -37,7 +37,7 @@ describe('parseOutlineFromMarkdown', () => {
       parseOutlineFromMarkdown(
         '## **Install** `@astryxdesign/core`\n\n```\n# Not a heading\n```',
       ),
-    ).toEqual([{id: 'install-xds-core', label: 'Install @astryxdesign/core', level: 2}]);
+    ).toEqual([{id: 'install-astryxdesign-core', label: 'Install @astryxdesign/core', level: 2}]);
   });
 
   it('deduplicates generated ids', () => {
