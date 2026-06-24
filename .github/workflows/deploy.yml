@@ -171,11 +171,11 @@ jobs:
           mkdir -p deploy/assets
           cp packages/core/dist/astryx.css deploy/assets/astryx.css
           cp packages/core/src/reset.css deploy/assets/reset.css
-          cp packages/themes/default/dist/theme.css deploy/assets/theme.css
+          cp packages/themes/neutral/dist/theme.css deploy/assets/theme.css
 
           cat > deploy/index.html << 'LANDING_EOF'
           <!DOCTYPE html>
-          <html lang="en" data-astryx-theme="default">
+          <html lang="en" data-astryx-theme="neutral">
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
