@@ -87,9 +87,9 @@ export const ERROR_CODES = Object.freeze({
   ERR_UNKNOWN: 'ERR_UNKNOWN',
 
   // ── CLI parsing / dispatch (Commander + bare invocation) ─────────
-  /** A top-level command name was not recognized (e.g. `xds bogus`). */
+  /** A top-level command name was not recognized (e.g. `astryx bogus`). */
   ERR_UNKNOWN_COMMAND: 'ERR_UNKNOWN_COMMAND',
-  /** A subcommand under a command group was not recognized (e.g. `xds theme bogus`). */
+  /** A subcommand under a command group was not recognized (e.g. `astryx theme bogus`). */
   ERR_UNKNOWN_SUBCOMMAND: 'ERR_UNKNOWN_SUBCOMMAND',
   /** An unknown flag/option was passed (Commander `unknownOption`). */
   ERR_INVALID_OPTION: 'ERR_INVALID_OPTION',

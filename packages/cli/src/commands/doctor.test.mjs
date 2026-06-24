@@ -175,7 +175,7 @@ describe('doctor — individual checks', () => {
   it('agent-docs: INFO when no docs present', () => {
     const res = checkAgentDocs({cwd: tmpDir});
     expect(res.status).toBe('info');
-    expect(res.fix).toContain('xds init');
+    expect(res.fix).toContain('astryx init');
   });
 
   it('agent-docs: WARN when docs exist without XDS markers', () => {
@@ -255,7 +255,7 @@ function createProgram() {
 describe('doctor — command', () => {
   it('--json emits a doctor envelope', async () => {
     const program = createProgram();
-    await program.parseAsync(['node', 'xds', '--json', 'doctor']);
+    await program.parseAsync(['node', 'astryx', '--json', 'doctor']);
     const out = logCalls.join('\n');
     const parsed = JSON.parse(out);
     expect(parsed.apiVersion).toBe(1);
@@ -269,7 +269,7 @@ describe('doctor — command', () => {
     const prevExit = process.exitCode;
     process.exitCode = undefined;
     const program = createProgram();
-    await program.parseAsync(['node', 'xds', 'doctor']);
+    await program.parseAsync(['node', 'astryx', 'doctor']);
     // In the repo, core resolves, so no failures → exitCode untouched.
     expect(process.exitCode).toBeUndefined();
     process.exitCode = prevExit;
@@ -282,7 +282,7 @@ describe('doctor — command', () => {
     process.chdir(tmpDir);
     try {
       const program = createProgram();
-      await program.parseAsync(['node', 'xds', 'doctor']);
+      await program.parseAsync(['node', 'astryx', 'doctor']);
       expect(process.exitCode).toBe(1);
     } finally {
       process.chdir(prevCwd);

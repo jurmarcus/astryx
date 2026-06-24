@@ -180,12 +180,12 @@ Nothing to do in the CLI. Props come from `.doc.mjs` files in `packages/core/src
 2. Add a `{Name}.doc.mjs` in the same directory (or add to the parent's `.doc.mjs` if it's a sub-component)
 3. Done — the CLI auto-discovers it, the API auto-discovers it, the parity test auto-discovers it
 
-If the component has no `.doc.mjs`, `xds component {Name}` returns a clean error and CI's smoke test skips it.
+If the component has no `.doc.mjs`, `astryx component {Name}` returns a clean error and CI's smoke test skips it.
 
 ### Adding a new doc topic
 
 1. Add `{topic}.doc.mjs` in `packages/cli/docs/`
-2. Done — auto-discovered by `xds docs` and the `docs()` API function
+2. Done — auto-discovered by `astryx docs` and the `docs()` API function
 
 ### Adding a new template
 
@@ -199,7 +199,7 @@ packages/cli/templates/{name}/
 
 1. Create `packages/cli/templates/{name}/page.tsx` with a default-exported React component
 2. Create `packages/cli/templates/{name}/template.doc.mjs` with a `doc` export (`TemplateDoc`)
-3. Done — auto-discovered by `xds template --list` and the `template()` API function
+3. Done — auto-discovered by `astryx template --list` and the `template()` API function
 
 **Rules:**
 - No extra files — no CSS, no images, no other assets. Everything lives in `page.tsx`.

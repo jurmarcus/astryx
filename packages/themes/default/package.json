@@ -46,7 +46,7 @@
     "src"
   ],
   "scripts": {
-    "build": "xds theme build src/defaultTheme.ts -o dist/theme.css && tsup && tsc --project tsconfig.build.json"
+    "build": "astryx theme build src/defaultTheme.ts -o dist/theme.css && tsup && tsc --project tsconfig.build.json"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0"

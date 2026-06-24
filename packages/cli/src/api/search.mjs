@@ -272,26 +272,26 @@ function toResult(c, score, reason) {
       return {
         ...base,
         import: c._import,
-        command: `xds component ${c.name}`,
+        command: `astryx component ${c.name}`,
       };
     case 'hook':
       return {
         ...base,
         import: c._import,
-        command: `xds hook ${c.name}`,
+        command: `astryx hook ${c.name}`,
       };
     case 'doc':
       return {
         ...base,
         title: c._title,
-        command: `xds docs ${c.name}`,
+        command: `astryx docs ${c.name}`,
       };
     case 'template':
       return {
         ...base,
         displayName: c._displayName,
         kind: c._kind,
-        command: `xds template ${c.name}`,
+        command: `astryx template ${c.name}`,
       };
     default:
       return base;
@@ -313,7 +313,7 @@ export async function search(query, options = {}) {
 
   if (!query || !String(query).trim()) {
     throw new AstryxError('A search query is required', [
-      {name: 'xds search button', reason: 'example'},
+      {name: 'astryx search button', reason: 'example'},
     ]);
   }
 

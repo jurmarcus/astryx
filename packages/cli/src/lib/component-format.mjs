@@ -55,7 +55,7 @@ function formatSubComponent(comp) {
   if (table) {
     out.push(table + '\n');
   } else {
-    out.push(`See \`xds component ${comp.name}\` for props and usage.\n`);
+    out.push(`See \`astryx component ${comp.name}\` for props and usage.\n`);
   }
   return out;
 }

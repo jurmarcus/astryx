@@ -105,9 +105,9 @@ export function registerTemplate(program) {
             }
           }
           humanLog('\nUsage:');
-          humanLog('  xds template <name> [target-path]   Scaffold page or block');
-          humanLog('  xds template <name> --skeleton      Layout reference');
-          humanLog('  xds template --list --type block    List only blocks\n');
+          humanLog('  astryx template <name> [target-path]   Scaffold page or block');
+          humanLog('  astryx template <name> --skeleton      Layout reference');
+          humanLog('  astryx template --list --type block    List only blocks\n');
           break;
         }
 

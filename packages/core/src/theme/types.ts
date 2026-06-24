@@ -124,7 +124,7 @@ export type BuiltinTextType =
  * }
  * ```
  *
- * `xds theme build` generates these augmentations automatically when it
+ * `astryx theme build` generates these augmentations automatically when it
  * detects new `type:*` values in a theme's component overrides.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type

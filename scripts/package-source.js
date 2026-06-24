@@ -323,7 +323,7 @@ async function main() {
     }
 
     // Run agents-md script
-    const agentsMdPath = path.join(__dirname, 'cli', 'bin', 'xds.mjs');
+    const agentsMdPath = path.join(__dirname, 'cli', 'bin', 'astryx.mjs');
     if (fs.existsSync(agentsMdPath)) {
       const { execSync } = await import('node:child_process');
       try {

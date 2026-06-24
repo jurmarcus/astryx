@@ -24,7 +24,7 @@
  *      and `xds --version` all exit 0. The user got what they asked for.
  *
  *   4. **Empty / no-args invocations:** if the command has a sensible
- *      default (e.g. `xds component` lists all components, `xds docs` lists
+ *      default (e.g. `astryx component` lists all components, `astryx docs` lists
  *      all topics), exit 0. If the command requires arguments (e.g. `xds
  *      theme build`), Commander rejects it with exit 1.
  *

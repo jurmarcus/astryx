@@ -3,7 +3,7 @@
 /**
  * @file Programmatic API for the component command.
  *
- * Returns the same typed envelope { type, data } that `xds --json component` outputs.
+ * Returns the same typed envelope { type, data } that `astryx --json component` outputs.
  * The CLI command handler is a thin wrapper around this function.
  */
 

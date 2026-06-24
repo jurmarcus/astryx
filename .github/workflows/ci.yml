@@ -67,7 +67,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # docsite `generate` runs `xds theme build`, which imports the compiled
+      # docsite `generate` runs `astryx theme build`, which imports the compiled
       # @astryxdesign/core/theme entry (dist/theme/index.js). Build core first so that
       # entry exists — otherwise generate fails with "Cannot find module".
       - name: Build core package

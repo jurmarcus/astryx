@@ -46,7 +46,7 @@
     "src"
   ],
   "scripts": {
-    "build": "xds theme build src/gothicTheme.ts -o dist/theme.css && tsup && tsc --project tsconfig.build.json"
+    "build": "astryx theme build src/gothicTheme.ts -o dist/theme.css && tsup && tsc --project tsconfig.build.json"
   },
   "dependencies": {
     "lucide-react": "^1.18.0"

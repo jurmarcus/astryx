@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 /**
- * @file Health-check engine for `xds doctor`.
+ * @file Health-check engine for `astryx doctor`.
  *
  * Runs a series of diagnostic checks against the user's project and
  * environment, returning a structured report. Each check is a small,
@@ -347,7 +347,7 @@ export function checkAgentDocs(ctx) {
       label: 'AI agent docs',
       status: 'info',
       message: 'No agent docs (CLAUDE.md / AGENTS.md / .cursorrules) found.',
-      fix: 'Generate agent docs with `xds init --features agents`.',
+      fix: 'Generate agent docs with `astryx init --features agents`.',
     };
   }
 
@@ -369,7 +369,7 @@ export function checkAgentDocs(ctx) {
       label: 'AI agent docs',
       status: 'warn',
       message: `Agent docs present (${present.join(', ')}) but no XDS section markers found.`,
-      fix: 'Add the XDS section to your agent docs with `xds init --features agents`.',
+      fix: 'Add the XDS section to your agent docs with `astryx init --features agents`.',
     };
   }
 
@@ -525,7 +525,7 @@ export async function runChecks(options = {}) {
 
 /**
  * Programmatic API: run the doctor and return the same envelope shape that
- * `xds doctor --json` emits.
+ * `astryx doctor --json` emits.
  *
  * @param {object} [options]
  * @param {string} [options.cwd]

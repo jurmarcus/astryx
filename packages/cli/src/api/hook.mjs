@@ -3,7 +3,7 @@
 /**
  * @file Programmatic API for the hook command.
  *
- * Returns the same typed envelope { type, data } that `xds --json hook` outputs.
+ * Returns the same typed envelope { type, data } that `astryx --json hook` outputs.
  * The CLI command handler is a thin wrapper around this function.
  */
 

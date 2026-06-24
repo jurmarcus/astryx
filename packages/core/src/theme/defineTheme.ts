@@ -5,7 +5,7 @@
  *
  * Two distribution modes:
  * - Unbuilt: Theme generates CSS and injects a <style> tag at runtime
- * - Built: `npx xds theme build` pre-compiles to a CSS file; Theme just
+ * - Built: `npx astryx theme build` pre-compiles to a CSS file; Theme just
  *   sets the data-astryx-theme attribute
  *
  * Token values can be:
@@ -264,7 +264,7 @@ export interface DefineThemeInput {
    * the theme's data-astryx-theme attribute via @scope.
    *
    * Use `prop:value` keys to target specific visual props. New values
-   * not in the base type are automatically detected by `xds theme build`
+   * not in the base type are automatically detected by `astryx theme build`
    * and generate TypeScript module augmentations for type-safe extensibility.
    *
    * @example

@@ -43,7 +43,7 @@ For reliable CLI access, add this script to your `package.json`:
 
 ```json
 "scripts": {
-  "xds": "node node_modules/@astryxdesign/cli/bin/xds.mjs"
+  "xds": "node node_modules/@astryxdesign/cli/bin/astryx.mjs"
 }
 ```
 

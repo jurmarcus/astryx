@@ -174,7 +174,7 @@ export interface ComponentVar {
    * Private vars are set by the derived var expansion pipeline — theme
    * authors write standard CSS properties instead of setting them directly.
    * The CLI hides private vars from theming output.
-   * `xds theme build` errors if a theme sets a private var directly.
+   * `astryx theme build` errors if a theme sets a private var directly.
    */
   private?: boolean;
 }
@@ -428,7 +428,7 @@ interface BaseDoc {
   /** Search keywords for CLI discovery. Terms a developer might type when
    *  looking for this component: synonyms, related UI concepts, and common
    *  names from other design systems (MUI, Chakra, Radix, shadcn).
-   *  Lowercase only. Used by `xds component <term>` for fuzzy matching.
+   *  Lowercase only. Used by `astryx component <term>` for fuzzy matching.
    *  e.g. `['accordion', 'expand', 'toggle', 'disclosure']` for Collapsible */
   keywords?: string[];
   /** Sub-component names to hide from human-facing UI (CLI listings,
@@ -708,7 +708,7 @@ export type TokenPreviewType =
 /**
  * A section within a reference doc. Sections are the primary
  * organizational unit — each becomes an h2 in full output,
- * and can be individually retrieved via `xds docs <topic> <section>`.
+ * and can be individually retrieved via `astryx docs <topic> <section>`.
  */
 export interface ReferenceSection {
   /** Section title, e.g. "Spacing Tokens", "Light/Dark Mode" */
@@ -727,7 +727,7 @@ export interface ReferenceSection {
  * Reference docs cover topics like design tokens, principles, theming,
  * patterns, accessibility, and migration guides. Unlike ComponentDoc,
  * they aren't tied to a specific component — just drop a .doc.mjs file
- * in the docs/ directory and it shows up in `xds docs`.
+ * in the docs/ directory and it shows up in `astryx docs`.
  *
  * Every reference .doc.mjs must export a single `docs` constant:
  *
@@ -912,7 +912,7 @@ interface BaseTemplateDoc {
 
   /** Boolean opt-out for templates that shouldn't appear on the Templates
    *  overview gallery. The template stays available via the CLI and
-   *  `xds template <name>` — it's only hidden from the browsable gallery.
+   *  `astryx template <name>` — it's only hidden from the browsable gallery.
    *  Use for duplicate/experimental variants. Scaffold templates are
    *  hidden automatically and don't need this flag. */
   isHiddenFromOverview?: boolean;
@@ -1049,8 +1049,8 @@ export interface HookDoc {
   /** Usage documentation — description, best practices. */
   usage: UsageDoc;
   /** Component names this hook is commonly used with.
-   *  Enables cross-referencing: \`xds component Toast\` can mention useToast,
-   *  and \`xds hook useToast\` can link back to Toast. */
+   *  Enables cross-referencing: \`astryx component Toast\` can mention useToast,
+   *  and \`astryx hook useToast\` can link back to Toast. */
   relatedComponents?: string[];
   /** Other hook names this hook is commonly used with. */
   relatedHooks?: string[];
