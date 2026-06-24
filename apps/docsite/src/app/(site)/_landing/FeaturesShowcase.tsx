@@ -472,7 +472,7 @@ function FeatureCard({
         height="100%"
         xstyle={
           hasMedia
-            ? insetImage
+            ? insetImage || hasPreview
               ? styles.innerPaddingImageInset
               : styles.innerPaddingImage
             : styles.innerPaddingText
