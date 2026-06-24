@@ -250,7 +250,7 @@ const THEME_SCOPE_TO = `[data-astryx-theme]`;
 
 /**
  * Import a theme module using jiti and find the defineTheme() result.
- * Returns the resolved XDSDefinedTheme object.
+ * Returns the resolved DefinedTheme object.
  */
 async function importThemeModule(filePath) {
   const jiti = createJiti(import.meta.url, {
@@ -417,12 +417,12 @@ ${iconReExport}`;
  */
 function generateBuiltTypes(themeDef, iconInfo) {
   const iconType = iconInfo
-    ? `import type { XDSIconRegistry } from '@astryxdesign/core/Icon';
-export declare const ${iconInfo.exportName}: XDSIconRegistry;
+    ? `import type { IconRegistry } from '@astryxdesign/core/Icon';
+export declare const ${iconInfo.exportName}: IconRegistry;
 `
     : '';
-  return `import type { XDSDefinedTheme } from '@astryxdesign/core/theme';
-${iconType}export declare const ${toIdentifier(themeDef.name)}Theme: XDSDefinedTheme;
+  return `import type { DefinedTheme } from '@astryxdesign/core/theme';
+${iconType}export declare const ${toIdentifier(themeDef.name)}Theme: DefinedTheme;
 `;
 }
 
