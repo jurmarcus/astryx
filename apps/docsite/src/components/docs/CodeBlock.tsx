@@ -31,6 +31,7 @@ export function CodeBlockRenderer({
         code={code}
         language={lang}
         hasCopyButton
+        isWrapped
         xstyle={styles.root}
       />
     </VStack>
