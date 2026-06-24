@@ -222,7 +222,7 @@ const noHardcodedStylesRule = {
 
 const plugin = {
   meta: {
-    name: '@xds/eslint-plugin',
+    name: '@astryx/eslint-plugin',
     version: '0.0.1',
   },
   rules: {
@@ -247,44 +247,44 @@ const plugin = {
 // Strict config - for agents/CI (all errors)
 plugin.configs.strict = {
   plugins: {
-    '@xds': plugin,
+    '@astryx': plugin,
   },
   rules: {
-    '@xds/no-hardcoded-styles': 'error',
-    '@xds/boolean-prop-naming': 'error',
-    '@xds/presentational-component': 'error',
-    '@xds/docblock-example-format': 'error',
-    '@xds/no-stylex-null-override': 'error',
-    '@xds/no-react-introspection': 'error',
-    '@xds/no-classname-clobber': 'error',
-    '@xds/no-hardcoded-anchor': 'error',
-    '@xds/no-border-shorthand': 'error',
-    '@xds/no-react-namespace-hooks': 'error',
-    '@xds/require-base-props': 'error',
-    '@xds/require-ref-prop': 'error',
-    '@xds/copyright-header': 'error',
+    '@astryx/no-hardcoded-styles': 'error',
+    '@astryx/boolean-prop-naming': 'error',
+    '@astryx/presentational-component': 'error',
+    '@astryx/docblock-example-format': 'error',
+    '@astryx/no-stylex-null-override': 'error',
+    '@astryx/no-react-introspection': 'error',
+    '@astryx/no-classname-clobber': 'error',
+    '@astryx/no-hardcoded-anchor': 'error',
+    '@astryx/no-border-shorthand': 'error',
+    '@astryx/no-react-namespace-hooks': 'error',
+    '@astryx/require-base-props': 'error',
+    '@astryx/require-ref-prop': 'error',
+    '@astryx/copyright-header': 'error',
   },
 };
 
 // Recommended config - for humans (all warnings)
 plugin.configs.recommended = {
   plugins: {
-    '@xds': plugin,
+    '@astryx': plugin,
   },
   rules: {
-    '@xds/no-hardcoded-styles': 'warn',
-    '@xds/boolean-prop-naming': 'warn',
-    '@xds/presentational-component': 'error',
-    '@xds/docblock-example-format': 'warn',
-    '@xds/no-stylex-null-override': 'warn',
-    '@xds/no-react-introspection': 'error',
-    '@xds/no-classname-clobber': 'error',
-    '@xds/no-hardcoded-anchor': 'warn',
-    '@xds/no-border-shorthand': 'warn',
-    '@xds/no-react-namespace-hooks': 'error',
-    '@xds/require-base-props': 'warn',
-    '@xds/require-ref-prop': 'warn',
-    '@xds/copyright-header': 'error',
+    '@astryx/no-hardcoded-styles': 'warn',
+    '@astryx/boolean-prop-naming': 'warn',
+    '@astryx/presentational-component': 'error',
+    '@astryx/docblock-example-format': 'warn',
+    '@astryx/no-stylex-null-override': 'warn',
+    '@astryx/no-react-introspection': 'error',
+    '@astryx/no-classname-clobber': 'error',
+    '@astryx/no-hardcoded-anchor': 'warn',
+    '@astryx/no-border-shorthand': 'warn',
+    '@astryx/no-react-namespace-hooks': 'error',
+    '@astryx/require-base-props': 'warn',
+    '@astryx/require-ref-prop': 'warn',
+    '@astryx/copyright-header': 'error',
   },
 };
 

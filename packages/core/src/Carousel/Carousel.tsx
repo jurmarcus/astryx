@@ -98,10 +98,10 @@ const styles = stylex.create({
     alignItems: 'center',
     overflowX: 'auto',
     overflowY: 'hidden',
-    /* eslint-disable @xds/no-hardcoded-styles -- 1px bleed for tab indicator; no token at this size */
+    /* eslint-disable @astryx/no-hardcoded-styles -- 1px bleed for tab indicator; no token at this size */
     paddingBottom: '1px',
     marginBottom: '-1px',
-    /* eslint-enable @xds/no-hardcoded-styles */
+    /* eslint-enable @astryx/no-hardcoded-styles */
     overscrollBehaviorX: 'contain',
     scrollBehavior: {
       default: 'smooth',

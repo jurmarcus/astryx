@@ -85,7 +85,7 @@ export interface ResizableRegion {
 
 export interface ResizableProps {
   _size: number;
-  // eslint-disable-next-line @xds/boolean-prop-naming
+  // eslint-disable-next-line @astryx/boolean-prop-naming
   _isCollapsed: boolean;
   _onResizeStart: () => void;
   _onResizeMove: (delta: number) => void;
@@ -95,7 +95,7 @@ export interface ResizableProps {
   _snaps: number[];
   _collapsedSize: number;
   /** Whether the region supports collapsing. */
-  // eslint-disable-next-line @xds/boolean-prop-naming
+  // eslint-disable-next-line @astryx/boolean-prop-naming
   _collapsible: boolean;
   _isResizableProps: true;
 }

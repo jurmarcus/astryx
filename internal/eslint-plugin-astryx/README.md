@@ -1,4 +1,4 @@
-# @xds/eslint-plugin
+# @astryx/eslint-plugin
 
 ESLint plugin for XDS design system token enforcement.
 
@@ -18,7 +18,7 @@ This plugin implements a two-tier linting strategy:
 
 ## Rules
 
-### `@xds/no-hardcoded-styles`
+### `@astryx/no-hardcoded-styles`
 
 Detects hardcoded CSS values in `stylex.create()` that should use XDS tokens:
 
@@ -54,7 +54,7 @@ const styles = stylex.create({
 });
 ```
 
-### `@xds/require-letter-spacing`
+### `@astryx/require-letter-spacing`
 
 Recommends adding `letterSpacing` when `fontSize` is defined (common design pattern for badges, labels).
 
@@ -98,9 +98,9 @@ pnpm lint:strict packages/core/src/Badge/XDSBadge.test-violations.tsx
 Expected output in strict mode:
 
 ```
-  12:15  error  Use textSizeVars token instead of hardcoded fontSize  @xds/no-hardcoded-styles
-  17:16  error  Use fontWeightVars token instead of hardcoded fontWeight  @xds/no-hardcoded-styles
-  22:12  error  Use colorVars token instead of hardcoded color  @xds/no-hardcoded-styles
+  12:15  error  Use textSizeVars token instead of hardcoded fontSize  @astryx/no-hardcoded-styles
+  17:16  error  Use fontWeightVars token instead of hardcoded fontWeight  @astryx/no-hardcoded-styles
+  22:12  error  Use colorVars token instead of hardcoded color  @astryx/no-hardcoded-styles
   ...
 ```
 
@@ -129,16 +129,16 @@ If a property legitimately needs a hardcoded value:
 // In eslint.config.js
 {
   files: ["packages/core/src/**/*.{ts,tsx}"],
-  plugins: { '@xds': xdsPlugin },
+  plugins: { '@astryx': xdsPlugin },
   rules: {
-    '@xds/no-hardcoded-styles': ['warn', {
+    '@astryx/no-hardcoded-styles': ['warn', {
       ignore: ['lineHeight']  // Allow hardcoded lineHeight
     }],
   },
 }
 ```
 
-### `@xds/presentational-component`
+### `@astryx/presentational-component`
 
 Enforces that presentational components remain server-component compatible by preventing:
 

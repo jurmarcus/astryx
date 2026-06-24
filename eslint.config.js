@@ -137,10 +137,10 @@ export default tseslint.config(
     files: ["**/*.{ts,tsx}"],
     ignores: ["**/*.d.ts", "**/dist/**"],
     plugins: {
-      '@xds': xdsPlugin,
+      '@astryx': xdsPlugin,
     },
     rules: {
-      '@xds/copyright-header': 'error',
+      '@astryx/copyright-header': 'error',
     },
   },
   // XDS design token enforcement - applies to core package (excluding theme files)
@@ -152,7 +152,7 @@ export default tseslint.config(
       ...xdsConfig.rules,
       // Temporarily allow Children.* in files that need architectural fixes.
       // Tracked: OverflowList, MetadataList, Carousel need data-driven APIs.
-      '@xds/no-react-introspection': ['error', {
+      '@astryx/no-react-introspection': ['error', {
         allowFiles: [
           'OverflowList/OverflowList',
           'MetadataList/MetadataList',
@@ -163,7 +163,7 @@ export default tseslint.config(
   },
   // React bug-prevention rules - applies to core package
   // Uses @eslint-react for bugs that TypeScript alone cannot catch.
-  // Children.*/cloneElement are already covered by @xds/no-react-introspection.
+  // Children.*/cloneElement are already covered by @astryx/no-react-introspection.
   {
     files: ["packages/core/src/**/*.{ts,tsx}"],
     plugins: {
@@ -288,11 +288,11 @@ export default tseslint.config(
   // CLI runtime (.mjs). The CLI ships as ESM Node modules and was never linted
   // (the global **/*.mjs ignore swallowed it; see #2468). This block gives the
   // .mjs sources a Node language environment and enforces the JSON-stdout
-  // contract (#2467) at author time via @xds/no-raw-console-cli.
+  // contract (#2467) at author time via @astryx/no-raw-console-cli.
   {
     files: ["packages/cli/src/**/*.mjs", "packages/cli/bin/**/*.mjs"],
     plugins: {
-      '@xds': xdsPlugin,
+      '@astryx': xdsPlugin,
     },
     languageOptions: {
       sourceType: "module",
@@ -330,7 +330,7 @@ export default tseslint.config(
       }],
       // Bare console.log corrupts --json stdout. Route human chatter through
       // humanLog(); console.error/console.warn (stderr) stay allowed.
-      "@xds/no-raw-console-cli": "error",
+      "@astryx/no-raw-console-cli": "error",
     },
   },
   // Copyright header for CLI .mjs sources (the main copyright block only
@@ -338,10 +338,10 @@ export default tseslint.config(
   {
     files: ["packages/cli/src/**/*.mjs", "packages/cli/bin/**/*.mjs"],
     plugins: {
-      '@xds': xdsPlugin,
+      '@astryx': xdsPlugin,
     },
     rules: {
-      '@xds/copyright-header': 'error',
+      '@astryx/copyright-header': 'error',
     },
   },
   // CLI tests — relax author-ergonomics rules (test files emit freely and may
@@ -349,7 +349,7 @@ export default tseslint.config(
   {
     files: ["packages/cli/**/*.test.mjs"],
     rules: {
-      "@xds/no-raw-console-cli": "off",
+      "@astryx/no-raw-console-cli": "off",
       "@typescript-eslint/no-unused-vars": "off",
     },
   },
