@@ -12,6 +12,7 @@ import {spacingVars} from '@astryxdesign/core/theme/tokens.stylex';
 import {components} from '../../../generated/componentRegistry';
 import {layout} from '../../../layout.stylex';
 import {ComponentsPreview} from './ComponentsPreview';
+import {CliPreview} from './CliPreview';
 
 // Count of public @astryxdesign/core components (excluding hooks and hidden entries).
 // Sourced from the generated registry so the number stays accurate as the
@@ -384,10 +385,10 @@ const features: Record<string, Feature> = {
     description:
       'Scaffold projects, browse templates, generate themes, and get agent-ready docs from the command line or MCP.',
     href: '/docs/cli',
-    image: {
-      src: '/feature-cli.png',
-      alt: 'AI prompt input asking "Can you create me a table page" with a send button',
-    },
+    // Live, theme-aware chat composer instead of a baked PNG — the old
+    // /feature-cli.png stayed light on the dark surface; CliPreview
+    // re-themes for dark mode.
+    preview: <CliPreview />,
   },
 };
 
@@ -609,7 +610,7 @@ export function FeaturesShowcase() {
         </VStack>
         <VStack gap={8} width="100%" height="100%" xstyle={styles.column}>
           <FeatureCard feature={features.components} isFlex insetImage />
-          <FeatureCard feature={features.cli} smallImage />
+          <FeatureCard feature={features.cli} />
         </VStack>
         <VStack gap={8} width="100%" height="100%" xstyle={styles.column}>
           <FeatureCard feature={features.templates} isTall />
