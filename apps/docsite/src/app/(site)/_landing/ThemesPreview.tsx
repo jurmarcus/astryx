@@ -30,13 +30,14 @@ const butterTheme = themeObjects['@astryxdesign/theme-butter'];
 // stays in sync with the themes page.
 const butterContent = getThemeShowcaseContent('butter');
 
-// Butter's literal palette for the STATIC swatches + "Aa" wordmark (rendered
-// outside the themed scope, so they can't read tokens). Values mirror
-// packages/themes/butter/src/butterTheme.ts: brand --color-accent, the yellow
-// categorical background, and the creamy --color-background-body.
-const BUTTER_BLUE = '#225BFF';
-const BUTTER_YELLOW = '#feee7b';
-const BUTTER_CREAM = '#FDFBE4';
+// The swatches + "Aa" wordmark read the Butter theme's CSS vars directly (the
+// rail is wrapped in a Butter <Theme> scope below), instead of hardcoded hex —
+// brand --color-accent, the yellow categorical background, and the creamy
+// --color-background-body — so they stay in sync with the theme and follow
+// light/dark like the rest of the preview.
+const BUTTER_BLUE = 'var(--color-accent)';
+const BUTTER_YELLOW = 'var(--color-background-yellow)';
+const BUTTER_CREAM = 'var(--color-background-body)';
 
 // Butter's signature display cursive (theme scopes it to text display roles via
 // type:display-*); set explicitly for the static "Aa" since it sits outside the
@@ -215,20 +216,24 @@ export function ThemesPreview() {
           </Theme>
         </Card>
 
-        <HStack gap={2} xstyle={styles.rail}>
-          <div
-            {...stylex.props(styles.swatch, swatchColors.fill(BUTTER_BLUE))}
-          />
-          <div
-            {...stylex.props(styles.swatch, swatchColors.fill(BUTTER_YELLOW))}
-          />
-          <div
-            {...stylex.props(styles.swatch, swatchColors.fill(BUTTER_CREAM))}
-          />
-          <span {...stylex.props(styles.railWordmark)} aria-hidden="true">
-            Aa
-          </span>
-        </HStack>
+        {/* Butter <Theme> scope (display:contents, no layout box) so the
+            swatches/"Aa" resolve the Butter --color-* tokens directly. */}
+        <Theme theme={butterTheme} mode={themeMode}>
+          <HStack gap={2} xstyle={styles.rail}>
+            <div
+              {...stylex.props(styles.swatch, swatchColors.fill(BUTTER_BLUE))}
+            />
+            <div
+              {...stylex.props(styles.swatch, swatchColors.fill(BUTTER_YELLOW))}
+            />
+            <div
+              {...stylex.props(styles.swatch, swatchColors.fill(BUTTER_CREAM))}
+            />
+            <span {...stylex.props(styles.railWordmark)} aria-hidden="true">
+              Aa
+            </span>
+          </HStack>
+        </Theme>
       </div>
     </div>
   );
