@@ -3,8 +3,8 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import {Suspense} from 'react';
-import {useSearchParams, useRouter, usePathname} from 'next/navigation';
+import {Suspense, useEffect, useState} from 'react';
+import {useRouter, usePathname} from 'next/navigation';
 import {Heading, Text} from '@astryxdesign/core/Text';
 import {VStack} from '@astryxdesign/core/Layout';
 import {Section} from '@astryxdesign/core/Section';
@@ -128,7 +128,6 @@ function ComponentDetailInner({
   pkgVersion,
   showcase,
 }: ComponentDetailClientProps) {
-  const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -136,15 +135,28 @@ function ComponentDetailInner({
   const hasShowcase = comp.name in showcaseRegistry;
   const hasPlayground = !isHook;
 
-  const tab = searchParams.get('tab') ?? 'overview';
+  // Initialize to 'overview' rather than reading useSearchParams() so the title
+  // and Overview content render in the static/server HTML. useSearchParams would
+  // push this whole subtree to client-only rendering, leaving crawlers (and the
+  // first paint) with an empty shell. The URL's ?tab= is restored on mount for
+  // deep links into the Properties tab.
+  const [tab, setTabState] = useState('overview');
+  useEffect(() => {
+    const urlTab = new URLSearchParams(window.location.search).get('tab');
+    if (urlTab && urlTab !== 'overview') {
+      setTabState(urlTab);
+    }
+  }, []);
+
   const setTab = (value: string) => {
+    setTabState(value);
     trackNavigate({
       page: 'components',
       target: 'tab',
       tab: value,
       item: comp.name,
     });
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     if (value === 'overview') {
       params.delete('tab');
     } else {
@@ -168,7 +180,9 @@ function ComponentDetailInner({
       xstyle={styles.section}>
       <VStack gap={4}>
         <VStack gap={2}>
-          <Text type="display-1">{comp.displayName}</Text>
+          <Heading level={1} type="display-1">
+            {comp.displayName}
+          </Heading>
           <Text type="supporting" color="secondary">
             {pkg}
             {pkgVersion ? ` v${pkgVersion}` : ''} · {comp.moduleName}

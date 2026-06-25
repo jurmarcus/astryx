@@ -135,9 +135,9 @@ export default function ComponentsGalleryPage() {
       <VStack gap={10}>
         <VStack gap={4} hAlign="center">
           <VStack gap={2} style={{alignItems: 'center'}}>
-            <Text type="display-1" xstyle={styles.heroTitle}>
+            <Heading level={1} type="display-1" xstyle={styles.heroTitle}>
               Browse the library
-            </Text>
+            </Heading>
             <Text type="body" color="secondary" xstyle={styles.heroTitle}>
               Every component, with copy-ready examples for every variant,
               state, and pattern.
