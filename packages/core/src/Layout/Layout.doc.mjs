@@ -29,7 +29,8 @@ export const docs = {
     {
       name: 'content',
       type: 'ReactNode',
-      description: 'Main content area (center).',
+      description:
+        'Main content area (center). Children passed to `<Layout>` render here too — `<Layout>{main}</Layout>` is shorthand for `<Layout content={main} />`.',
       slotElements: [
         {
           __element: 'LayoutContent',
