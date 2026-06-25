@@ -2,18 +2,12 @@
 
 'use client';
 
-import * as stylex from '@stylexjs/stylex';
 import {VStack} from '@astryxdesign/core/Layout';
 import {Heading, Text} from '@astryxdesign/core/Text';
 import {Link} from '@astryxdesign/core/Link';
 import {Section} from '@astryxdesign/core/Section';
 import {CodeExampleBlock} from './CodeExampleBlock';
 import {packages} from '../generated/packageRegistry';
-
-const styles = stylex.create({
-  // CodeBlock defaults to fit-content; force full-width inside the Section.
-  code: {width: '100%'},
-});
 
 // Strip "Theme: " prefix and " Theme" suffix from the registered displayName
 // so headings read as the brand wordmark ("Y2K") rather than "Theme: Y2K Theme".
@@ -68,14 +62,14 @@ import {${importName}} from '${packageName}';
           language="bash"
           hasCopyButton
           isWrapped
-          xstyle={styles.code}
+          width="100%"
         />
         <CodeExampleBlock
           code={importCode}
           language="tsx"
           hasCopyButton
           isWrapped
-          xstyle={styles.code}
+          width="100%"
         />
       </VStack>
     </Section>
