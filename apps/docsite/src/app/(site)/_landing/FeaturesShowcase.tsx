@@ -58,9 +58,7 @@ const styles = stylex.create({
     width: '100%',
     maxWidth: layout.contentMaxWidth,
     display: 'grid',
-    // Tighter stacking gap on mobile (the single-column stack felt gappy,
-    // especially heading→first card); the roomier --spacing-8 returns at the
-    // ≥1024px 3-column bento where columns need more breathing room.
+    // Tighter stacking gap on mobile; roomier --spacing-8 at the ≥1024px bento.
     gap: {
       default: spacingVars['--spacing-5'],
       '@media (min-width: 1024px)': spacingVars['--spacing-8'],

@@ -203,11 +203,8 @@ const styles = stylex.create({
     whiteSpace: 'nowrap',
     borderWidth: 0,
   },
-  // Wraps the whole hero so horizontal swipes change the theme. touch-action:
-  // pan-y tells the browser this region only scrolls vertically, so a horizontal
-  // drag is handed to our JS swipe handler instead of panning/overscrolling the
-  // page sideways (which made the whole page shift on drag). Vertical page
-  // scrolling is unaffected.
+  // touch-action: pan-y so a horizontal swipe is handed to our JS handler
+  // (theme change) instead of panning the page sideways; vertical scroll stays.
   swipeArea: {
     touchAction: 'pan-y',
   },
@@ -246,23 +243,16 @@ export function HeroReelProvider({children}: {children: ReactNode}) {
     [slides.length],
   );
 
-  // Touch swipe (mobile): swipe left → next theme, right → previous. The reel is
-  // the carousel, so a horizontal drag anywhere over the hero advances it.
-  // Horizontal gestures are claimed by `touch-action: pan-y` on the wrapper (see
-  // styles.swipeArea) so the browser doesn't also pan/overscroll the page
-  // sideways during the drag — only VERTICAL panning (page scroll) stays native.
-  // We still gate on a mostly-horizontal delta so a vertical scroll isn't read
-  // as a swipe. Refs hold the start point so we don't re-render mid-gesture.
+  // Touch swipe (mobile): swipe left → next theme, right → previous.
   const touchStart = useRef<{x: number; y: number} | null>(null);
-  const SWIPE_THRESHOLD_PX = 45; // min horizontal distance to count as a swipe
+  const SWIPE_THRESHOLD_PX = 45;
   const onTouchStart = useCallback((e: ReactTouchEvent) => {
     const t = e.touches[0];
     if (!t) {
       return;
     }
     touchStart.current = {x: t.clientX, y: t.clientY};
-    // Pause auto-advance while the finger is down so a swipe doesn't race the
-    // 4.5s clock (touch devices have no hover to trigger the pause otherwise).
+    // Touch devices have no hover, so pause auto-advance while the finger is down.
     setPaused(true);
   }, []);
   const onTouchEnd = useCallback(
@@ -279,8 +269,7 @@ export function HeroReelProvider({children}: {children: ReactNode}) {
       }
       const dx = t.clientX - start.x;
       const dy = t.clientY - start.y;
-      // Require a mostly-horizontal gesture past the threshold; |dx| must beat
-      // |dy| so a diagonal scroll isn't mistaken for a swipe.
+      // Only a mostly-horizontal gesture counts, so vertical scroll isn't a swipe.
       if (Math.abs(dx) < SWIPE_THRESHOLD_PX || Math.abs(dx) <= Math.abs(dy)) {
         return;
       }
