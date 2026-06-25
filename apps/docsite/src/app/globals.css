@@ -43,10 +43,8 @@ html {
      as a single related group. */
   --astryx-marketing-feature-card-bg: light-dark(#e6f0ff, #1a2333);
 
-  /* Single source of truth for spacing between major home-page sections (and
-     the surface/footer padding that references it). The XDS scale tops out at
-     --spacing-12 = 48px, too tight for a landing-page section break, so this
-     carries the larger marketing pacing. Shrinks on mobile (below). */
+  /* Spacing between major home-page sections (the XDS scale tops out at 48px,
+     too tight for a section break). Shrinks on mobile (below). */
   --astryx-marketing-section-gap: 100px;
 }
 

@@ -203,8 +203,7 @@ const styles = stylex.create({
     whiteSpace: 'nowrap',
     borderWidth: 0,
   },
-  // touch-action: pan-y so a horizontal swipe is handed to our JS handler
-  // (theme change) instead of panning the page sideways; vertical scroll stays.
+  // pan-y so a horizontal swipe goes to our handler, not page side-pan.
   swipeArea: {
     touchAction: 'pan-y',
   },

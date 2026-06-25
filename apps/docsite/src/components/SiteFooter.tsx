@@ -32,8 +32,7 @@ import {
 
 const styles = stylex.create({
   siteFooter: {
-    // Reuse the marketing section-gap token so the footer's top spacing matches
-    // the sections above it (and scales responsively); falls back off-site.
+    // Match the section rhythm above (responsive); fall back off the home page.
     paddingTop:
       'var(--astryx-marketing-section-gap, calc(var(--spacing-12) * 2))',
   },

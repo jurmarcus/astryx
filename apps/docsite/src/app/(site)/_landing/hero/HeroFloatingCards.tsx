@@ -59,9 +59,8 @@ const styles = stylex.create({
       default: 'grid',
       '@media (min-width: 1024px)': 'none',
     },
-    // Scale the collage down on mobile so the cards read as compact previews.
-    // `zoom` (not transform:scale) so the laid-out box shrinks too — no reserved
-    // empty space below. Reset to 1 at desktop (where the collage is hidden).
+    // Scale the collage down on mobile. `zoom` (not transform:scale) so the
+    // laid-out box shrinks too — no reserved empty space below.
     zoom: {
       default: 0.8,
       '@media (min-width: 768px)': 0.9,
@@ -101,8 +100,7 @@ const styles = stylex.create({
     },
     width: '100vw',
     marginInline: 'calc(50% - 50vw)',
-    // Hero text → collage gap. --hero-gap (96px) is too cavernous on phones;
-    // the larger gap returns at ≥768px. (Hidden ≥1024px, so desktop unaffected.)
+    // --hero-gap (96px) is too cavernous on phones; full gap returns at ≥768px.
     marginBlockStart: {
       default: 'var(--spacing-10)',
       '@media (min-width: 768px)': 'var(--hero-gap)',
