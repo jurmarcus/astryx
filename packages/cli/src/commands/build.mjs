@@ -24,6 +24,21 @@ import {search as searchApi} from '../api/search.mjs';
 const PAGE_DIRECT = 95;
 /** Below this a page is too weak to even offer as a layout reference. */
 const PAGE_FLOOR = 50;
+/** Below this a block/domain-component match is incidental noise, not surfaced. */
+const DOMAIN_FLOOR = 55;
+
+/**
+ * Always-surfaced primitives. Every page needs a shell + layout/typography/
+ * action atoms, but these never keyword-match an idea ("dashboard" != "Stack"),
+ * so search alone never returns them. We list them unconditionally so an agent
+ * composing from scratch has the whole kit (esp. off-template).
+ */
+const FRAME = ['AppShell', 'TopNav', 'SideNav', 'Layout'];
+const FOUNDATION = [
+  'VStack', 'HStack', 'Grid', 'StackItem', 'Card', 'Section',
+  'Text', 'Heading', 'Button', 'Icon', 'Badge', 'Divider',
+];
+const ALWAYS = new Set([...FRAME, ...FOUNDATION]);
 
 /** Print the build playbook (shown when `build` is run with no query). */
 function printPlaybook(run) {
@@ -105,14 +120,17 @@ export function registerBuild(program) {
         return;
       }
 
-      // Group by role so an agent can assemble a UI from the pieces.
+      // ── Group results by role (the build kit) ──────────────────────
       const pages = results
         .filter(r => r.domain === 'template' && r.kind !== 'block' && r.score >= PAGE_FLOOR)
         .slice(0, 3);
-      const blocks = results.filter(r => r.domain === 'template' && r.kind === 'block').slice(0, 5);
-      const atoms = results
-        .filter(r => r.domain === 'component' || r.domain === 'hook')
+      const blocks = results
+        .filter(r => r.domain === 'template' && r.kind === 'block' && r.score >= DOMAIN_FLOOR)
         .slice(0, 5);
+      // Idea-specific atoms = matched components/hooks MINUS the always-on kit.
+      const domain = results
+        .filter(r => (r.domain === 'component' || r.domain === 'hook') && r.score >= DOMAIN_FLOOR && !ALWAYS.has(r.name))
+        .slice(0, 6);
       const directMatch = pages.length > 0 && pages[0].score >= PAGE_DIRECT;
 
       const printItem = (r, label) => {
@@ -130,44 +148,49 @@ export function registerBuild(program) {
       humanLog('');
       humanLog(`Building "${q}":`);
 
-      let frame = null;
-      if (pages.length) {
-        humanLog('');
-        humanLog(
-          directMatch
-            ? 'PAGE TEMPLATE — looks like a direct match (scaffold this):'
-            : 'CLOSEST PAGE TEMPLATES — scaffold if one fits, or use as a layout reference:',
-        );
-        pages.forEach(p => printItem(p, directMatch ? 'page' : 'closest'));
-        humanLog(`          (study structure: ${run} astryx template ${pages[0].name} --skeleton)`);
-        frame = pages[0];
+      // START — the single recommended path.
+      humanLog('');
+      if (directMatch) {
+        humanLog(`START → Scaffold the \`${pages[0].name}\` page template, then adapt: ${run} astryx template ${pages[0].name} ./src/App.tsx`);
+      } else if (pages.length) {
+        humanLog(`START → No exact page template. Use \`${pages[0].name}\` as a layout reference (${run} astryx template ${pages[0].name} --skeleton) and compose the pieces below.`);
       } else {
-        humanLog('');
-        humanLog('NO MATCHING PAGE TEMPLATE — compose from the blocks + components below:');
+        humanLog(`START → No page template fits. Frame with AppShell and compose the blocks + components below.`);
       }
 
+      // PAGE
+      if (pages.length) {
+        humanLog('');
+        humanLog(directMatch ? 'PAGE TEMPLATE — direct match:' : 'CLOSEST PAGE TEMPLATES — layout reference:');
+        pages.forEach(p => printItem(p, directMatch ? 'page' : 'closest'));
+      }
+
+      // FRAME — always (the page shell).
+      humanLog('');
+      humanLog(`FRAME — page shell (always): ${FRAME.join(', ')}`);
+      humanLog(`          full-page → AppShell; or Layout + SideNav/TopNav. ${run} astryx component AppShell`);
+
+      // BLOCKS — idea-specific composed patterns.
       if (blocks.length) {
         humanLog('');
-        humanLog('BLOCKS — drop-in patterns that likely cover parts of it:');
+        humanLog('BLOCKS — drop-in patterns that cover parts of it:');
         blocks.forEach(b => printItem(b, 'block'));
       }
 
-      if (atoms.length) {
+      // DOMAIN COMPONENTS — idea-specific atoms.
+      if (domain.length) {
         humanLog('');
-        humanLog('COMPONENTS — building blocks to fill the gaps:');
-        atoms.forEach(c => printItem(c, c.domain === 'hook' ? 'hook' : 'component'));
+        humanLog('DOMAIN COMPONENTS — specific to this idea:');
+        domain.forEach(c => printItem(c, c.domain === 'hook' ? 'hook' : 'component'));
       }
 
-      const parts = [];
-      if (frame) {
-        parts.push(directMatch ? `scaffold \`${frame.name}\`` : `frame with \`${frame.name}\` (--skeleton)`);
-      }
-      if (blocks.length) parts.push(`drop in ${blocks.slice(0, 2).map(b => '`' + b.name + '`').join(', ')}`);
-      if (atoms.length) parts.push(`fill with ${atoms.slice(0, 2).map(c => '`' + c.name + '`').join(', ')}`);
-      if (parts.length) {
-        humanLog('');
-        humanLog('Compose: ' + parts.join(' → '));
-      }
+      // FOUNDATION — always (layout/typography/actions).
+      humanLog('');
+      humanLog(`FOUNDATION — always available (layout/text/actions): ${FOUNDATION.join(' ')}`);
+
+      // SETUP — so it renders / stays on-system.
+      humanLog('');
+      humanLog('SETUP — import "@astryxdesign/core/reset.css" + "astryx.css". No <div>/style for layout — use Stack/Grid + tokens.');
       humanLog('');
     });
 }
