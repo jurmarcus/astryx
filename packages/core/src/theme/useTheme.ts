@@ -63,7 +63,7 @@ export interface UseThemeReturn {
    * For tokens with [light, dark] tuples, returns the value matching
    * the current mode. For single-value tokens, returns the value as-is.
    *
-   * Falls back to xdsTokenDefaults if the token isn't overridden by the theme.
+   * Falls back to tokenDefaults if the token isn't overridden by the theme.
    *
    * @example
    * ```
@@ -75,7 +75,7 @@ export interface UseThemeReturn {
   /**
    * All tokens resolved for the current color mode.
    *
-   * Merges xdsTokenDefaults with the theme's overrides, resolving
+   * Merges tokenDefaults with the theme's overrides, resolving
    * light-dark() values based on the effective color mode.
    *
    * Memoized — stable reference unless theme or mode changes.

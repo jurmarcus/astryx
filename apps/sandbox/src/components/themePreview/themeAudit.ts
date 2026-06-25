@@ -7,7 +7,7 @@
  * theme source files:
  *
  *   1. "Which tokens did this theme actually change vs the XDS defaults?"
- *      — diff `theme.tokens` against `xdsTokenDefaults` and bucket each
+ *      — diff `theme.tokens` against `tokenDefaults` and bucket each
  *        entry as unchanged / overridden / new.
  *
  *   2. "Did each color token snap to a step on a tonal ramp, or did the
@@ -18,7 +18,7 @@
  */
 
 import type {DefinedTheme} from '@astryxdesign/core/theme';
-import {xdsTokenDefaults} from '@astryxdesign/core/theme';
+import {tokenDefaults} from '@astryxdesign/core/theme';
 import {
   findClosestRampStep,
   type Mode,
@@ -116,7 +116,7 @@ export function categorizeToken(name: string): TokenCategory {
 }
 
 // =============================================================================
-// Token diff — overridden / unchanged / new vs xdsTokenDefaults
+// Token diff — overridden / unchanged / new vs tokenDefaults
 // =============================================================================
 
 export type DiffStatus =
@@ -150,7 +150,7 @@ export interface TokenDiff {
 }
 
 /**
- * Build a full token diff vs xdsTokenDefaults.
+ * Build a full token diff vs tokenDefaults.
  *
  * Note: defineTheme pre-seeds `theme.tokens` from base + generated +
  * explicit overrides, so every token defaults supplies will also appear on
@@ -161,7 +161,7 @@ export interface TokenDiff {
 export function diffThemeTokens(theme: DefinedTheme): TokenDiff {
   const themeTokens = theme.tokens;
   const allKeys = new Set<string>([
-    ...Object.keys(xdsTokenDefaults),
+    ...Object.keys(tokenDefaults),
     ...Object.keys(themeTokens),
   ]);
 
@@ -182,7 +182,7 @@ export function diffThemeTokens(theme: DefinedTheme): TokenDiff {
   }
 
   for (const name of allKeys) {
-    const defaultValue = xdsTokenDefaults[name];
+    const defaultValue = tokenDefaults[name];
     const themeValue = themeTokens[name];
     const category = categorizeToken(name);
 

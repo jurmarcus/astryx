@@ -91,7 +91,7 @@ import {configureMonaco, type MonacoInstance} from './monacoSetup';
 
 import type * as MonacoTypes from 'monaco-editor';
 import type {DefinedTheme} from '@astryxdesign/core/theme';
-import {xdsTokenDefaults} from '@astryxdesign/core/theme';
+import {tokenDefaults} from '@astryxdesign/core/theme';
 
 // Hidden from the generated registry (isHiddenFromOverview), so it's added
 // explicitly as the first entry in the Templates dropdown.
@@ -549,7 +549,7 @@ export function PlaygroundClient({defaultIsMobile}: PlaygroundClientProps) {
     const source = generateThemeCode(
       name,
       activeTheme.tokens,
-      xdsTokenDefaults,
+      tokenDefaults,
       14,
       1.2,
       [],

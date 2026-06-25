@@ -28,7 +28,7 @@ export {
   type ThemeCSSOutput,
   type ThemeRulesSplit,
   isDefinedTheme,
-  xdsTokenDefaults,
+  tokenDefaults,
 } from './defineTheme';
 export type {
   DefineThemeInput,

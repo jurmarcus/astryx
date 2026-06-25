@@ -5,7 +5,7 @@ import type {UseThemeReturn} from '@astryxdesign/core/theme';
 import {
   borderDefaults,
   ThemeContext,
-  xdsTokenDefaults,
+  tokenDefaults,
 } from '@astryxdesign/core/theme';
 import type {TokenValue} from '@astryxdesign/core/theme';
 
@@ -43,7 +43,7 @@ function buildTokenMap(
 ): Record<string, string> {
   const resolved: Record<string, string> = {};
 
-  for (const [key, value] of Object.entries(xdsTokenDefaults)) {
+  for (const [key, value] of Object.entries(tokenDefaults)) {
     resolved[key] = resolveValue(value, mode);
   }
   for (const [key, value] of Object.entries(extraDefaults)) {
@@ -95,7 +95,7 @@ export function getTokensByPrefix(
 ): string[] {
   const allKeys = new Set([
     ...Object.keys(theme.tokens),
-    ...Object.keys(xdsTokenDefaults),
+    ...Object.keys(tokenDefaults),
     ...Object.keys(extraDefaults),
   ]);
   return [...allKeys].filter(k => k.startsWith(prefix));

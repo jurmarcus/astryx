@@ -361,7 +361,7 @@ export interface DefinedTheme {
 // =============================================================================
 
 /** All Astryx token defaults as a flat map. Useful for resolving full token sets. */
-export const xdsTokenDefaults: Record<string, string> = {
+export const tokenDefaults: Record<string, string> = {
   ...colorDefaults,
   ...spacingDefaults,
   ...sizeDefaults,

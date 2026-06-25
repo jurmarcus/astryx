@@ -16,7 +16,7 @@
  */
 
 import {
-  xdsTokenDefaults,
+  tokenDefaults,
   type DefinedTheme,
   type TokenName,
   type TokenValue,
@@ -60,7 +60,7 @@ export function tokenVar(name: TokenName | (string & {})): string {
 
 /** Flat map of every known Astryx token name to its `var(--token-name)` reference. */
 export const tokenVars: Record<TokenName, string> = Object.fromEntries(
-  Object.keys(xdsTokenDefaults).map(name => [name, tokenVar(name)]),
+  Object.keys(tokenDefaults).map(name => [name, tokenVar(name)]),
 ) as Record<TokenName, string>;
 
 /**
@@ -147,7 +147,7 @@ function resolveXDSTokenValue(
 /**
  * Resolve all Astryx token values for a theme and effective color mode.
  *
- * The result starts with `xdsTokenDefaults`, applies `theme.tokens`, then
+ * The result starts with `tokenDefaults`, applies `theme.tokens`, then
  * reapplies `theme.__inputTokens` when available so explicit tuple overrides
  * retain their original light/dark sides instead of relying on CSS parsing.
  * This mirrors the token resolution used by `useTheme()` but does not need
@@ -162,7 +162,7 @@ export function resolveThemeTokens(
   const {mode} = options;
   const resolved: Record<string, string> = {};
 
-  for (const [key, value] of Object.entries(xdsTokenDefaults)) {
+  for (const [key, value] of Object.entries(tokenDefaults)) {
     resolved[key] = resolveXDSTokenValue(value, mode);
   }
 

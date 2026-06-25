@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 import type {DefinedTheme} from '@astryxdesign/core/theme';
-import {xdsTokenDefaults} from '@astryxdesign/core/theme';
+import {tokenDefaults} from '@astryxdesign/core/theme';
 
 /**
  * Parse a light-dark() CSS value into [light, dark] components.
@@ -18,7 +18,7 @@ export function parseLightDark(value: string): [string, string] | null {
  * Resolve a token's value for a specific mode from a defined theme.
  * Checks __inputTokens for [light, dark] tuples first,
  * then parses light-dark() from resolved tokens,
- * then falls back to xdsTokenDefaults.
+ * then falls back to tokenDefaults.
  */
 export function resolveTokenForMode(
   theme: DefinedTheme,
@@ -50,7 +50,7 @@ export function resolveTokenForMode(
     return resolved;
   }
   // 3. Fall back to defaults
-  const def = xdsTokenDefaults[tokenName];
+  const def = tokenDefaults[tokenName];
   if (def) {
     const parsed = parseLightDark(def);
     if (parsed) {
@@ -77,7 +77,7 @@ export function resolveToken(
     }
     return resolved;
   }
-  const def = xdsTokenDefaults[tokenName];
+  const def = tokenDefaults[tokenName];
   if (def) {
     const parsed = parseLightDark(def);
     if (parsed) {
@@ -110,7 +110,7 @@ export function getTokensByPrefix(
   prefix: string,
 ): string[] {
   const allKeys = new Set([
-    ...Object.keys(xdsTokenDefaults),
+    ...Object.keys(tokenDefaults),
     ...Object.keys(theme.tokens),
   ]);
   return [...allKeys]
