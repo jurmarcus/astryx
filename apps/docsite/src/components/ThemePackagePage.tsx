@@ -443,14 +443,17 @@ const styles = stylex.create({
   showcaseCard: {
     overflow: 'hidden',
   },
-  // Caps the showcase at the site's wide-content width and centers it
-  // so it doesn't run edge-to-edge on very wide screens. overflow:hidden
-  // clips template content that exceeds the width on mobile (e.g.
-  // inventory filter rows, tables).
-  showcaseBlock: {
+  // Width cap + centering applied to the right column's main content
+  // blocks (showcase, install snippet, etc.) so they don't run
+  // edge-to-edge on very wide screens.
+  contentBlock: {
     width: '100%',
     maxWidth: layout.contentMaxWidth,
     marginInline: 'auto',
+  },
+  // Showcase-only: clips template content that overflows on mobile
+  // (inventory rows, tables) to the card's rounded corners.
+  showcaseClip: {
     overflow: 'hidden',
     borderRadius: 'var(--radius-container)',
   },
@@ -972,7 +975,7 @@ export function ThemePackagePage({packageName, theme}: ThemePackagePageProps) {
             own backgrounds (top nav, sections) to the card's radius.
             LinkProvider keeps demo href="#" clicks from scrolling the
             page to the top (see PreviewAnchor). */}
-        <div {...stylex.props(styles.showcaseBlock)}>
+        <div {...stylex.props(styles.contentBlock, styles.showcaseClip)}>
           <Card padding={0} xstyle={styles.showcaseCard}>
             <Theme theme={selectedTheme} mode={mode}>
               <LinkProvider component={PreviewAnchor}>
@@ -993,7 +996,9 @@ export function ThemePackagePage({packageName, theme}: ThemePackagePageProps) {
             so the themed preview leads (it's the reason the visitor came
             here); the install snippet acts as the natural next step
             after they've decided they like what they see. */}
-        <ThemeInstallBlock packageName={selectedPkgName} />
+        <div {...stylex.props(styles.contentBlock)}>
+          <ThemeInstallBlock packageName={selectedPkgName} />
+        </div>
       </div>
     </div>
   );
