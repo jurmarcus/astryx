@@ -22,19 +22,39 @@ import {Divider} from '@astryxdesign/core/Divider';
 import {Selector} from '@astryxdesign/core/Selector';
 import {Outline, type OutlineItem} from '@astryxdesign/core/Outline';
 import {useMediaQuery} from '@astryxdesign/core/hooks';
-import {colorVars, spacingVars} from '@astryxdesign/core/theme/tokens.stylex';
+import {
+  colorVars,
+  spacingVars,
+  typeScaleVars,
+} from '@astryxdesign/core/theme/tokens.stylex';
 import {layout} from '../../layout.stylex';
 
 const styles = stylex.create({
   // Centered article when there is no outline aside (original behavior).
   sectionCentered: {
     marginInline: 'auto',
+    // Article body text reads larger and airier than the app default
+    // (body = 14px / 1.43). Re-assigning the body size/leading tokens here
+    // scopes the change to body-typed Text *inside* an article only: the
+    // title (display-1) and subtitle (large) use different tokens, and the
+    // sidebar/top-nav live in a different subtree, so nothing else shifts.
+    //
+    // Leading follows the type scale's convention (unitless ratio = a
+    // 4px-grid-snapped line box ÷ font size, per expandTypeScale's
+    // computeLeading). The grid-snapped value closest to the requested ~1.7
+    // at 16px is 28px ÷ 16px = 1.75.
+    [typeScaleVars['--text-body-size']]: '1rem', // 16px
+    [typeScaleVars['--text-body-leading']]: '1.75', // 28px line box
   },
-  // Article that shares the row with a sticky outline aside.
+  // Article that shares the row with a sticky outline aside. Mirrors the
+  // larger/airier article body typography from sectionCentered so pages with
+  // an outline keep the same readable prose.
   sectionInRow: {
     marginInline: 0,
     flexShrink: 1,
     minWidth: 0,
+    [typeScaleVars['--text-body-size']]: '1rem', // 16px
+    [typeScaleVars['--text-body-leading']]: '1.75', // 28px line box
   },
   row: {
     display: 'flex',
