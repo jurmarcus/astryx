@@ -1,5 +1,5 @@
 ---
-'@xds/theme-stone': patch
+'@astryxdesign/theme-stone': patch
 ---
 
 [fix] Stone theme: add ~10% transparency to dark-mode `--color-neutral`
