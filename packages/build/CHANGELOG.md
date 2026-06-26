@@ -1,5 +1,29 @@
 # @xds/build
 
+# 0.1.1
+
+#### Breaking Changes
+
+- Rename `@xds/build` exports off the xds name
+  The Vite integration's public exports are renamed: `xdsStylex` -> `astryxStylex`,
+  and the option types `XDSVitePluginOptions` / `XDSVitePluginLegacyOptions` ->
+  `AstryxVitePluginOptions` / `AstryxVitePluginLegacyOptions`. Update imports from
+  `@xds/build/vite` accordingly. Internal plugin names and the babel wrapper are
+  also rebranded. Part of removing `xds` naming from the public API.
+- Rename Next.js helper `withXDS` to `withAstryx`
+  The Next.js configuration wrapper is renamed `withXDS` -> `withAstryx`
+  (exported from `@astryxdesign/build/next`). Update your `next.config.mjs`:
+  `import {withAstryx} from '@astryxdesign/build/next'`. Part of removing xds
+  naming from the public API.
+
+#### Contributors
+
+Thanks to everyone who contributed to this release:
+
+- @ejhammond
+
+---
+
 # 0.1.0
 
 #### Breaking Changes
@@ -42,9 +66,11 @@
   - import {neutralTheme} from '@astryxdesign/theme-neutral/built';
 - <Theme theme={defaultTheme}>...</Theme>
   - <Theme theme={neutralTheme}>...</Theme>
+
   ```
 
   ```
+
 - Rename the npm package scope from `@xds/*` to `@astryxdesign/*`
   All published packages move to the new `@astryxdesign` scope (e.g. `@xds/core` → `@astryxdesign/core`), along with the workspace lockfile, build/runtime scope-directory scans, and docsite slug derivation. Consumers must update their imports and dependency names. The internal ESLint plugin namespace (`@xds/*` rules) is intentionally untouched and tracked separately. Existing `@xds/*` codemods continue to target the old scope so projects still on `@xds/*` can migrate.
 

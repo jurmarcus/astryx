@@ -1,5 +1,69 @@
 # @xds/core
 
+# 0.1.1
+
+#### Breaking Changes
+
+- Rename `xdsTokenDefaults` export to `tokenDefaults`
+  The token-defaults constant is renamed from `xdsTokenDefaults` to
+  `tokenDefaults` (exported from `@astryxdesign/core/theme`). Update imports
+  accordingly. Part of removing xds naming from the public API.
+
+#### Fixes
+
+- Increase trailing padding on `ChatLayoutScrollButton` when a label is shown
+  With a label (e.g. "New messages"), the chevron icon sits on the leading edge
+  and the text on the trailing edge. The symmetric inline padding left the label
+  text cramped against the pill's rounded corner. The trailing inline padding is
+  now widened when a label is present, giving the text comfortable breathing room
+  from the rounded edge. The icon-only (collapsed) state is unchanged and stays
+  balanced.
+- Prevent `DateInput` from crashing the page while typing an incomplete
+  date. Typing a leading `0` or `1` (e.g. starting to enter `01` for January)
+  could coerce the in-progress value into an invalid date with a year of `0`,
+  which then threw a `RangeError` and crashed the surrounding page. Partial,
+  not-yet-complete input is now treated as incomplete instead of being parsed
+  into a date, so the field stays usable as you type.
+- Remove doubled focus ring on `Selector`. The inner combobox button drew
+  its own `:focus-visible` outline on top of the wrapper's `:focus-within` ring,
+  producing a stacked, rounded outline over the trigger after selecting an option
+  or navigating with the keyboard. The button now defers to the wrapper's focus
+  ring, matching `TextInput` and `NumberInput`.
+- `<Layout>…</Layout>` no longer renders a blank page. `Layout` is
+  slot-driven (`content`/`header`/`start`/`end`/`footer`), and the natural nested
+  form `<Layout><LayoutContent /></Layout>` previously type-checked and built
+  green while dropping its children at runtime — an empty shell. Children now
+  render as a shorthand for the `content` slot (`<Layout>{main}</Layout>` is
+  equivalent to `<Layout content={main} />`), matching how `Card` and `Section`
+  accept content; an explicit `content` prop still wins when both are provided.
+- ToggleButton runs pressedChangeAction in an interruptible transition with optimistic state
+  `pressedChangeAction` was fired as a non-awaited promise, so the documented
+  loading spinner never appeared and the toggle ignored the action's lifecycle.
+  It now runs inside a transition with an optimistic pressed state, matching
+  `Switch`:
+
+#### Other Changes
+
+- The optimistic pressed state flips immediately on click; the spinner is
+  debounced so a fast action shows the new state without a spinner flash.
+- The action is interruptible — clicking again while it is pending starts a
+  new transition with the next optimistic state (e.g. true -> false -> true),
+  instead of being dropped or guarded out.
+- Synchronous handlers are supported too: a `pressedChangeAction` (or
+  `onPressedChange`) that synchronously triggers a suspending update, such as
+  a router navigation that suspends on data, also drives the pending state.
+  `pressedChangeAction` now accepts `void | Promise<void>`.
+
+#### Contributors
+
+Thanks to everyone who contributed to this release:
+
+- @cixzhang
+- @ejhammond
+- @josephfarina
+
+---
+
 # 0.1.0
 
 #### Breaking Changes
@@ -52,9 +116,11 @@
   - import {neutralTheme} from '@astryxdesign/theme-neutral/built';
 - <Theme theme={defaultTheme}>...</Theme>
   - <Theme theme={neutralTheme}>...</Theme>
+
   ```
 
   ```
+
 - Rename the npm package scope from `@xds/*` to `@astryxdesign/*`
   All published packages move to the new `@astryxdesign` scope (e.g. `@xds/core` → `@astryxdesign/core`), along with the workspace lockfile, build/runtime scope-directory scans, and docsite slug derivation. Consumers must update their imports and dependency names. The internal ESLint plugin namespace (`@xds/*` rules) is intentionally untouched and tracked separately. Existing `@xds/*` codemods continue to target the old scope so projects still on `@xds/*` can migrate.
 

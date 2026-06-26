@@ -1,5 +1,71 @@
 # @xds/cli
 
+# 0.1.1
+
+#### New Features
+
+- Add `astryx build` command for page composition, with natural-language search ranking.
+  `build "<idea>"` returns a composition kit — the closest page template, the
+  blocks that cover parts, and components to fill gaps, plus a Compose suggestion.
+  `build` with no args prints the how-to-build playbook. The shared search ranking
+  now handles oblique natural-language queries via tokenization + stopwords, a
+  synonym/intent map, light stemming, and page-template keyword enrichment.
+- Make generated agent docs build-first and restructure `init` output.
+  The generated `CLAUDE.md` now leads with the `build` workflow (search reframed as
+  a neutral universal find), and includes a required-CSS setup note
+  (`reset.css` + `astryx.css`) so components never render unstyled. `init` now
+  points agents at `astryx build`/`astryx search` instead of dumping page-template
+  names.
+- Improve `astryx build` output into a complete composition kit.
+  `build "<idea>"` now returns an agent-ready kit grouped by role: a START line
+  (scaffold vs compose), the closest PAGE template, an always-on FRAME (page
+  shell) and FOUNDATION (layout/typography/action primitives), idea-specific
+  BLOCKS and DOMAIN COMPONENTS (with a relevance floor to cut noise), and a SETUP
+  reminder. The always-on FRAME/FOUNDATION groups fix low recall of the
+  structural primitives every page needs but that never keyword-match an idea
+  (measured: component recall 15% to 71% on an agent-grounded eval).
+- Densify agent docs + tailor styling guidance to the project's configured system
+  Tightened the generated `CLAUDE.md`/`AGENTS.md` block from ~48 lines to ~26
+  (the per-topic `docs` dump collapsed to one line, `build`/`search`/`component`
+  no longer duplicated between workflow and reference, run-prefix stated once,
+  filler prose removed) — same information, far denser.
+
+#### Fixes
+
+- `npx astryx` now works when the CLI is installed as a real npm package.
+  The bin imported its `../src/*` modules relative to the invoked path, so running
+  through the `node_modules/.bin/astryx` symlink made them resolve outside the
+  package (`ERR_MODULE_NOT_FOUND: .../node_modules/src/...`) on Node versions that
+  don't realpath the bin entry. It now resolves siblings via the bin's real path
+  (realpath of `import.meta.url`), working whether invoked via symlink, copy, or
+  Windows shim. Also fixes the non-interactive `init`/`theme` error to say
+  `astryx <command>` instead of the stale `xds <command>`.
+- Add a v0.1.0 upgrade codemod that migrates legacy `@xds/*` module specifiers and config surfaces to the Astryx v0.1.0 names.
+  [breaking] Remove legacy `astryx.versionFile` update-hint support from package.json.
+
+#### Documentation
+
+- Add npm install step to the Theme System guide
+  The Quick Start section jumped straight to `import {neutralTheme} from '@astryxdesign/theme-neutral'`, which fails with `Cannot find module` for anyone who hasn't already installed the theme package. Prepend a one-line preamble + `npm install` code block, and add a short prose note above the Available Themes table pointing at the install command pattern. Reported in #3082.
+
+#### Other Changes
+
+- StyleX compiler wired → `xstyle` / StyleX token imports
+- Tailwind → utility classes backed by `@astryxdesign/core/tailwind-theme.css`
+- neither → `style`/`className` with `var(--token)` design tokens, plus an
+  explicit note NOT to use `xstyle`/utilities (they would not compile)
+
+#### Contributors
+
+Thanks to everyone who contributed to this release:
+
+- @ejhammond
+- @joeyfarina
+- @josephfarina
+- @nynexman4464
+
+---
+
 # 0.1.0
 
 #### Breaking Changes
@@ -71,9 +137,11 @@
   - import {neutralTheme} from '@astryxdesign/theme-neutral/built';
 - <Theme theme={defaultTheme}>...</Theme>
   - <Theme theme={neutralTheme}>...</Theme>
+
   ```
 
   ```
+
 - Remove the internal `drop-xds-meta-prefix` codemod from the OSS repo (#2970)
   This codemod has been moved to its own package's tooling, where it belongs. It was registered as an optional, version-independent transform and is not part of any standard upgrade path, so removing it does not affect the public `0.0.13 → 0.0.15` migration.
 - Rename the npm package scope from `@xds/*` to `@astryxdesign/*`
