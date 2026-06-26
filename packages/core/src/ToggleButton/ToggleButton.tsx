@@ -284,7 +284,6 @@ export function ToggleButton({
       startTransition(async () => {
         setOptimisticPressed(newState);
         onPressedChangeProp?.(newState, event);
-        // Let onPressedChange opt out of the action via event.preventDefault().
         if (!event.defaultPrevented) {
           await pressedChangeAction?.(newState);
         }
