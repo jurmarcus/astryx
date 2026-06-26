@@ -386,9 +386,14 @@ export function Pagination({
     if (isDisabled) {
       return;
     }
+    // Notify the consumer urgently so controlled page state (and any data it
+    // drives, e.g. the Table pagination plugin slicing rows) updates in the
+    // same commit as the click. Only the optimistic indicator and changeAction
+    // run inside the transition — keeping onChange urgent avoids deferring the
+    // real page update behind the low-priority transition.
+    onChange(newPage);
     startTransition(async () => {
       setOptimisticPage(newPage);
-      onChange(newPage);
       await changeAction?.(newPage);
     });
   };
