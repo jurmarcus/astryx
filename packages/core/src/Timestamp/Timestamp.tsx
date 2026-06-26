@@ -133,6 +133,18 @@ const YEAR = 365 * DAY;
 /** Default auto threshold: 7 days in seconds */
 const DEFAULT_AUTO_THRESHOLD = 7 * DAY;
 
+/**
+ * Tolerance (in seconds) for treating a *future* timestamp as the present.
+ * A value only a handful of seconds ahead of our reference clock is almost
+ * always clock skew — the displayed `now` lagging the real clock, or the value
+ * being produced on a slightly faster clock — not a genuine future event, so
+ * it reads as "now" rather than a confusing "in a few seconds". The future
+ * side gets a wider window than the past (which only needs to absorb the
+ * sub-second render-time lag) because future drift is far more likely to be
+ * skew than real.
+ */
+const FUTURE_SKEW_TOLERANCE = 30;
+
 function parseValue(value: string | number): Date {
   if (typeof value === 'number') {
     // Heuristic: if the number is less than 1e12, treat as seconds; otherwise ms.
@@ -157,6 +169,13 @@ function getRelativeTimeString(date: Date, now: Date): string {
   if (diffSeconds < 0) {
     // Future dates
     const absDiff = Math.abs(diffSeconds);
+    // A value only a few seconds ahead of our clock is almost always skew, not
+    // a genuine future event — render it as the present rather than a
+    // confusing "in a few seconds". Wider than the past window above on
+    // purpose (see FUTURE_SKEW_TOLERANCE).
+    if (absDiff <= FUTURE_SKEW_TOLERANCE) {
+      return 'now';
+    }
     if (absDiff < MINUTE) {
       return 'in a few seconds';
     }

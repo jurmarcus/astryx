@@ -248,6 +248,24 @@ describe('Timestamp', () => {
     expect(screen.getByText('in 1 hour')).toBeInTheDocument();
   });
 
+  it('renders "now" for a value a few seconds in the future (clock skew)', () => {
+    // Beyond the sub-second render lag but still within the skew tolerance: a
+    // value ~20s ahead of our clock is almost always skew (the value's clock
+    // running fast), not a genuine future event, so it should read as the
+    // present rather than "in a few seconds".
+    const twentySecondsFromNow = Date.now() / 1000 + 20;
+    render(<Timestamp value={twentySecondsFromNow} format="relative" />);
+    expect(screen.queryByText(/^in /)).not.toBeInTheDocument();
+    expect(screen.getByText('now')).toBeInTheDocument();
+  });
+
+  it('renders a genuine near-future time beyond the skew tolerance', () => {
+    // Past the skew window — this is a real upcoming time, not clock drift.
+    const fortyFiveSecondsFromNow = Date.now() / 1000 + 45;
+    render(<Timestamp value={fortyFiveSecondsFromNow} format="relative" />);
+    expect(screen.getByText('in a few seconds')).toBeInTheDocument();
+  });
+
   // --- Long-ago relative ---
 
   it('renders months ago for dates older than 30 days', () => {
