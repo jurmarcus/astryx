@@ -14,6 +14,48 @@ import {render, screen, act, fireEvent} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {Slider} from './Slider';
 
+/**
+ * Collect every CSS rule StyleX injected into the document (runtimeInjection),
+ * so a test can assert which design token a class resolves to.
+ */
+function collectInjectedRules(): string[] {
+  const out: string[] = [];
+  for (const styleEl of Array.from(document.querySelectorAll('style'))) {
+    const sheet = styleEl.sheet;
+    if (sheet) {
+      for (const rule of Array.from(sheet.cssRules)) {
+        out.push(rule.cssText);
+      }
+    }
+  }
+  return out;
+}
+
+/**
+ * Resolve the `background-color` value an element's classes map to in the
+ * injected StyleX stylesheet (returns the raw `var(--token)` reference).
+ */
+function resolveBackgroundColor(el: HTMLElement): string | undefined {
+  const rules = collectInjectedRules();
+  let resolved: string | undefined;
+  for (const cls of el.className.split(/\s+/)) {
+    if (!cls || cls.startsWith('astryx') || cls.includes('__')) {
+      continue;
+    }
+    const rule = rules.find(
+      r => r.includes('.' + cls + ':') && r.includes('background-color'),
+    );
+    if (rule) {
+      const match = rule.match(/background-color:\s*([^;}]+)/);
+      if (match) {
+        // Later rules win (StyleX ordering); keep the last match.
+        resolved = match[1].trim();
+      }
+    }
+  }
+  return resolved;
+}
+
 describe('Slider', () => {
   // --- Aria labels ---
 
@@ -24,9 +66,7 @@ describe('Slider', () => {
   });
 
   it('range thumbs have correct aria-labels', () => {
-    render(
-      <Slider label="Price range" value={[20, 80] as [number, number]} />,
-    );
+    render(<Slider label="Price range" value={[20, 80] as [number, number]} />);
     const sliders = screen.getAllByRole('slider');
     expect(sliders[0]).toHaveAttribute(
       'aria-label',
@@ -172,12 +212,7 @@ describe('Slider', () => {
   it('does not fire onChange on keyboard when disabled', () => {
     const handleChange = vi.fn();
     render(
-      <Slider
-        label="Volume"
-        value={50}
-        onChange={handleChange}
-        isDisabled
-      />,
+      <Slider label="Volume" value={50} onChange={handleChange} isDisabled />,
     );
     const slider = screen.getByRole('slider');
     fireEvent.keyDown(slider, {key: 'ArrowRight'});
@@ -297,13 +332,7 @@ describe('Slider', () => {
 
   it('focuses closest thumb on track click', () => {
     render(
-      <Slider
-        label="Volume"
-        value={50}
-        min={0}
-        max={100}
-        onChange={vi.fn()}
-      />,
+      <Slider label="Volume" value={50} min={0} max={100} onChange={vi.fn()} />,
     );
     const slider = screen.getByRole('slider');
     const trackContainer = slider.parentElement!;
@@ -394,5 +423,23 @@ describe('Slider', () => {
     });
     await user.keyboard('{ArrowLeft}');
     expect(handleChange).toHaveBeenCalledWith(0);
+  });
+
+  // --- Track color visibility (issue #2876) ---
+
+  it('background track uses the visible --color-track token, not the muted surface token', () => {
+    const {container} = render(<Slider label="Volume" value={50} />);
+    const track = container.querySelector<HTMLElement>('.astryx-slider-track');
+    expect(track).not.toBeNull();
+
+    const backgroundColor = resolveBackgroundColor(track!);
+    expect(backgroundColor).toBeDefined();
+
+    // The track must read against muted backgrounds. `--color-background-muted`
+    // *is* the muted surface fill, so a track painted with it disappears on
+    // muted backgrounds. It must instead use the dedicated channel token
+    // `--color-track`, which is designed to stay visible there.
+    expect(backgroundColor).not.toContain('--color-background-muted');
+    expect(backgroundColor).toContain('--color-track');
   });
 });
