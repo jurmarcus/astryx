@@ -388,12 +388,39 @@ export interface ButtonProps extends BaseProps<HTMLButtonElement> {
   rel?: string;
 }
 
+const spinnerReveal = stylex.keyframes({
+  from: {opacity: 0},
+  to: {opacity: 1},
+});
+
+const contentHide = stylex.keyframes({
+  from: {color: 'inherit'},
+  to: {color: 'transparent'},
+});
+
+// Hold the loading swap for a short delay so a fast action (e.g. clickAction
+// or an interruptible toggle) that settles within the delay never flashes a
+// spinner. The spinner fade-in and the content hide share the same delay so
+// the button never shows an empty frame in between. Reduced motion is instant.
+const SPINNER_DELAY = durationVars['--duration-medium-min'];
+
 const loadingStyles = stylex.create({
   // Hide the button's own content while the spinner overlay is shown. Applied
   // to the content wrapper (not the button) so the button keeps its variant
   // foreground color, which the spinner inherits via shade="inherit" (#2717).
   hiddenContent: {
     color: 'transparent',
+  },
+  // Delayed variant: keep content visible, then hide it in lockstep with the
+  // spinner reveal once the delay elapses.
+  hiddenContentDelayed: {
+    animationName: contentHide,
+    animationDuration: '1ms',
+    animationFillMode: 'forwards',
+    animationDelay: {
+      default: SPINNER_DELAY,
+      '@media (prefers-reduced-motion: reduce)': '0s',
+    },
   },
   spinnerOverlay: {
     position: 'absolute',
@@ -403,6 +430,15 @@ const loadingStyles = stylex.create({
     bottom: 0,
     display: 'grid',
     placeItems: 'center',
+  },
+  spinnerDelayed: {
+    animationName: spinnerReveal,
+    animationDuration: durationVars['--duration-fast'],
+    animationFillMode: 'backwards',
+    animationDelay: {
+      default: SPINNER_DELAY,
+      '@media (prefers-reduced-motion: reduce)': '0s',
+    },
   },
 });
 
@@ -526,6 +562,11 @@ export function Button({
   // dedupe — which neither isPending nor useOptimistic do. Hence the ref guard.
   const actionInFlightRef = useRef(false);
   const isLoadingState = isLoading || isPending;
+  // Delay the spinner reveal for action-driven loading (clickAction's own
+  // transition, or an interruptible caller like ToggleButton) so a fast action
+  // does not flash a spinner. Explicit isLoading-only stays immediate, since
+  // the consumer is deliberately showing it.
+  const delaySpinner = isPending || isInterruptible;
   const groupDisabled = buttonGroup?.isDisabled ?? false;
   // When interruptible, the loading state drives the spinner and aria-busy but
   // not disabled, so clicks keep landing and can interrupt the in-flight action.
@@ -612,7 +653,10 @@ export function Button({
     <>
       {isLoadingState && (
         <span
-          {...stylex.props(loadingStyles.spinnerOverlay)}
+          {...stylex.props(
+            loadingStyles.spinnerOverlay,
+            delaySpinner && loadingStyles.spinnerDelayed,
+          )}
           aria-hidden="true">
           <Spinner size="sm" shade="inherit" />
         </span>
@@ -620,7 +664,10 @@ export function Button({
       <span
         {...stylex.props(
           styles.contentWrapper,
-          isLoadingState && loadingStyles.hiddenContent,
+          isLoadingState &&
+            (delaySpinner
+              ? loadingStyles.hiddenContentDelayed
+              : loadingStyles.hiddenContent),
         )}
         aria-hidden={isLoadingState || undefined}>
         {icon && (

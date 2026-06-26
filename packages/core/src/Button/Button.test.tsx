@@ -85,6 +85,32 @@ describe('Button', () => {
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
+  it('sets aria-busy synchronously while clickAction is pending', async () => {
+    // The spinner reveal is visually delayed (CSS animation-delay), but the
+    // loading DOM state — aria-busy and disabled — must not be delayed.
+    const user = userEvent.setup();
+    let resolveAction: (() => void) | undefined;
+    const clickAction = vi.fn(
+      async () =>
+        new Promise<void>(resolve => {
+          resolveAction = resolve;
+        }),
+    );
+    render(<Button label="Save" clickAction={clickAction} />);
+    const button = screen.getByRole('button');
+
+    await user.click(button);
+    expect(button).toHaveAttribute('aria-busy', 'true');
+    expect(button).toBeDisabled();
+
+    await act(async () => {
+      resolveAction?.();
+      await Promise.resolve();
+    });
+    expect(button).not.toHaveAttribute('aria-busy', 'true');
+    expect(button).not.toBeDisabled();
+  });
+
   it('renders the loading spinner with the inherit shade for every variant (#2717)', () => {
     // The spinner must follow the button's resolved foreground color rather
     // than a hardcoded white, so it keeps contrast on themed variants like the
