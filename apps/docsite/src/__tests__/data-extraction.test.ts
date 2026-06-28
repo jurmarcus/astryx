@@ -263,6 +263,27 @@ describe('componentRegistry', () => {
     });
   });
 
+  it('Chat sub-components declare a playground wrapper for realistic preview geometry', () => {
+    const core = components['@astryxdesign/core'];
+    const chatComposer = core.find(c => c.name === 'ChatComposer');
+    expect(chatComposer).toBeDefined();
+    expect(chatComposer!.playground?.wrapper).toMatchObject({
+      component: 'Stack',
+      props: {width: 480},
+    });
+
+    const chatComposerDrawer = core.find(c => c.name === 'ChatComposerDrawer');
+    expect(chatComposerDrawer).toBeDefined();
+    expect(chatComposerDrawer!.playground?.wrapper).toMatchObject({
+      component: 'Stack',
+      props: {width: 480},
+    });
+    expect(chatComposerDrawer!.playground?.defaults).toMatchObject({
+      count: 3,
+      label: 'Attachments',
+    });
+  });
+
   it('Chat has many sub-components (standalone docs take priority over compound entries)', () => {
     const core = components['@astryxdesign/core'];
     // Chat compound doc has 14 sub-components, but ChatToolCalls and
@@ -337,8 +358,7 @@ describe('componentRegistry', () => {
     // rather than by a name prefix.
     const hooks = core.filter(
       c =>
-        /^use[A-Z]/.test(c.name) &&
-        (exampleRegistry[c.name]?.length ?? 0) > 0,
+        /^use[A-Z]/.test(c.name) && (exampleRegistry[c.name]?.length ?? 0) > 0,
     );
     expect(hooks.length).toBeGreaterThan(15);
     expect(hooks.map(h => h.name)).toContain('useTheme');
@@ -666,7 +686,9 @@ describe('themeRegistry', () => {
   });
 
   it('has no entries for non-theme packages', () => {
-    const nonTheme = packages.filter(p => !p.name.startsWith('@astryxdesign/theme-'));
+    const nonTheme = packages.filter(
+      p => !p.name.startsWith('@astryxdesign/theme-'),
+    );
     for (const pkg of nonTheme) {
       expect(registrySource).not.toContain(`'${pkg.name}':`);
     }
