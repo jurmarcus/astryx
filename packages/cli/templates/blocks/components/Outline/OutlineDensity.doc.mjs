@@ -9,6 +9,7 @@ export const doc = {
   description:
     'Two density variants control item padding. Use compact for dense sidebars and default for standard documentation layouts. The sliding indicator automatically matches each item height.',
   isReady: true,
-  aspectRatio: 4 / 3,
+  isShowcase: true,
+  aspectRatio: 16 / 9,
   componentsUsed: ['Outline', 'Layout', 'Text'],
 };
