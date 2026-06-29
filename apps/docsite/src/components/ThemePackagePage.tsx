@@ -26,7 +26,6 @@ import {useMediaQuery} from '@astryxdesign/core/hooks';
 import {ThemeShowcaseStore} from '../../../../packages/cli/templates/pages/theme-showcase/page';
 import {getThemeShowcaseContent} from './themeShowcaseContent';
 import {buildPlaygroundHref} from './playgroundLink';
-import {ThemeInstallBlock} from './ThemeInstallBlock';
 import {packages} from '../generated/packageRegistry';
 import {layout} from '../layout.stylex';
 import {themeObjects} from '../generated/themeRegistry';
@@ -468,17 +467,14 @@ const styles = stylex.create({
   showcaseCard: {
     overflow: 'hidden',
   },
-  // Width cap + centering applied to the right column's main content
-  // blocks (showcase, install snippet, etc.) so they don't run
-  // edge-to-edge on very wide screens.
-  contentBlock: {
+  // Caps the showcase at the site's wide-content width and centers it so
+  // it doesn't run edge-to-edge on very wide screens. overflow:hidden
+  // clips template content that exceeds the width on mobile (e.g.
+  // inventory filter rows, tables) to the card's rounded corners.
+  showcaseBlock: {
     width: '100%',
     maxWidth: layout.contentMaxWidth,
     marginInline: 'auto',
-  },
-  // Showcase-only: clips template content that overflows on mobile
-  // (inventory rows, tables) to the card's rounded corners.
-  showcaseClip: {
     overflow: 'hidden',
     borderRadius: 'var(--radius-container)',
   },
@@ -1060,7 +1056,7 @@ export function ThemePackagePage({packageName, theme}: ThemePackagePageProps) {
             own backgrounds (top nav, sections) to the card's radius.
             LinkProvider keeps demo href="#" clicks from scrolling the
             page to the top (see PreviewAnchor). */}
-        <div {...stylex.props(styles.contentBlock, styles.showcaseClip)}>
+        <div {...stylex.props(styles.showcaseBlock)}>
           <Card padding={0} xstyle={styles.showcaseCard}>
             <Theme theme={selectedTheme} mode={mode}>
               <LinkProvider component={PreviewAnchor}>
@@ -1074,15 +1070,6 @@ export function ThemePackagePage({packageName, theme}: ThemePackagePageProps) {
               </LinkProvider>
             </Theme>
           </Card>
-        </div>
-
-        {/* Install block — inline "Use this theme" affordance with the
-            two-step install + import snippet. Sits BELOW the showcase
-            so the themed preview leads (it's the reason the visitor came
-            here); the install snippet acts as the natural next step
-            after they've decided they like what they see. */}
-        <div {...stylex.props(styles.contentBlock)}>
-          <ThemeInstallBlock packageName={selectedPkgName} />
         </div>
       </div>
     </div>
