@@ -3,16 +3,21 @@
 /**
  * @file StoriesShowcase.tsx
  *
- * Home-page "Blog" section. Auto-surfaces the three most recent posts from the
- * build-time blog registry (already sorted latest-first) in a featured split
- * layout: the latest post is a large feature card on the left (with its type tag
- * above the title), and the next two posts render as smaller cards stacked on
- * the right. Any slot beyond the available posts renders as a blank placeholder
- * so the layout stays balanced while the blog is still small.
+ * Home-page "Blog" section. Auto-surfaces the most recent posts from the
+ * build-time blog registry (already sorted latest-first). The layout adapts to
+ * how many posts are published so the section always looks intentional:
  *
- * Both columns are tuned to roughly equal height: the grid stretches the right
- * column to the feature's height and distributes its two cards to fill it, and
- * the column ratio is picked so the feature is the taller side.
+ *   - Exactly 2 posts → a balanced 50/50 grid of two equal feature cards.
+ *   - 1 post (launch state) or 3+ posts → a featured split: the latest post is a
+ *     large feature card on the left (type tag above the title) and the next two
+ *     posts render as smaller cards stacked on the right. With a single post the
+ *     trailing right-column slots render as blank placeholders so the split stays
+ *     balanced while the blog is still small.
+ *
+ * In the featured split both columns are tuned to roughly equal height: the grid
+ * stretches the right column to the feature's height and distributes its two
+ * cards to fill it, and the column ratio is picked so the feature is the taller
+ * side.
  *
  * @input  blogPosts (from the generated registry)
  * @output A marketing section linking to the latest blog posts
@@ -21,6 +26,7 @@
 
 'use client';
 
+import type {ReactNode} from 'react';
 import * as stylex from '@stylexjs/stylex';
 import {Heading, Text} from '@astryxdesign/core/Text';
 import {VStack, HStack} from '@astryxdesign/core/Layout';
@@ -33,9 +39,10 @@ import {POST_TYPE_LABELS} from '../../../lib/blog/schema';
 import type {BlogPost} from '../../../lib/blog/schema';
 import {formatDate} from '../../../components/blog/AuthorByline';
 
-// The grid always renders this many slots: 1 feature (left) + 2 compact (right).
-// The most recent posts (blogPosts is emitted latest-first by the generator)
-// fill the leading slots; any remaining slots render as blank placeholders.
+// The featured-split layout (1 post or 3+ posts) always renders this many
+// slots: 1 feature (left) + 2 compact (right). The most recent posts (blogPosts
+// is emitted latest-first by the generator) fill the leading slots; any
+// remaining slots render as blank placeholders.
 const SLOT_COUNT = 3;
 
 const styles = stylex.create({
@@ -66,6 +73,19 @@ const styles = stylex.create({
     gridTemplateColumns: {
       default: '1fr',
       '@media (min-width: 1024px)': '2.4fr 1fr',
+    },
+    alignItems: 'start',
+  },
+  // Balanced two-up grid used when exactly two posts are published: two equal
+  // feature cards side by side (50/50). Collapses to a single column below
+  // 1024px, matching the featured split's breakpoint.
+  pairGrid: {
+    width: '100%',
+    display: 'grid',
+    gap: spacingVars['--spacing-8'],
+    gridTemplateColumns: {
+      default: '1fr',
+      '@media (min-width: 1024px)': '1fr 1fr',
     },
     alignItems: 'start',
   },
@@ -258,16 +278,9 @@ function BlankCard({feature = false}: {feature?: boolean}) {
   );
 }
 
-export function StoriesShowcase() {
-  const latest = blogPosts.slice(0, SLOT_COUNT);
-
-  // Slot 0 → feature (left); slots 1–2 → compact (right). Missing posts render
-  // as blank placeholders so the split layout stays balanced.
-  const [featurePost, ...compactPosts] = Array.from(
-    {length: SLOT_COUNT},
-    (_, i) => latest[i] ?? null,
-  );
-
+// Section shell shared by both layouts: the "Blog" heading + "View all" link,
+// with the layout-specific grid passed in as children.
+function StoriesSection({children}: {children: ReactNode}) {
   return (
     <VStack as="section" align="center" gap={8} width="100%">
       <VStack gap={8} xstyle={styles.section}>
@@ -279,23 +292,55 @@ export function StoriesShowcase() {
             View all →
           </Link>
         </HStack>
-        <div {...stylex.props(styles.splitGrid)}>
-          {featurePost ? (
-            <FeatureCard post={featurePost} />
-          ) : (
-            <BlankCard feature />
-          )}
-          <VStack gap={6} xstyle={styles.rightColumn}>
-            {compactPosts.map((post, i) =>
-              post ? (
-                <CompactCard key={post.slug} post={post} />
-              ) : (
-                <BlankCard key={`blank-${i}`} />
-              ),
-            )}
-          </VStack>
-        </div>
+        {children}
       </VStack>
     </VStack>
+  );
+}
+
+export function StoriesShowcase() {
+  // Exactly two posts → balanced 50/50 grid of two equal feature cards. This
+  // reads as intentional, whereas the featured split would leave a lonely blank
+  // placeholder in the right column.
+  if (blogPosts.length === 2) {
+    const [first, second] = blogPosts;
+    return (
+      <StoriesSection>
+        <div {...stylex.props(styles.pairGrid)}>
+          <FeatureCard post={first} />
+          <FeatureCard post={second} />
+        </div>
+      </StoriesSection>
+    );
+  }
+
+  // One post (launch state) or three+ posts → featured split. Slot 0 → feature
+  // (left); slots 1–2 → compact (right). Missing posts render as blank
+  // placeholders so the split stays balanced while the blog is still small.
+  const latest = blogPosts.slice(0, SLOT_COUNT);
+  const [featurePost, ...compactPosts] = Array.from(
+    {length: SLOT_COUNT},
+    (_, i) => latest[i] ?? null,
+  );
+
+  return (
+    <StoriesSection>
+      <div {...stylex.props(styles.splitGrid)}>
+        {featurePost ? (
+          <FeatureCard post={featurePost} />
+        ) : (
+          <BlankCard feature />
+        )}
+        <VStack gap={6} xstyle={styles.rightColumn}>
+          {compactPosts.map((post, i) =>
+            post ? (
+              <CompactCard key={post.slug} post={post} />
+            ) : (
+              <BlankCard key={`blank-${i}`} />
+            ),
+          )}
+        </VStack>
+      </div>
+    </StoriesSection>
   );
 }
