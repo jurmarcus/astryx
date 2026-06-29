@@ -36,7 +36,9 @@ Astryx is a component library that ships pre-compiled CSS and typed React compon
 ```
 
 ```tsx
-import {Button, Stack, Card} from '@astryxdesign/core';
+import {Button} from '@astryxdesign/core/Button';
+import {Stack} from '@astryxdesign/core/Stack';
+import {Card} from '@astryxdesign/core/Card';
 
 <Stack gap="md">
   <Card>
