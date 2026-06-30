@@ -23,7 +23,10 @@ import {XDSButton} from '@astryxdesign/core/Button';
 import {XDSIconButton} from '@astryxdesign/core/IconButton';
 import {XDSCard} from '@astryxdesign/core/Card';
 import {XDSText, XDSHeading} from '@astryxdesign/core/Text';
-import {XDSToggleButton, XDSToggleButtonGroup} from '@astryxdesign/core/ToggleButton';
+import {
+  XDSToggleButton,
+  XDSToggleButtonGroup,
+} from '@astryxdesign/core/ToggleButton';
 import {XDSTheme} from '@astryxdesign/core/theme';
 ```
 

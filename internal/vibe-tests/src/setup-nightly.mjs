@@ -5,7 +5,7 @@
  * @file setup-nightly.mjs
  * 
  * Sets up a complete nightly vibe test run: 4 iterations
- * (astryx, xds-tailwind, baseline, html) using the same prompts.
+ * (astryx, astryx-tailwind, baseline, html) using the same prompts.
  * Astryx and Astryx+Tailwind tasks include CLI-retrieval instructions.
  *
  * Usage:
@@ -99,7 +99,7 @@ Metadata: {"completedAt": "<ISO timestamp>", "docsRead": [<component names you l
 Write ONLY valid TSX. No markdown fences, no explanation.`;
 }
 
-function generateXdsTailwindTaskPrompt(prompt, projectDir) {
+function generateAstryxTailwindTaskPrompt(prompt, projectDir) {
   return `You are generating React/TSX code using the Astryx design system with Tailwind CSS.
 Your project is at ${projectDir}. Explore it to find available components.
 
@@ -153,7 +153,7 @@ Write ONLY valid TSX. No markdown fences, no explanation.`;
 
 const TARGET_CONFIG = {
   astryx: {label: 'Astryx', generateFn: generateAstryxTaskPrompt, cliRetrieval: true},
-  'xds-tailwind': {label: 'Astryx+TW', generateFn: generateXdsTailwindTaskPrompt, cliRetrieval: true},
+  'astryx-tailwind': {label: 'Astryx+TW', generateFn: generateAstryxTailwindTaskPrompt, cliRetrieval: true},
   baseline: {label: 'Baseline', generateFn: generateBaselineTaskPrompt, cliRetrieval: false},
   html: {label: 'HTML', generateFn: generateHtmlTaskPrompt, cliRetrieval: false},
 };
@@ -214,7 +214,7 @@ function createIteration(target, prompts) {
 
 // ── Main ─────────────────────────────────────────────────────────────
 
-const TARGETS = ['astryx', 'xds-tailwind', 'baseline', 'html'];
+const TARGETS = ['astryx', 'astryx-tailwind', 'baseline', 'html'];
 const args = process.argv.slice(2);
 const sampleIdx = args.indexOf('--sample');
 const sample = sampleIdx !== -1 ? parseInt(args[sampleIdx + 1]) : 10;
@@ -287,6 +287,6 @@ for (const id of allIds) {
 console.log(`\n  # Compare (3-way: astryx vs baseline vs html)`);
 console.log(`  npx tsx src/universal-compare.ts --astryx ${iterations.astryx} --baseline ${iterations.baseline} --html ${iterations.html}`);
 console.log(`\n  # Compare (astryx vs astryx+tailwind)`);
-console.log(`  npx tsx src/universal-compare.ts --astryx ${iterations.astryx} --baseline ${iterations['xds-tailwind']}`);
+console.log(`  npx tsx src/universal-compare.ts --astryx ${iterations.astryx} --baseline ${iterations['astryx-tailwind']}`);
 console.log(`\n  # Deploy report (astryx vs baseline vs html + astryx-tailwind)`);
-console.log(`  npx tsx src/deploy-report.ts --iteration ${iterations.astryx} --baseline ${iterations.baseline} --html ${iterations.html} --xds-tailwind ${iterations['xds-tailwind']}`);
+console.log(`  npx tsx src/deploy-report.ts --iteration ${iterations.astryx} --baseline ${iterations.baseline} --html ${iterations.html} --astryx-tailwind ${iterations['astryx-tailwind']}`);
