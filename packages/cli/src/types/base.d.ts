@@ -47,6 +47,7 @@ import type {SearchResponse} from './search';
 import type {ErrorCode} from './error-codes';
 import type {ManifestResponse} from './manifest';
 import type {DoctorResponse} from './doctor';
+import type {ValidateIntegrationResponse} from './validate-integration';
 
 /**
  * Structured error. Check `'error' in result` to discriminate.
@@ -100,7 +101,8 @@ export type CLIAnyResponse =
   | UpgradeRunResponse
   | SearchResponse
   | ManifestResponse
-  | DoctorResponse;
+  | DoctorResponse
+  | ValidateIntegrationResponse;
 
 /** Union of all type discriminator string literals. */
 export type CLIResponseType = CLIAnyResponse['type'];

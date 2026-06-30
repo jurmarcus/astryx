@@ -312,63 +312,84 @@ async function discoverIntegrationTemplates(cwd = process.cwd()) {
   }
 
   for (const integration of loadedIntegrations) {
-    const root = integration.templates;
-    if (!root || !fs.existsSync(root)) continue;
+    const result = await discoverIntegrationTemplatesForOne(integration);
+    templates.push(...result.templates);
+    errors.push(...result.errors);
+  }
 
-    for (const docPath of findIntegrationDocFiles(root)) {
-      const suffix = matchedDocSuffix(docPath);
-      const id = path
-        .relative(root, docPath)
-        .slice(0, -suffix.length)
-        .split(path.sep)
-        .join('/');
+  return {templates, errors};
+}
 
-      const sourcePath = docPath.slice(0, -suffix.length) + '.tsx';
-      if (!fs.existsSync(sourcePath)) {
-        errors.push({
-          package: integration.name,
-          template: id,
-          message: `Template "${id}" is missing its same-stem source file ${path.basename(sourcePath)}.`,
-        });
-        continue;
-      }
+/**
+ * Discover the templates contributed by a SINGLE integration. Same per-template
+ * rules as {@link discoverIntegrationTemplates} (same-stem source required,
+ * page|block type required); broken templates are recorded in `errors` rather
+ * than thrown. Exposed for `validate-integration`.
+ *
+ * @param {{name?: string, __spec?: string, templates?: string}} integration
+ * @returns {Promise<{templates: object[], errors: {package: string, template?: string, message: string}[]}>}
+ */
+export async function discoverIntegrationTemplatesForOne(integration) {
+  const templates = [];
+  const errors = [];
 
-      let doc;
-      try {
-        doc = await loadIntegrationDoc(docPath);
-      } catch (err) {
-        errors.push({
-          package: integration.name,
-          template: id,
-          message: `Template "${id}" failed to load: ${err.message}`,
-        });
-        continue;
-      }
+  const root = integration?.templates;
+  const pkgLabel = integration?.name ?? integration?.__spec ?? 'integration';
+  if (!root || !fs.existsSync(root)) return {templates, errors};
 
-      const type = doc?.type;
-      if (type !== 'page' && type !== 'block') {
-        errors.push({
-          package: integration.name,
-          template: id,
-          message: `Template "${id}" is missing a "type" of "page" or "block". Author it with createPageTemplate/createBlockTemplate.`,
-        });
-        continue;
-      }
+  for (const docPath of findIntegrationDocFiles(root)) {
+    const suffix = matchedDocSuffix(docPath);
+    const id = path
+      .relative(root, docPath)
+      .slice(0, -suffix.length)
+      .split(path.sep)
+      .join('/');
 
-      templates.push({
-        type,
-        dirName: id,
-        name: doc?.name || id,
-        description: doc?.description || '',
-        category: doc?.category || '',
-        isReady: true,
-        scaffold: false,
-        componentsUsed: doc?.componentsUsed ?? [],
-        filePath: sourcePath,
-        docPath,
-        package: integration.name,
+    const sourcePath = docPath.slice(0, -suffix.length) + '.tsx';
+    if (!fs.existsSync(sourcePath)) {
+      errors.push({
+        package: pkgLabel,
+        template: id,
+        message: `Template "${id}" is missing its same-stem source file ${path.basename(sourcePath)}.`,
       });
+      continue;
     }
+
+    let doc;
+    try {
+      doc = await loadIntegrationDoc(docPath);
+    } catch (err) {
+      errors.push({
+        package: pkgLabel,
+        template: id,
+        message: `Template "${id}" failed to load: ${err.message}`,
+      });
+      continue;
+    }
+
+    const type = doc?.type;
+    if (type !== 'page' && type !== 'block') {
+      errors.push({
+        package: pkgLabel,
+        template: id,
+        message: `Template "${id}" is missing a "type" of "page" or "block". Author it with createPageTemplate/createBlockTemplate.`,
+      });
+      continue;
+    }
+
+    templates.push({
+      type,
+      dirName: id,
+      name: doc?.name || id,
+      description: doc?.description || '',
+      category: doc?.category || '',
+      isReady: true,
+      scaffold: false,
+      componentsUsed: doc?.componentsUsed ?? [],
+      filePath: sourcePath,
+      docPath,
+      package: pkgLabel,
+    });
   }
 
   return {templates, errors};
