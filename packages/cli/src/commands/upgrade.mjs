@@ -34,7 +34,7 @@ import {getTransformsBetween, latestVersion} from '../codemods/registry.mjs';
 import {runCodemods} from '../codemods/runner.mjs';
 import {installAgentDocs, discoverAgentDocs} from './agent-docs.mjs';
 import {getRunPrefix} from '../utils/package-manager.mjs';
-import {isValidSemver, semverGte, semverGt} from '../utils/semver.mjs';
+import {isValidSemver, semverGte} from '../utils/semver.mjs';
 import {jsonOut, jsonError} from '../lib/json.mjs';
 import {loadConfig} from '../lib/config.mjs';
 import {loadIntegrations} from '../lib/integrations.mjs';
@@ -64,90 +64,59 @@ function detectInstalledTargetVersion() {
   return null;
 }
 
-function normalizeIntegrationTransforms(integration, from, to) {
-  const transforms = [];
-  for (const entry of integration.codemods ?? []) {
-    const entryFrom = entry.from ?? '0.0.0';
-    const entryTo = entry.to ?? to;
-    if (semverGte(from, entryTo) || semverGt(entryFrom, to)) continue;
-    if (!entry.name)
-      throw new Error(
-        `Integration ${integration.name ?? integration.__spec} has a codemod without a name.`,
-      );
-    if (!entry.transform)
-      throw new Error(
-        `Integration codemod ${entry.name} is missing transform.`,
-      );
-    const directTransform =
-      typeof entry.transform === 'function' ? entry.transform : null;
-    if (!directTransform)
-      throw new Error(
-        `Integration codemod ${entry.name} did not resolve to a function.`,
-      );
-    transforms.push({
-      name: entry.name,
-      meta: {
-        title:
-          entry.title ??
-          `${integration.name ?? integration.__spec}: ${entry.name}`,
-        description: entry.description ?? '',
-        pr: entry.pr,
-        fileExtensions: entry.fileExtensions,
-      },
-      optional: !!entry.optional,
-      transform: directTransform,
-    });
-  }
-  return transforms.length ? [{version: to, transforms}] : [];
-}
-
 function uniqueFiles(files) {
   return [...new Set((files ?? []).filter(Boolean))];
 }
 
-async function runPostCodemodHooks(integrations, context, silent) {
-  const hooks = integrations.flatMap(integration =>
-    (integration.postCodemod ?? []).map(hook => ({integration, hook})),
-  );
-  if (hooks.length === 0) return;
+/**
+ * Run the app config's post-codemod hooks (config.hooks.postCodemod).
+ *
+ * Each hook's `buildCommand({packageDir, files})` returns a command to run
+ * (or a nullish value to skip). In dry-run mode we only PREVIEW — buildCommand
+ * is called (so a throw still fails the run) but the command is never executed.
+ * In apply mode the commands run in order via execFile; a nonzero exit (or a
+ * buildCommand throw) fails the upgrade.
+ *
+ * @param {import('../types/config').PostCodemodHook[]} hooks
+ * @param {{packageDir: string, files: string[], apply: boolean}} context
+ * @param {boolean} silent
+ */
+async function runPostCodemodHooks(hooks, context, silent) {
+  if (!hooks || hooks.length === 0) return;
 
   const log = silent ? {info() {}, warn() {}, success() {}, error() {}} : p.log;
+  const {packageDir, files, apply} = context;
 
-  const run = async (command, args, options = {}) => {
-    await execFileAsync(command, args, {
-      cwd: options.cwd ?? context.packageDir,
-      timeout: options.timeoutMs ?? 300_000,
+  for (let i = 0; i < hooks.length; i++) {
+    const hook = hooks[i];
+    const label = hook.name ?? `postCodemod[${i}]`;
+    if (typeof hook.buildCommand !== 'function') {
+      throw new Error(
+        `Post-codemod hook ${label} is missing a buildCommand function.`,
+      );
+    }
+
+    const cmd = await hook.buildCommand({packageDir, files});
+    if (!cmd) {
+      log.info(`Post-codemod hook ${label} produced no command; skipping.`);
+      continue;
+    }
+
+    if (!apply) {
+      const preview = [cmd.command, ...(cmd.args ?? [])].join(' ');
+      log.info(`Post-codemod hook ${label} (dry run): ${preview}`);
+      continue;
+    }
+
+    await execFileAsync(cmd.command, cmd.args ?? [], {
+      cwd: cmd.options?.cwd ?? packageDir,
+      timeout: cmd.options?.timeout ?? 300_000,
       stdio: 'pipe',
       encoding: 'utf-8',
-      env: {...process.env, ...(options.env ?? {})},
+      ...cmd.options,
+      env: {...process.env, ...(cmd.options?.env ?? {})},
     });
-  };
-
-  const ctx = {...context, run};
-  for (const {integration, hook} of hooks) {
-    const label = `${integration.name ?? integration.__spec}:${hook.name ?? 'postCodemod'}`;
-    try {
-      if (typeof hook.run === 'function') {
-        await hook.run(ctx);
-      } else if (typeof hook.command === 'function') {
-        const cmd = await hook.command(ctx);
-        if (cmd) {
-          await run(cmd.command, cmd.args ?? [], {
-            cwd: cmd.cwd,
-            timeoutMs: cmd.timeoutMs,
-            env: cmd.env,
-          });
-        }
-      } else {
-        log.warn(
-          `Integration hook ${label} has no run() or command() function; skipping.`,
-        );
-        continue;
-      }
-      log.success(`Post-codemod hook ${label} completed.`);
-    } catch (err) {
-      log.warn(`Post-codemod hook ${label} failed: ${err.message}`);
-    }
+    log.success(`Post-codemod hook ${label} completed.`);
   }
 }
 
@@ -267,8 +236,10 @@ export function registerUpgrade(program) {
       }
 
       let integrations;
+      let postCodemodHooks;
       try {
         const config = await loadConfig(process.cwd());
+        postCodemodHooks = config.hooks?.postCodemod ?? [];
         const integrationSpecs = uniqueFiles([
           ...(config.integrations ?? []),
           ...(options.integration ?? []),
@@ -306,16 +277,10 @@ export function registerUpgrade(program) {
         return;
       }
 
-      // Resolve transforms
+      // Resolve transforms. Integrations no longer contribute codemods here;
+      // file-based integration codemod discovery is a later change.
       const versionManifests = [
         ...(await getTransformsBetween(currentVersion, targetVersion)),
-        ...integrations.flatMap(integration =>
-          normalizeIntegrationTransforms(
-            integration,
-            currentVersion,
-            targetVersion,
-          ),
-        ),
       ];
 
       if (versionManifests.length === 0) {
@@ -398,29 +363,40 @@ export function registerUpgrade(program) {
         silent: json,
       });
 
-      if (options.apply && integrations.length > 0) {
-        const codemodDir = path.resolve(options.path);
+      // Post-codemod hooks come from the app config (config.hooks.postCodemod).
+      // They run only when codemods actually changed files. In apply mode the
+      // commands execute (nonzero exit fails the upgrade); in dry-run mode we
+      // only preview the resolved command (a buildCommand throw still fails).
+      const changedFileCount = codemodResult?.totalFilesChanged ?? 0;
+      if (postCodemodHooks.length > 0 && changedFileCount > 0) {
         const absoluteChangedFiles = uniqueFiles(
           codemodResult?.writtenFiles ?? [],
         );
-        const changedFiles = absoluteChangedFiles.map(file =>
+        const files = absoluteChangedFiles.map(file =>
           path.relative(process.cwd(), file),
         );
-        const packageChangedFiles = absoluteChangedFiles
-          .filter(file => file.startsWith(process.cwd() + path.sep))
-          .map(file => path.relative(process.cwd(), file));
-        await runPostCodemodHooks(
-          integrations,
-          {
-            packageDir: process.cwd(),
-            codemodDir,
-            changedFiles,
-            absoluteChangedFiles,
-            packageChangedFiles,
-            apply: options.apply,
-          },
-          json,
-        );
+        try {
+          await runPostCodemodHooks(
+            postCodemodHooks,
+            {
+              packageDir: process.cwd(),
+              files,
+              apply: options.apply,
+            },
+            json,
+          );
+        } catch (err) {
+          if (json)
+            return jsonError(
+              `Post-codemod hook failed: ${err.message}`,
+              {receipt},
+              ERROR_CODES.ERR_CODEMOD_FAILED,
+            );
+          p.log.error(`Post-codemod hook failed: ${err.message}`);
+          p.outro('Upgrade failed');
+          process.exitCode = 1;
+          return;
+        }
       }
 
       // Refresh agent docs if any exist (AGENTS.md, CLAUDE.md, .claude/CLAUDE.md, etc.)

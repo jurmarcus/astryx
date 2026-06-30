@@ -14,7 +14,6 @@ import {
 } from '../utils/path-safety.mjs';
 import {AstryxError} from './error.mjs';
 import {ERROR_CODES} from '../lib/error-codes.mjs';
-import {loadConfig} from '../lib/config.mjs';
 
 const TEMPLATES_DIR = path.join(CLI_ROOT, 'templates');
 const PAGES_DIR = path.join(TEMPLATES_DIR, 'pages');
@@ -140,17 +139,13 @@ async function discoverBlocks() {
 }
 
 /**
- * Discover blocks from external packages that declare `xds.blocks`.
- * Same shape as discoverBlocks() output.
+ * Discover blocks from external packages that declare `astryx.blocks` in
+ * their package.json. Same shape as discoverBlocks() output.
  *
  * @param {string} [cwd]
  */
 async function discoverExternalBlocks(cwd = process.cwd()) {
-  const config = await loadConfig(cwd);
-  const integrationPackages = (config.loadedIntegrations ?? [])
-    .map(integration => integration.package)
-    .filter(Boolean);
-  const externals = [...discoverExternalPackages(cwd), ...integrationPackages];
+  const externals = discoverExternalPackages(cwd);
   const blocks = [];
 
   for (const ext of externals) {
@@ -489,71 +484,6 @@ function extractSkeleton(source) {
   }
 
   return out.filter(l => l.trim()).join('\n');
-}
-
-/**
- * Fetch a template by ID using the `template.get` hook in astryx.config.mjs.
- * @param {string} id
- * @param {object} [options]
- * @param {string} [options.cwd]
- * @returns {Promise<{type: 'template.get', data: {id: string, source: string}}>}
- */
-export async function getTemplateById(id, options = {}) {
-  const {cwd = process.cwd()} = options;
-  const config = await loadConfig(cwd);
-
-  const getter = config.template?.get;
-  if (typeof getter !== 'function') {
-    throw new AstryxError(
-      'Template fetching by ID is not configured.\n' +
-        'Add a template.get function to astryx.config.mjs:\n\n' +
-        '  export default {\n' +
-        '    template: {\n' +
-        '      get: async (id) => { /* return template source string */ },\n' +
-        '    },\n' +
-        '  };',
-      undefined,
-      ERROR_CODES.ERR_TEMPLATE_CONFIG,
-    );
-  }
-
-  let source;
-  try {
-    source = await getter(id);
-  } catch (err) {
-    const detail = err instanceof Error ? err.message : String(err);
-    throw new AstryxError(
-      `template.get("${id}") threw an error: ${detail}`,
-      undefined,
-      ERROR_CODES.ERR_TEMPLATE_GET,
-    );
-  }
-
-  if (source == null) {
-    throw new AstryxError(
-      `template.get("${id}") returned ${source} — no template found for that ID`,
-      undefined,
-      ERROR_CODES.ERR_TEMPLATE_GET,
-    );
-  }
-
-  if (typeof source !== 'string') {
-    throw new AstryxError(
-      `template.get("${id}") must return a string, got ${typeof source}`,
-      undefined,
-      ERROR_CODES.ERR_TEMPLATE_GET,
-    );
-  }
-
-  if (source.trim() === '') {
-    throw new AstryxError(
-      `template.get("${id}") returned an empty string`,
-      undefined,
-      ERROR_CODES.ERR_TEMPLATE_GET,
-    );
-  }
-
-  return {type: 'template.get', data: {id, source}};
 }
 
 /**

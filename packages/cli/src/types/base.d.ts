@@ -32,7 +32,6 @@ import type {
   TemplateShowResponse,
   TemplateSkeletonResponse,
   TemplateCopyResponse,
-  TemplateGetResponse,
 } from './template';
 import type {
   HookListResponse,
@@ -89,7 +88,6 @@ export type CLIAnyResponse =
   | TemplateShowResponse
   | TemplateSkeletonResponse
   | TemplateCopyResponse
-  | TemplateGetResponse
   | HookListResponse
   | HookBriefResponse
   | HookFullResponse

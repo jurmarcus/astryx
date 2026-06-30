@@ -25,7 +25,60 @@ import {expand} from '../lib/xle/expand.mjs';
 import {toCompact, toOutline} from '../lib/xle/print.mjs';
 import {buildRegistry, ALIAS_TABLE} from '../lib/xle/registry.mjs';
 import {discoverTemplates, stripTemplateAssetRefs} from './template.mjs';
-import {loadConfig} from '../lib/config.mjs';
+import {findConfigPath} from '../lib/config.mjs';
+import {pathToFileURL} from 'node:url';
+import {createJiti} from 'jiti';
+
+let jitiInstance;
+function getJiti() {
+  if (!jitiInstance) jitiInstance = createJiti(import.meta.url);
+  return jitiInstance;
+}
+
+/**
+ * Read the raw `layout.components` map from the app config, if present.
+ *
+ * The locked v1 config surface (validated by loadConfig) does not include the
+ * XLE `layout.components` bridge, so this reads the raw default export directly
+ * rather than going through schema validation. Best-effort: a missing/invalid
+ * config yields an empty map.
+ *
+ * @param {string} cwd
+ * @returns {Promise<Record<string, unknown>>}
+ */
+async function readLayoutComponents(cwd) {
+  // Prefer a config directly in cwd (XLE callers pass the project dir as cwd);
+  // fall back to the sibling-of-nearest-package.json resolution.
+  const CONFIG_BASENAMES = [
+    'astryx.config.ts',
+    'astryx.config.mjs',
+    'astryx.config.js',
+  ];
+  let configPath = null;
+  for (const name of CONFIG_BASENAMES) {
+    const candidate = path.join(cwd, name);
+    if (fs.existsSync(candidate)) {
+      configPath = candidate;
+      break;
+    }
+  }
+  if (!configPath) {
+    try {
+      configPath = findConfigPath(cwd);
+    } catch {
+      return {};
+    }
+  }
+  if (!configPath) return {};
+  try {
+    const mod = configPath.endsWith('.ts')
+      ? await getJiti().import(configPath)
+      : await import(pathToFileURL(configPath).href);
+    return mod.default?.layout?.components ?? {};
+  } catch {
+    return {};
+  }
+}
 
 /**
  * The catalog a `{hint}` can resolve to: template blocks (spliced inline) plus
@@ -42,8 +95,7 @@ async function loadBlocks(cwd) {
     // discovery is best-effort
   }
   try {
-    const config = await loadConfig(cwd);
-    const components = config.layout?.components || {};
+    const components = await readLayoutComponents(cwd);
     for (const [name, spec] of Object.entries(components)) {
       const importPath = typeof spec === 'string' ? spec : spec.from;
       if (!importPath) continue;

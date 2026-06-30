@@ -8,71 +8,34 @@ const Fn = z.custom(value => typeof value === 'function', {
   message: 'Expected function',
 });
 
-const StringOrStringArray = z.union([z.string(), z.array(z.string())]);
-const GapReportSchema = z.union([
-  z.literal(false),
-  z.object({command: z.string()}).passthrough(),
-]);
+export const PostCodemodHookSchema = z
+  .object({
+    name: z.string().optional(),
+    buildCommand: Fn,
+  })
+  .strict();
 
 export const AstryxConfigSchema = z
   .object({
-    packages: StringOrStringArray.optional(),
-    integrations: StringOrStringArray.optional(),
-    gapReport: GapReportSchema.optional(),
-    template: z
+    integrations: z.array(z.string()).optional(),
+    issuesUrl: z.string().url().optional(),
+    hooks: z
       .object({
-        get: Fn.optional(),
+        postCodemod: z.array(PostCodemodHookSchema).optional(),
       })
-      .passthrough()
+      .strict()
       .optional(),
   })
-  .passthrough();
-
-export const AstryxIntegrationCodemodSchema = z
-  .object({
-    name: z.string(),
-    from: z.string().optional(),
-    to: z.string().optional(),
-    title: z.string().optional(),
-    description: z.string().optional(),
-    pr: z.string().optional(),
-    optional: z.boolean().optional(),
-    fileExtensions: z.array(z.string()).optional(),
-    transform: z.union([z.string(), Fn]),
-  })
-  .passthrough();
-
-export const AstryxPostCodemodHookSchema = z
-  .object({
-    name: z.string().optional(),
-    run: Fn.optional(),
-    command: Fn.optional(),
-  })
-  .passthrough()
-  .refine(value => value.run || value.command, {
-    message: 'postCodemod hook must define run() or command()',
-  });
+  .strict();
 
 export const AstryxIntegrationSchema = z
   .object({
-    name: z.string(),
-    version: z.string().optional(),
-    displayName: z.string().optional(),
-    description: z.string().optional(),
-    docs: z.string().optional(),
-    category: z.string().optional(),
-    blocks: z.string().optional(),
-    gapReport: GapReportSchema.optional(),
-    template: z
-      .object({
-        get: z.union([z.string(), Fn]).optional(),
-      })
-      .passthrough()
-      .optional(),
-    codemods: z.array(AstryxIntegrationCodemodSchema).optional(),
-    postCodemod: z.array(AstryxPostCodemodHookSchema).optional(),
+    components: z.string().optional(),
+    templates: z.string().optional(),
+    codemods: z.string().optional(),
+    issuesUrl: z.string().url().optional(),
   })
-  .passthrough();
+  .strict();
 
 /**
  * @param {string} label
@@ -96,7 +59,7 @@ export function validateConfig(config) {
   const result = AstryxConfigSchema.safeParse(config);
   if (!result.success) {
     throw new Error(
-      formatZodError('astryx.config.mjs default export', result.error),
+      formatZodError('astryx.config default export', result.error),
     );
   }
   return result.data;
@@ -105,7 +68,7 @@ export function validateConfig(config) {
 /**
  * @param {unknown} integration
  * @param {string} [label]
- * @returns {import('../types/config').AstryxIntegration}
+ * @returns {import('../types/integration').AstryxIntegration}
  */
 export function validateIntegration(
   integration,

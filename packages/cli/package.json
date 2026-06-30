@@ -43,6 +43,10 @@
       "types": "./src/types/config.d.ts",
       "import": "./src/config.mjs"
     },
+    "./integration": {
+      "types": "./src/types/integration.d.ts",
+      "import": "./src/integration.mjs"
+    },
     "./xle": {
       "types": "./src/lib/xle/browser.d.ts",
       "import": "./src/lib/xle/browser.mjs"

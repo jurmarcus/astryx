@@ -56,7 +56,6 @@ export const RESPONSE_TYPES = {
     'template.show',
     'template.skeleton',
     'template.copy',
-    'template.get',
   ],
   hook: ['hook.list', 'hook.brief', 'hook.full', 'hook.detail', 'hook.detail.params'],
   'theme build': ['theme.build'],

@@ -50,14 +50,21 @@ export async function discover(query, options = {}) {
     displayName: pkg.displayName,
   });
 
+  // External packages come from configured integrations that declare a
+  // components root. Each becomes a scannable package keyed by its docsDir.
   const explicitPackages = (config.loadedIntegrations ?? [])
-    .map(integration => integration.package)
-    .filter(Boolean);
-  if (config.packages.length === 0 && explicitPackages.length === 0) {
+    .filter(integration => integration.components)
+    .map(integration => ({
+      name: integration.name,
+      version: integration.version,
+      category: integration.name,
+      docsDir: integration.components,
+    }));
+  if (explicitPackages.length === 0) {
     return {type: 'discover.list', data: [], meta: {configured: false}};
   }
 
-  const packages = scanAllPackages(config.packages, explicitPackages);
+  const packages = scanAllPackages([], explicitPackages);
 
   if (packages.length === 0) {
     return {type: 'discover.list', data: [], meta: {configured: true}};

@@ -279,8 +279,8 @@ export async function checkConfig(ctx) {
     };
   }
 
-  // loadConfig swallows errors and returns defaults, so re-import directly to
-  // surface a genuine load failure as a FAIL.
+  // loadConfig swallows errors and returns an empty config, so re-import
+  // directly to surface a genuine load failure as a FAIL.
   try {
     const {pathToFileURL} = await import('node:url');
     const mod = await import(pathToFileURL(ctx.configPath).href);
@@ -291,24 +291,8 @@ export async function checkConfig(ctx) {
         label: 'astryx.config.mjs',
         status: 'fail',
         message: `astryx.config.mjs default export is not an object (got ${typeof config}).`,
-        fix: 'Export a default object from astryx.config.mjs, e.g. `export default { theme: "default" };`.',
+        fix: 'Export a default object from astryx.config.mjs, e.g. `export default { integrations: [] };`.',
       };
-    }
-    // Validate that `packages`, if present, is a string or array of strings.
-    if (config?.packages !== undefined) {
-      const arr = Array.isArray(config.packages)
-        ? config.packages
-        : [config.packages];
-      const bad = arr.some(p => typeof p !== 'string');
-      if (bad) {
-        return {
-          id: 'config',
-          label: 'astryx.config.mjs',
-          status: 'fail',
-          message: 'astryx.config.mjs `packages` must be a string or array of strings.',
-          fix: 'Set `packages` to a path string or array of path strings.',
-        };
-      }
     }
     return {
       id: 'config',

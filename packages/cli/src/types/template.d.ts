@@ -62,9 +62,3 @@ export interface TemplateCopyResponse {
     filesCopied: number;
   };
 }
-
-/** xds --json template get --id <id> */
-export interface TemplateGetResponse {
-  type: 'template.get';
-  data: {id: string; source: string};
-}

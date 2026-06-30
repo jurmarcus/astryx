@@ -11,9 +11,9 @@ import {isNonInteractive} from '../utils/path-safety.mjs';
 import {jsonOut, humanLog} from '../lib/json.mjs';
 import {cliError} from '../lib/cli-error.mjs';
 import {ERROR_CODES} from '../lib/error-codes.mjs';
-import {template as templateApi, getTemplateById} from '../api/template.mjs';
+import {template as templateApi} from '../api/template.mjs';
 
-export {discoverTemplates, listTemplates, getTemplateById} from '../api/template.mjs';
+export {discoverTemplates, listTemplates} from '../api/template.mjs';
 
 function isCancel(value) {
   if (p.isCancel(value)) {
@@ -24,7 +24,7 @@ function isCancel(value) {
 }
 
 export function registerTemplate(program) {
-  const templateCmd = program
+  program
     .command('template [name] [path]')
     .description('Inject a page or block template')
     .option('--list', 'List available templates')
@@ -130,26 +130,6 @@ export function registerTemplate(program) {
           break;
         }
       }
-    });
-
-  templateCmd
-    .command('get')
-    .description('Fetch a template by ID via the astryx.config.mjs hook')
-    .requiredOption('--id <id>', 'Template identifier to fetch')
-    .action(async (options) => {
-      const json = program.opts().json || false;
-
-      let result;
-      try {
-        result = await getTemplateById(options.id, {cwd: process.cwd()});
-      } catch (e) {
-        cliError(e.message, {suggestions: e.suggestions, code: e.code});
-        return;
-      }
-
-      if (json) return jsonOut(result.type, result.data);
-
-      humanLog(result.data.source);
     });
 }
 

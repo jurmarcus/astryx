@@ -69,8 +69,6 @@
  *   | 'ERR_WRITE_FAILED'
  *   | 'ERR_THEME_INVALID'
  *   | 'ERR_THEME_LOAD'
- *   | 'ERR_TEMPLATE_CONFIG'
- *   | 'ERR_TEMPLATE_GET'
  *   | 'ERR_VERSION_DETECT'
  *   | 'ERR_INVALID_VERSION'
  *   | 'ERR_DEP_MISSING'
@@ -164,12 +162,6 @@ export const ERROR_CODES = Object.freeze({
   ERR_THEME_INVALID: 'ERR_THEME_INVALID',
   /** A theme file could not be loaded / parsed into a defineTheme result. */
   ERR_THEME_LOAD: 'ERR_THEME_LOAD',
-
-  // ── Template config ──────────────────────────────────────────────
-  /** `template.get` is not configured in astryx.config.mjs (fetch-by-id). */
-  ERR_TEMPLATE_CONFIG: 'ERR_TEMPLATE_CONFIG',
-  /** A configured `template.get` threw or returned an invalid value. */
-  ERR_TEMPLATE_GET: 'ERR_TEMPLATE_GET',
 
   // ── Upgrade ──────────────────────────────────────────────────────
   /** The current `@astryxdesign/core` version could not be detected. */
