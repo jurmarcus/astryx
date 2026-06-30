@@ -38,6 +38,12 @@ const lightningcssTargets = {
 export default defineConfig({
   plugins: [react(), viteSingleFile()],
   build: {
+    // The bundled @astryxdesign/core (Babel output) uses modern syntax that
+    // esbuild can't downlevel to the default es2020 target (destructuring in
+    // certain positions). The report is an internal artifact viewed in current
+    // browsers, so target esnext and skip downleveling. CSS targets stay modern
+    // below to preserve native light-dark().
+    target: 'esnext',
     rollupOptions: {
       input: path.resolve(__dirname, 'index.report.html'),
     },
@@ -76,21 +82,27 @@ export default defineConfig({
       // Core subpath imports → dist (bypasses "source" condition in exports map)
       {
         find: /^@astryxdesign\/core\/(.+)$/,
-        replacement: path.resolve(repoRoot, 'packages/core/dist/$1/index.mjs'),
+        replacement: path.resolve(repoRoot, 'packages/core/dist/$1/index.js'),
       },
       // Core root import
       {
         find: '@astryxdesign/core',
-        replacement: path.resolve(repoRoot, 'packages/core/dist/index.mjs'),
+        replacement: path.resolve(repoRoot, 'packages/core/dist/index.js'),
       },
       // Theme: resolve to source (no StyleX usage, just defineTheme + icons).
       {
         find: '@astryxdesign/theme-neutral',
-        replacement: path.resolve(repoRoot, 'packages/themes/neutral/src/source.ts'),
+        replacement: path.resolve(
+          repoRoot,
+          'packages/themes/neutral/src/source.ts',
+        ),
       },
       {
         find: '@astryxdesign/theme/neutral',
-        replacement: path.resolve(repoRoot, 'packages/themes/neutral/src/source.ts'),
+        replacement: path.resolve(
+          repoRoot,
+          'packages/themes/neutral/src/source.ts',
+        ),
       },
     ],
   },
