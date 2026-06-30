@@ -45,7 +45,7 @@ export interface ResolvedAuthor extends Omit<AuthorProfile, 'avatar' | 'href'> {
 export const authors = {
   team: {
     name: 'Astryx team',
-    avatar: '/favicon.svg',
+    avatar: '/blog/authors/astryx-team.png',
     href: 'https://github.com/facebook/astryx',
   },
   cvkxx: {
