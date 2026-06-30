@@ -17,11 +17,35 @@ import {createJiti} from 'jiti';
 import {validateIntegration} from './config-schema.mjs';
 
 /** Conventional manifest basenames, in load-precedence order. */
-const MANIFEST_BASENAMES = [
+export const MANIFEST_BASENAMES = [
   'astryx.integration.ts',
   'astryx.integration.mjs',
   'astryx.integration.js',
 ];
+
+/**
+ * Return the conventional root manifest paths present in `dir`, in
+ * load-precedence order. Unlike {@link resolveManifestPath} this never throws —
+ * callers (e.g. validate-integration) decide how to treat zero / multiple.
+ * @param {string} dir
+ * @returns {string[]} absolute manifest paths
+ */
+export function findManifestPaths(dir) {
+  return MANIFEST_BASENAMES.filter(name =>
+    fs.existsSync(path.join(dir, name)),
+  ).map(name => path.join(dir, name));
+}
+
+/**
+ * Load a manifest module's exported object. `.ts` is loaded via jiti;
+ * `.mjs`/`.js` via dynamic import. Exposed for validate-integration.
+ * @param {string} file absolute manifest path
+ * @returns {Promise<unknown>} the exported integration object (or module)
+ */
+export async function loadManifestObject(file) {
+  const mod = await importManifest(file);
+  return mod.default ?? mod.integration ?? mod;
+}
 
 let jitiInstance;
 function getJiti() {
